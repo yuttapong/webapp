@@ -1,0 +1,1 @@
+<?phpuse yii\widgets\DetailView;?><?= DetailView::widget([    'model' => $model,    'attributes' => [        'datetime:datetime',        'title',        'detail:ntext',        'created_at:datetime',        'createdName',        'updated_at:datetime',        'updatedName',    ],]) ?>

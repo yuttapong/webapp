@@ -1,0 +1,1 @@
+<?phpuse yii\widgets\DetailView;?><?= DetailView::widget([    'model' => $modelAddress,    'attributes' => [        'typeName',        'company',        'no',        'moo',        'soi',        'village',        'road',        'tambon.name_th',        'amphur.name_th',        'province.name_th',        'zipcode',    ],]) ?>

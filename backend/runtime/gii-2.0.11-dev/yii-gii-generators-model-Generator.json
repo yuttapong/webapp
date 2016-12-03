@@ -1,0 +1,1 @@
+{"template":"default","enableI18N":"1","messageCategory":"crm.customer","ns":"backend\\modules\\crm\\models","db":"db","baseClass":"yii\\db\\ActiveRecord","generateRelations":"all","generateLabelsFromComments":"0","queryNs":"backend\\modules\\crm\\models","queryBaseClass":"yii\\db\\ActiveQuery"}
