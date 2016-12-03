@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\modules\fix\Models\ListApproverSearch */
+/* @var $searchModel backend\modules\fix\Models\ListAppreverSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'List Apprevers';

@@ -5,7 +5,10 @@ use yii\helpers\Html;
 use kartik\editable\Editable;
 use kartik\grid\GridView;
 use yii\web\JsExpression;
-use common\models\Customers;
+use common\models\Home;
+use yii\helpers\ArrayHelper;
+use common\models\Project;
+use backend\modules\crm\models\Customer;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\fix\models\HomeSearch */
@@ -24,7 +27,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'project.name',
+
+            [
+            'attribute' => 'project_id',
+           // 'label' => 'Country',
+            'filter' => ArrayHelper::map(Project::find()->orderBy('id')->asArray()->all(), 'id', 'name'),
+            'value' => 'project.name'
+            ],
           'plan_no',
             [
             'class' => 'kartik\grid\EditableColumn',
@@ -61,13 +70,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
             'class' => 'kartik\grid\EditableColumn',
-            'attribute' => 'customers_id',
+            'attribute' => 'customer_id',
             'pageSummary' => true,
             'readonly' => false,
             'format' => 'raw',
             'value' => function ($model) {
-            	if($model->customers_id !=''){
-            		return $model->customers_name;
+            	if($model->customer_id !=''){
+            		return $model->customer_name;
             	}else {
             		return null;
             	}
@@ -75,10 +84,11 @@ $this->params['breadcrumbs'][] = $this->title;
             },
             'editableOptions' => function ($model, $key, $index) {
             	 
-            	$url = \yii\helpers\Url::to(['home/customers-list','id'=>$model->customers_id]);
+            	$url = \yii\helpers\Url::to(['customers-list','id'=>$model->customer_id]);
             	$cityDesc='';
-            	if(!empty($model->customers_id)){
-            		$mCus =Customers::findOne($model->customers_id);
+            	if(!empty($model->customer_id)){
+            		$mCus =Customer::findOne($model->customer_id);
+           
             		$cityDesc = $mCus->prefixname.' '.$mCus->firstname.' '.$mCus->lastname;
             	}
             	
@@ -86,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
             			'header' => '&nbsp;',
             			'size' => 'md',
             			'placement' => GridView::ALIGN_LEFT,
-            			'name' => 'customers_id',
+            			'name' => 'customer_id',
             			'inputType'=> Editable::INPUT_SELECT2,
             			'options'=>[
             					'initValueText' =>$cityDesc,
@@ -112,7 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
     			],
             // 'status',
             // 'type',
-            // 'home_prices',
+            // 'home_price',
             // 'land',
             // 'use_area',
             // 'home_status',

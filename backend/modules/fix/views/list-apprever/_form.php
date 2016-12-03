@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use backend\modules\fix\models\InformJob;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\fix\Models\ListApprover */
+/* @var $model backend\modules\fix\Models\ListApprever */
 /* @var $form yii\widgets\ActiveForm */
 
 ?>

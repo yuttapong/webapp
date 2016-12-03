@@ -14,7 +14,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'project_id')->textInput() ?>
 
-    <?= $form->field($model, 'home_plan_id')->textInput() ?>
 
     <?= $form->field($model, 'plan_no')->textInput(['maxlength' => true]) ?>
 

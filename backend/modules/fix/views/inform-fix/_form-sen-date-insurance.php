@@ -32,9 +32,15 @@ use yii\helpers\Url;
                  'options' => ['type' => 'submit','id'=>'login-formx'],
                  ]);
                  AjaxSubmitButton::end();
+                
+                 if( $model->date_insurance!='' && $model->date_insurance!='0'){
+                 	$model->date_insurance = date ( "d-m-Y", $model->date_insurance );
+                 }
+                 
  ?>
     <?= $form->field($model, 'date_insurance')->widget(DatePicker::classname(), [
         		'type' => DatePicker::TYPE_INPUT,
+    			'language' => 'th',
 			    'options' => ['placeholder' => 'Enter event time ...'],
 					'pluginOptions' => [
 					'format' => 'dd-mm-yyyy',

@@ -16,6 +16,9 @@ use kartik\file\FileInput;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\fix\Models\InformFix */
 /* @var $form yii\widgets\ActiveForm */
+if($model->isNewRecord){
+	$model->date_inform=date ( "d-m-Y H:i", time());
+}
 ?>
 
 <div class="inform-fix-form">
@@ -24,10 +27,78 @@ use kartik\file\FileInput;
     		,'id' => 'dynamic-form','enctype' => 'multipart/form-data']]); ?>
     <input id="check-customs" class="form-control" name="customer_id" type="hidden" value="">
     <?= $form->field($model, 'customer_id')->hiddenInput(['placeholder'=>'รหัสลูกค่า'])->label(false) ?>
-   
+    <div class="row">
+       <div class="col-sm-4 col-md-4">
+        <?= $form->field($model, 'project_id')->dropdownList(
+            ArrayHelper::map(Project::find()->all(),
+            'id',
+            'name'),
+            [
+                'id'=>'ddl-project',
+                'prompt'=>'--เลือกโครงการ--'
+       ]); ?>
+       </div>
+       <div class="col-sm-4 col-md-4">
+       <?= $form->field($model, 'home_id')->widget(DepDrop::classname(), [
+       		'type'=>DepDrop::TYPE_SELECT2,
+       		'select2Options' => ['pluginOptions'=>['allowClear'=>true]],
+            'options'=>['id'=>'ddl-home',
+            		'data-urlc'=>Url::to(['/fix/inform-fix/data-customer']),
+            	'onchange'=>	'if(this.value!=""){ 
+            		$.ajax({
+							url: this.getAttribute(\'data-urlc\'),
+							type: "GET",
+							data: {id:this.value},
+							success:function(data){ 
+            				item=JSON.parse(data);
+	            			if(item.id!=\'\'){
+	            				$(\'#informfix-customer_id\').val(item.id);
+	            				$(\'#informfix-telephone\').val(item.mobile);
+	    						$(\'#informfix-customer_name\').val(item.value);
+	    						$(\'#informfix-prefixname\').val(item.prefixname);
+	    						$(\'#informfix-prefixname\').attr("disabled", true);
+	    						$(\'#informfix-customer_name\').attr("disabled", true);
+	            				$(\'#check-customs\').val(\'old\');
+	    						$(\'#comtoms\').html(\'<span class="label label-primary">ลูกค้าเก่า</span>\');
+	            			}else{
+            					$(\'#informfix-customer_id\').val("");
+	            				$(\'#informfix-telephone\').val("");
+	    						$(\'#informfix-customer_name\').val("");
+	    						$(\'#informfix-prefixname\').val("");
+            				}
+							}
+						}); 
+			}',
+            		
+       ],
+            'data'=> $modelhome,
+            'pluginOptions'=>[
+            		
+                'depends'=>['ddl-project'],
+                'placeholder'=>'---แปลงบ้าน--',
+                'url'=>Url::to(['/home/get-home'])
+            ],
+
+        ]); ?>
+    </div>
+     <div class="col-sm-4 col-md-4">
+        <?= $form->field($model, 'date_inform')->widget(DateTimePicker::classname(), [
+        		'type' => DateTimePicker::TYPE_INPUT,
+        		'language' => 'th',
+			    'options' => ['placeholder' => 'Enter event time ...'],
+					'pluginOptions' => [
+					'format' => 'dd-mm-yyyy hh:ii',
+						'autoclose' => true,
+						'allowClear' => true,
+					]
+			]);
+?> 
+        
+          </div>
+	</div>
    <div class="row">
    
-   <div class="col-md-4">
+   <div class="col-md-3">
     <div class="input-group"> 
                  <?php 
     echo Typeahead::widget([
@@ -39,7 +110,7 @@ use kartik\file\FileInput;
     							'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
                 			'display' => 'show',
                 			'remote' => [
-                				'url' => Url::to(['/crm/customer/customer-list']) . '?q=%QUERY',
+                				'url' => Url::to(['/fix/inform-fix/customer-list']) . '?q=%QUERY',
                 				'wildcard' => '%QUERY'
     						]
     				]
@@ -79,6 +150,7 @@ use kartik\file\FileInput;
    <?= $form->field($model, 'prefixname')->textInput(['placeholder'=>'คำนำหน้า','disabled'=>true]) ?>
    </div>
    <div class="col-md-3">
+   
     <?= $form->field($model, 'customer_name')->textInput(
     		[  'onchange'=>'
     				$(\'#informfix-customer_id\').val(\'\'); ',
@@ -93,39 +165,9 @@ use kartik\file\FileInput;
 ]) ?>
    </div>
   <div class="col-md-2"> 
-    <h4>  <span id="comtoms" ></span></h4>
-   
-   </div>
-   
-     </div>
-     <div class="row">
-       <div class="col-sm-4 col-md-4">
-        <?= $form->field($model, 'project_id')->dropdownList(
-            ArrayHelper::map(Project::find()->all(),
-            'id',
-            'name'),
-            [
-                'id'=>'ddl-project',
-                'prompt'=>'--เลือกโครงการ--'
-       ]); ?>
-       </div>
-       <div class="col-sm-4 col-md-4">
-       <?= $form->field($model, 'home_id')->widget(DepDrop::classname(), [
-       		'type'=>DepDrop::TYPE_SELECT2,
-       		'select2Options' => ['pluginOptions'=>['allowClear'=>true]],
-            'options'=>['id'=>'ddl-home'],
-            'data'=> $modelhome,
-            'pluginOptions'=>[
-                'depends'=>['ddl-project'],
-                'placeholder'=>'---แปลงบ้าน--',
-                'url'=>Url::to(['/home/get-home'])
-            ],
-
-        ]); ?>
-    </div>
-     <div class="col-sm-4 col-md-4">
-        <?= $form->field($model, 'date_inform')->widget(DateTimePicker::classname(), [
+        <?= $form->field($model, 'date_modify')->widget(DateTimePicker::classname(), [
         		'type' => DateTimePicker::TYPE_INPUT,
+        		'language' => 'th',
 			    'options' => ['placeholder' => 'Enter event time ...'],
 					'pluginOptions' => [
 					'format' => 'dd-mm-yyyy hh:ii',
@@ -135,8 +177,14 @@ use kartik\file\FileInput;
 			]);
 ?> 
         
-          </div>
-	</div>
+    
+      <span id="comtoms hide" ></span>
+   
+   </div>
+   
+     </div>
+     
+    
     <?php
      
       DynamicFormWidget::begin([
@@ -178,7 +226,7 @@ use kartik\file\FileInput;
 		                 		'rowIndex'=>0,
 		                 		'multiple' => true,
 		                 		'url' => ['inform-fix/job-list'],
-		                 		'options' => ['placeholder' => 'วัสดุ','id'=>'informjob-0-list'
+		                 		'options' => ['placeholder' => 'ปัญหาที่พบ','id'=>'informjob-0-list'
 		                 				,'onkeyup'=>'autocomplet_ajax(this,"job_list_id")']
 		                 ])->label(false);
 		            
@@ -217,7 +265,7 @@ use kartik\file\FileInput;
 		                    	'rowIndex'=>$rowIndex,
 							    'multiple' => true,
 							    'url' => ['inform-fix/job-list'],
-		                    	'options' => ['placeholder' => 'วัสดุ','id'=>'informjob-'.$rowIndex.'-list'
+		                    	'options' => ['placeholder' => 'ปัญหาที่พบ','id'=>'informjob-'.$rowIndex.'-list'
 		                    	,'onkeyup'=>'autocomplet_ajax(this,"job_list_id")',
 		                    
 		                    	]

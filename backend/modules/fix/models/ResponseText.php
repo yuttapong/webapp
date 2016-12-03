@@ -51,4 +51,15 @@ class ResponseText extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
         ];
     }
+    public function beforeSave($insert){
+    	if (parent::beforeSave($insert)) {
+    		if ($this->isNewRecord) {
+    			$this->created_at=time();
+    			$this->created_by=Yii::$app->user->id;
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 }

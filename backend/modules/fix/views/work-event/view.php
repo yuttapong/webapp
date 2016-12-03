@@ -12,6 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="work-event-view">
 
+    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -23,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -31,11 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'start_date',
             'end_date',
-            [
-                'attribute' => 'status',
-                'format' => 'raw',
-                'value' => $model->status == '1'? '<span class="app-status label label-success" >'.$model->statusName.'</span>' : '<span class="app-status label label-danger" > '. $model->statusName .'</span>',
-            ]
 
         ],
     ]) ?>

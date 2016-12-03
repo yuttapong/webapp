@@ -22,6 +22,7 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
             <?php if (!Yii::$app->user->isGuest) : ?>
                 <ul class="nav navbar-nav">
                     <li class="dropdown notifications-menu">
+                    <li class=""> <a href="<?=Yii::$app->urlManagerFrontend->baseUrl?>"><i class="fa fa-windows"></i> Website</a></li>
                         <a href="#"  class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-windows"></i> App</a>
                         <ul class="dropdown-menu">
                             <li class="header">Application</li>

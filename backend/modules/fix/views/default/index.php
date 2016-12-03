@@ -51,10 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
             }],
             [
             'attribute' => 'link',
-            'label' => 'ดู',
+            'label' => 'ดูเอกสาร',
             'format' => 'raw',
             'value'=> function($data) {
-           $link= Html::a('<span class="glyphicon glyphicon glyphicon-list-alt"></span>', $data->link );
+           $link= Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $data->link );
             	return $link;
             
             }],
@@ -64,11 +64,11 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'user_apprever_name',
             // 'link:ntext',
 
-             [
+            /* [
              'class'=>'kartik\grid\BooleanColumn',
              'attribute'=>'app_status',
              'vAlign'=>'middle',
-             ],
+             ],*/
             // 'status',
             // 'seq',
             // 'company_id',

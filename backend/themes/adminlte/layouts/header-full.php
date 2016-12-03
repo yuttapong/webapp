@@ -11,11 +11,12 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
 <header class="main-header">
     <?= Html::a('
 <span class="logo-mini">APP</span>
-<span class="logo-lg">' . Yii::$app->name . '</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
+<span class="logo-lg">' . Yii::$app->name . '</span>',Yii::$app->homeUrl, ['class' => 'logo']) ?>
     <nav class="navbar navbar-static-top" role="navigation">
         <div class="navbar-custom-menu">
             <?php if (!Yii::$app->user->isGuest) : ?>
                 <ul class="nav navbar-nav">
+                    <li class=""> <a href="<?=Yii::$app->urlManagerFrontend->baseUrl?>"><i class="fa fa-windows"></i> Website</a></li>
                     <li class="dropdown notifications-menu">
                         <a href="#"  class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-windows"></i> App</a>
                         <ul class="dropdown-menu">

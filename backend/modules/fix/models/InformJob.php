@@ -40,9 +40,8 @@ class InformJob extends \yii\db\ActiveRecord
     {
         return [
             [[ 'inform_fix_id','list'], 'required'],
-        	[['list'], 'unique'],
             [['id', 'inform_fix_id', 'status', 'created_at', 'created_by', 'responsible_id', 'job_status', 'apprever_type'], 'integer'],
-            [['description'], 'string'],
+            [['description','problem','solution'], 'string'],
             [['pate_price', 'net_price'], 'number'],
             [['list', 'responsible_name'], 'string', 'max' => 255],
         ];
@@ -57,8 +56,10 @@ class InformJob extends \yii\db\ActiveRecord
             'id' => 'ID',
             'inform_fix_id' => 'Inform Fix ID',
             'list' => 'รายการ',
-            'description' => 'รายละเอียด',
-            'status' => 'สถานะ',
+            'description' => 'หมายเหตุ',
+        	'solution' => 'วิธีการแก้ไข',
+        	'problem' => 'สาเหตุปัญหา',
+            'status' => 'Status',
             'job_list_id' => 'Job List ID',
             'created_at' => 'Created At',
             'created_by' => 'Created By',

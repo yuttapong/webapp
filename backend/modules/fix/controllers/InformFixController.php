@@ -5,29 +5,70 @@ namespace backend\modules\fix\controllers;
 
 
 use Yii;
+
 use backend\modules\fix\models\InformFix;
+
 use backend\modules\fix\models\InformFixSearch;
+
 use yii\web\Controller;
+
 use yii\web\NotFoundHttpException;
+
 use yii\filters\VerbFilter;
+
 use common\models\Project;
+
 use yii\helpers\ArrayHelper;
+
 use backend\models\SysKeyRun;
+
 use backend\modules\fix\models\InformJob;
+
 use backend\modules\fix\models\InformJobSearch;
+
 use backend\modules\fix\models\InformMaterial;
+
 use backend\models\Model;
+
 use backend\modules\org\models\OrgApprove;
+
 use common\models\JobList;
+
 use yii\helpers\Json;
+
 use backend\modules\fix\models\Uploads;
+
 use yii\web\UploadedFile;
+
 use yii\helpers\BaseFileHelper;
+
 use yii\helpers\Url;
+
 use yii\helpers\Html;
+
 use backend\modules\fix\models\SendDocuments;
+
 use yii\helpers\BaseStringHelper;
+
 use common\models\Home;
+
+use yii\db\Query;
+
+use backend\modules\fix\models\Question;
+
+use backend\modules\fix\models\ResponseChoice;
+
+use backend\modules\fix\models\ResponseOther;
+
+use backend\modules\fix\models\ResponseText;
+
+use backend\modules\fix\models\WorkEvent;
+
+use common\models\Calendar;
+
+use backend\modules\crm\models\Customer;
+
+use yii\filters\AccessControl;
 
 
 /**
@@ -41,19 +82,67 @@ class InformFixController extends Controller
      */
 
     public function behaviors()
+
     {
+
         return [
+
             'verbs' => [
+
                 'class' => VerbFilter::className(),
+
                 'actions' => [
-                    'delete' => [
-                        'POST'
+
+                    'delete' => ['post'],
+
+                    'delete-address' => ['post'],
+
+                ],
+
+            ],
+
+            'access' => [
+
+                'class' => AccessControl::className(),
+
+                'rules' => [
+
+                    [
+
+                        'allow' => true,
+
+                        'roles' => ['@'],
+
+                        'matchCallback' => function ($rule, $action) {
+
+                            $module = Yii::$app->controller->module->id;
+
+                            $action = Yii::$app->controller->action->id;
+
+                            $controller = Yii::$app->controller->id;
+
+                            $route = "/$module/$controller/$action";
+
+                            if (Yii::$app->user->can($route)) {
+
+                                return true;
+
+                            }
+
+                        }
+
                     ]
+
                 ]
+
             ]
+
+
         ];
 
+
     }
+
 
     /**
      * Lists all InformFix models.
@@ -65,15 +154,78 @@ class InformFixController extends Controller
     {
 
         $searchModel = new InformFixSearch ();
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        if (Yii::$app->request->post('hasEditable')) {
+
+            $keys = Yii::$app->request->post('editableKey');
+
+
+            $model = $this->findModel($keys);
+
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+
+            $post = [];
+
+            $posted = current($_POST['InformFix']);
+
+            $post = ['InformFix' => $posted];
+
+
+            if ($model->load($post)) {
+
+                $model->save();
+
+
+                $value = $model->workStatus[$model->work_status];
+
+
+                return ['output' => $value, 'message' => ''];
+
+
+            } else {
+
+                return ['output' => '', 'message' => ''];
+
+            }
+
+        }
+
         return $this->render('index', [
+
             'searchModel' => $searchModel,
+
             'dataProvider' => $dataProvider
+
         ]);
 
     }
 
+    /**
+     * Finds the InformFix model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     *
+     * @param integer $id
+     * @return InformFix the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+
+    protected function findModel($id)
+    {
+
+        if (($model = InformFix::findOne($id)) !== null) {
+
+            return $model;
+
+        } else {
+
+            throw new NotFoundHttpException ('The requested page does not exist.');
+
+        }
+
+    }
 
     /**
      * Displays a single InformFix model.
@@ -88,11 +240,10 @@ class InformFixController extends Controller
 
         $searchModel = new InformJobSearch ();
 
-
         $arr['InformJobSearch']['inform_fix_id'] = $id;
 
         $dataProvider = $searchModel->search($arr);
-        $dataProvider->sort = false;
+
         return $this->render('view', [
 
             'model' => $this->findModel($id),
@@ -103,7 +254,6 @@ class InformFixController extends Controller
 
 
     }
-
 
     /**
      * Creates a new InformFix model.
@@ -135,8 +285,56 @@ class InformFixController extends Controller
 
         }
 
-        if ($model->load($post)) {
 
+        $chek_new = 0;
+
+        $prefixname = $firstname = $lastname = '';
+
+        if ($post) {
+
+            if (trim($post['customer_id']) == 'new' || $post['customer_id'] == '') {
+
+                $customer_name = explode(" ", $_POST['InformFix']['customer_name']);
+
+                if (count($customer_name) < 2) {
+
+                    $chek_new = 1;
+
+                } else {
+
+                    $firstname = $customer_name[0];
+
+                    $lastname = $customer_name[1];
+
+                }
+
+            }
+
+        }
+
+
+        if ($model->load($post) && $chek_new == 0) {
+
+            if (trim($post['customer_id']) == 'new' || $_POST['customer_id'] == '') {
+
+                $custmoer = new Customer();
+
+                $custmoer->firstname = $firstname;
+
+                $custmoer->lastname = $lastname;
+
+                $custmoer->gender = 'N';
+
+                $custmoer->active = '1';
+
+                $custmoer->prefixname = $_POST['InformFix']['prefixname'];
+
+                $custmoer->save();
+
+                $model->customer_id = $custmoer->id;
+
+
+            }
 
             $keyrun = SysKeyRun::generateKey([
 
@@ -146,14 +344,14 @@ class InformFixController extends Controller
 
             ]);
 
-            $model->code = $keyrun->seq_count . '/' . (date('Y') + 543);
+            $model->code = $model->project->slug . '-' . $keyrun->seq_count . '/' . (date('Y') + 543);
+
 
             $model->save();
 
             $this->Uploads(false, $model->id);
 
             $this->proJoB($model->id, $post);
-
 
             return $this->redirect([
 
@@ -180,60 +378,6 @@ class InformFixController extends Controller
 
     }
 
-    public function proJoB($ref_id, $post)
-    {
-
-        if (isset($post['inv']['check']) && count($post['inv']['check']) > 1) {
-
-            foreach ($post['inv']['check'] as $key => $inv) {
-
-                if ($key > 0) {
-
-                    if ($inv == '') {
-
-                        $adaptors = new InformJob();
-
-                        $adaptors->inform_fix_id = $ref_id;
-
-                        $adaptors->job_list_id = $post['InformJob'][$key]['job_list_id'];
-
-                        $adaptors->list = $post['InformJob'][$key]['list'];
-
-
-                        $adaptors->save();
-
-                        //$modelInven[]=$adaptors;
-
-                    } elseif ($inv == 'edit') {
-
-                        $adaptors = InformJob::findOne($post['InformJob'][$key]['id']);
-
-                        $adaptors->inform_fix_id = $ref_id;
-
-                        $adaptors->job_list_id = $post['InformJob'][$key]['job_list_id'];
-
-                        $adaptors->list = $post['InformJob'][$key]['list'];
-
-
-                        $adaptors->save();
-
-
-                    } elseif ($inv == 'del') {
-
-                        $adaptors = InformJob::findOne($post['inv']['key'][$key]);
-
-                        $adaptors->delete();
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
     public function getHomeList($project_id)
     {
 
@@ -248,231 +392,6 @@ class InformFixController extends Controller
         }
 
         return $modelhome;
-
-    }
-
-
-    /**
-     * Updates an existing InformFix model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     *
-     * @param integer $id
-     * @return mixed
-     */
-
-    public function actionUpdate($id)
-    {
-
-        $model = $this->findModel($id);
-
-        $modelJob = $model->informJobs;
-
-
-        $model->date_inform = date("d-m-Y H:i", $model->date_inform);
-
-        $modelhome = [];
-
-        /*
-
-         * upload รูปภาพ
-
-         */
-
-        list($initialPreview, $initialPreviewConfig) = $this->getInitialPreview($model->id);
-
-        if ($model->project_id != '') {
-
-            $modelhome = $this->getHomeList($model->project_id);
-
-        }
-
-        $post = Yii::$app->request->post();
-
-        if ($model->load($post) && $model->save()) {
-
-            $this->proJoB($model->id, $post);
-
-            return $this->redirect([
-
-                'view',
-
-                'id' => $model->id
-
-            ]);
-
-        } else {
-
-            return $this->render('update', [
-
-                'model' => $model,
-
-                'modelhome' => $modelhome,
-
-
-                'modelJob' => (empty($modelJob)) ? [new InformJob] : $modelJob,
-
-                'initialPreview' => $initialPreview,
-
-                'initialPreviewConfig' => $initialPreviewConfig
-
-            ]);
-
-        }
-
-    }
-
-
-    /**
-     * Deletes an existing InformFix model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @param integer $id
-     * @return mixed
-     */
-
-    public function actionDelete($id)
-    {
-
-        $model = $this->findModel($id);
-
-        $model->is_delete = 1;
-
-        $model->save();
-
-
-        return $this->redirect([
-
-            'index'
-
-        ]);
-
-    }
-
-    public function actionListApprover($inform_fix_id)
-    {
-
-        //ข้อมูลรายชื่อผู้ที่จะอนุมัติและอนุมัติไปแล้ว
-        $option['approver_user_id'] = '158';
-        $option['company_id'] = 3;
-        $option['site_id'] = 5;
-        $option['level'] = 0;
-        $listApprove = OrgApprove::getDataOrganization(158, 1, $option);
-        $model = $this->findModel($inform_fix_id);
-
-        return $this->renderAjax('list-approve', [
-
-            'model' => $model,
-
-            'listApprove' => $listApprove,
-
-            'inform_fix_id' => $inform_fix_id,
-
-        ]);
-
-    }
-
-    public function actionListPr($inform_fix_id)
-    {
-
-
-    }
-
-    /**
-     * Finds the InformFix model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     *
-     * @param integer $id
-     * @return InformFix the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-
-    protected function findModel($id)
-    {
-
-        if (($model = InformFix::findOne($id)) !== null) {
-
-            return $model;
-
-        } else {
-
-            throw new NotFoundHttpException ('The requested page does not exist.');
-
-        }
-
-    }
-
-    public function actionJobList($term)
-
-    {
-
-        $results = [];
-
-        if (Yii::$app->request->isAjax) {
-
-            $q = addslashes($term);
-
-            foreach (JobList::find()
-                         ->where("(`name` like '%{$q}%') AND mater_id  is not null AND table_name='fix_inform_fix'")
-                         ->orderBy(['name' => SORT_ASC])->all() as $model) {
-
-                $results[] = [
-
-                    'id' => $model['id'],
-
-                    'label' => $model['name'],
-
-                    'mater_id' => $model['mater_id'],
-
-                ];
-
-            }
-
-        }
-
-
-        echo Json::encode($results);
-
-
-    }
-
-
-    private function getInitialPreview($token_forupload)
-    {
-
-        $datas = Uploads::find()->where(['ref' => $token_forupload])->all();
-
-        $initialPreview = [];
-
-        $initialPreviewConfig = [];
-
-        foreach ($datas as $key => $value) {
-
-            array_push($initialPreview, $this->getTemplatePreview($value));
-
-            array_push($initialPreviewConfig, [
-
-                'caption' => $value->file_name,
-
-                'width' => '120px',
-
-                'url' => Url::to(['inform-fix/deletefile']),
-
-                'key' => $value->upload_id
-
-            ]);
-
-        }
-
-        return [$initialPreview, $initialPreviewConfig];
-
-    }
-
-    public function actionUpload()
-
-    {
-
-
-        $this->Uploads(true);
 
     }
 
@@ -589,6 +508,23 @@ class InformFixController extends Controller
 
     }
 
+    private function createThumbnail($folderName, $fileName, $width = 250)
+    {
+
+        $uploadPath = InformFix::getUploadPath() . '/' . $folderName . '/';
+
+        $file = $uploadPath . $fileName;
+
+        $image = Yii::$app->image->load($file);
+
+        $image->resize($width);
+
+        $image->save($uploadPath . 'thumbnail/' . $fileName);
+
+        return;
+
+    }
+
     public function isImageType($path)
     {
 
@@ -607,20 +543,234 @@ class InformFixController extends Controller
 
     }
 
-    private function createThumbnail($folderName, $fileName, $width = 250)
+    public function proJoB($ref_id, $post)
     {
 
-        $uploadPath = InformFix::getUploadPath() . '/' . $folderName . '/';
 
-        $file = $uploadPath . $fileName;
+        if (isset($post['inv']['check']) && count($post['inv']['check']) > 1) {
 
-        $image = Yii::$app->image->load($file);
+            foreach ($post['inv']['check'] as $key => $inv) {
 
-        $image->resize($width);
+                if ($key > 0) {
 
-        $image->save($uploadPath . 'thumbnail/' . $fileName);
+                    if ($inv == '') {
 
-        return;
+                        echo $key;
+
+                        $adaptors = new InformJob();
+
+                        $adaptors->inform_fix_id = $ref_id;
+
+                        if ($post['InformJob'][$key]['job_list_id'] == '' && $post['InformJob'][$key]['list'] != '') {
+
+                            $jobList = new JobList();
+
+                            $jobList->name = $post['InformJob'][$key]['list'];
+
+                            $jobList->slug = 'fix_inform_fix';
+
+                            $jobList->status = '1';
+
+                            $jobList->save();
+
+                            $adaptors->job_list_id = $jobList->id;
+
+                        } else {
+
+                            $adaptors->job_list_id = $post['InformJob'][$key]['job_list_id'];
+
+                        }
+
+                        $adaptors->list = $post['InformJob'][$key]['list'];
+
+                        $adaptors->save();
+
+
+                        //$modelInven[]=$adaptors;
+
+                    } elseif ($inv == 'edit') {
+
+                        $adaptors = InformJob::findOne($post['InformJob'][$key]['id']);
+
+                        $adaptors->inform_fix_id = $ref_id;
+
+                        if ($post['InformJob'][$key]['job_list_id'] == '' && $post['InformJob'][$key]['list'] != '') {
+
+                            $jobList = new JobList();
+
+                            $jobList->name = $post['InformJob'][$key]['list'];
+
+                            $jobList->slug = 'fix_inform_fix';
+
+                            $jobList->status = '1';
+
+                            $jobList->save();
+
+                            $adaptors->job_list_id = $jobList->id;
+
+                        } else {
+
+                            $adaptors->job_list_id = $post['InformJob'][$key]['job_list_id'];
+
+                        }
+
+                        $adaptors->list = $post['InformJob'][$key]['list'];
+
+                        $adaptors->save();
+
+
+                    } elseif ($inv == 'del') {
+
+                        $adaptors = InformJob::findOne($post['inv']['key'][$key]);
+
+                        $adaptors->delete();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+    }
+
+    /**
+     * Updates an existing InformFix model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     *
+     * @param integer $id
+     * @return mixed
+     */
+
+    public function actionUpdate($id)
+    {
+
+        $model = $this->findModel($id);
+
+        $modelJob = $model->informJobs;
+
+
+        $modelhome = [];
+
+        /*
+
+         * upload รูปภาพ
+
+         */
+
+        list($initialPreview, $initialPreviewConfig) = $this->getInitialPreview($model->id);
+
+        if ($model->project_id != '') {
+
+            $modelhome = $this->getHomeList($model->project_id);
+
+        }
+
+        $post = Yii::$app->request->post();
+
+
+        if (!empty($post['InformFix']['date_inform']) && $post['InformFix']['date_inform'] != '' && $post['InformFix']['date_inform'] != '0') {
+
+            $post['InformFix']['date_inform'] = strtotime($post['InformFix']['date_inform']);
+
+        }
+
+        if (!empty($post['InformFix']['date_modify']) && $post['InformFix']['date_modify'] != '' && $post['InformFix']['date_modify'] != '0') {
+
+            $post['InformFix']['date_modify'] = strtotime($post['InformFix']['date_modify']);
+
+        }
+
+        if ($model->load($post)) {
+
+            if ($model->date_modify != '' && $model->date_modify != '0') {
+
+                $model->date_modify = strtotime($model->date_modify);
+
+            } else {
+
+                $model->date_modify = '';
+
+            }
+
+            $model->save();
+
+
+            $this->Uploads(false, $model->id);
+
+            $this->proJoB($model->id, $post);
+
+            return $this->redirect([
+
+                'view',
+
+                'id' => $model->id
+
+            ]);
+
+        } else {
+
+            $model->date_inform = date("d-m-Y H:i", $model->date_inform);
+
+            if ($model->date_modify != '' && $model->date_modify != '0') {
+
+                $model->date_modify = date("d-m-Y H:i", $model->date_modify);
+
+            } else {
+
+                $model->date_modify = '';
+
+            }
+
+            return $this->render('update', [
+
+                'model' => $model,
+
+                'modelhome' => $modelhome,
+
+
+                'modelJob' => (empty($modelJob)) ? [new InformJob] : $modelJob,
+
+                'initialPreview' => $initialPreview,
+
+                'initialPreviewConfig' => $initialPreviewConfig
+
+            ]);
+
+        }
+
+    }
+
+    private function getInitialPreview($token_forupload)
+    {
+
+        $datas = Uploads::find()->where(['ref' => $token_forupload])->all();
+
+        $initialPreview = [];
+
+        $initialPreviewConfig = [];
+
+        foreach ($datas as $key => $value) {
+
+            array_push($initialPreview, $this->getTemplatePreview($value));
+
+            array_push($initialPreviewConfig, [
+
+                'caption' => $value->file_name,
+
+                'width' => '120px',
+
+                'url' => Url::to(['inform-fix/deletefile']),
+
+                'key' => $value->upload_id
+
+            ]);
+
+        }
+
+        return [$initialPreview, $initialPreviewConfig];
 
     }
 
@@ -646,6 +796,111 @@ class InformFixController extends Controller
         }
 
         return $file;
+
+    }
+
+    /**
+     * Deletes an existing InformFix model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
+     * @param integer $id
+     * @return mixed
+     */
+
+    public function actionDelete($id)
+    {
+
+        $model = $this->findModel($id);
+
+        $model->is_delete = 1;
+
+        $model->save();
+
+
+        return $this->redirect([
+
+            'index'
+
+        ]);
+
+    }
+
+    public function actionListApprever($inform_fix_id)
+    {
+
+        //ข้อมูลรายชื่อผู้ที่จะอนุมัติและอนุมัติไปแล้ว
+
+        $option['approver_user_id'] = '158';
+
+        $option['company_id'] = 3;
+
+        $option['site_id'] = 5;
+
+        $option['level'] = 0;
+
+        $listApprove = OrgApprove::getDataOrganization(158, 1, $option);
+
+        //$listApprove =OrgApprove::getDataPosition(1);
+
+
+        $model = $this->findModel($inform_fix_id);
+
+        return $this->renderAjax('list-approve', [
+
+            'model' => $model,
+
+            'listApprove' => $listApprove,
+
+            'inform_fix_id' => $inform_fix_id,
+
+        ]);
+
+    }
+
+    public function actionListPr($inform_fix_id)
+    {
+
+
+    }
+
+    public function actionJobList($term)
+
+    {
+
+        $results = [];
+
+        if (Yii::$app->request->isAjax) {
+
+            $q = addslashes($term);
+
+            foreach (JobList::find()->where("(`name` like '%{$q}%') AND status='1' AND slug='fix_inform_fix'")->orderBy(['name' => SORT_ASC])->all() as $model) {
+
+                $results[] = [
+
+                    'id' => $model['id'],
+
+                    'label' => $model['name'],
+
+                    'mater_id' => $model['mater_id'],
+
+                ];
+
+            }
+
+        }
+
+
+        echo Json::encode($results);
+
+
+    }
+
+    public function actionUpload()
+
+    {
+
+
+        $this->Uploads(true);
 
     }
 
@@ -714,6 +969,7 @@ class InformFixController extends Controller
 
         if (Yii::$app->request->isAjax) {
 
+
             if (!empty($_POST['SendDocuments'])) {
 
                 $text = '';
@@ -746,23 +1002,36 @@ class InformFixController extends Controller
 
                 $post = Yii::$app->request->post();
 
-                $this->SendUser($id, $post, $modelMain, $option);
+                $dataSen = $this->SendUser($id, $post, $modelMain, $option);
+
+                if ($dataSen['check'] == 1) {
 
 
-                $modelMain->is_send = 1;
+                    $modelMain->is_send = 1;
 
-                $modelMain->save();
+                    $modelMain->save();
 
+                    $this->renderPartial('templateWord', [
 
+                        'model' => $modelMain,
 
-                echo '1';
-                exit();
+                        'file' => false,
+
+                        'dataEmail' => $dataSen
+
+                    ]);
+
+                    echo '1';
+
+                    exit();
+
+                }
+
 
             }
 
-            //
-
         }
+
 
         return $this->renderAjax('_form-sen-document', [
 
@@ -775,51 +1044,21 @@ class InformFixController extends Controller
         ]);
 
 
-        /*\Yii::$app->mailer->compose()
-
-        ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
-
-        ->setTo('charin.k@sirivalai.co.th')
-
-        ->setSubject('ทดสอบ')
-
-        ->setTextBody('Plain text content')
-
-        ->setHtmlBody('<b>HTML content</b>')
-
-        ->send();*/
-
-
     }
-
-    public function actionSendDateInsurance($id)
-    {
-        $model = Home::findOne($id);
-        if (Yii::$app->request->isAjax) {
-            if (!empty($_POST['Home'])) {
-                $post = Yii::$app->request->post();
-                $model->date_insurance = strtotime($post['Home']['date_insurance']);
-                $model->save();
-                echo '1';
-                exit();
-            }
-        }
-
-        return $this->renderAjax('_form-sen-date-insurance', [
-            'model' => $model,
-        ]);
-
-    }
-
 
     public function SendUser($ref_id, $post, $model, $option = [])
     {
+
+        $val['check'] = 0;
 
         if (isset($post['inv']['check']) && count($post['inv']['check']) > 1) {
 
             foreach ($post['inv']['check'] as $key => $inv) {
 
-                if ($key > 0) {
+                if ($key > 0 && $post['SendDocuments'][$key]['recipient_user_id'] != '') {
+
+                    $val['check'] = 1;
+
 
                     if ($inv == '') {
 
@@ -875,7 +1114,7 @@ class InformFixController extends Controller
 
                         $modelisApp->type = '1';
 
-                        $modelisApp->module_id = '11';
+                        $modelisApp->slug = 'fix';
 
                         $modelisApp->save();
 
@@ -905,11 +1144,55 @@ class InformFixController extends Controller
 
                     }
 
+                    if ($adaptors->user->email != '') {
+
+                        $val['user'][$post['SendDocuments'][$key]['recipient_user_id']] = $adaptors->user->email;
+
+                    }
+
                 }
 
             }
 
         }
+
+        return $val;
+
+    }
+
+    public function actionSendDateInsurance($id)
+    {
+
+        //_form-sen-date-insurance
+
+
+        $model = Home::findOne($id);
+
+
+        if (Yii::$app->request->isAjax) {
+
+            if (!empty($_POST['Home'])) {
+
+                $post = Yii::$app->request->post();
+
+                $model->date_insurance = strtotime($post['Home']['date_insurance']);
+
+                $model->save();
+
+                echo '1';
+
+                exit();
+
+            }
+
+        }
+
+        return $this->renderAjax('_form-sen-date-insurance', [
+
+            'model' => $model,
+
+
+        ]);
 
     }
 
@@ -977,6 +1260,203 @@ class InformFixController extends Controller
 
         ]);
 
+
+    }
+
+    public function actionCustomerList($q = null)
+    {
+
+        $query = new Query();
+
+        $query->select('id,prefixname,firstname,lastname')
+            ->from('crm_customer')
+            ->where('firstname LIKE "%' . $q . '%"')
+            ->orderBy('firstname');
+
+        $command = $query->createCommand();
+
+        $data = $command->queryAll();
+
+        $out = [];
+
+        foreach ($data as $d) {
+
+            $out[] = ['id' => $d['id'], 'value' => $d['firstname'] . ' ' . $d['lastname'], 'show' => $d['prefixname'] . ' ' . $d['firstname'] . ' ' . $d['lastname'], 'prefixname' => $d['prefixname']];
+
+        }
+
+        echo Json::encode($out);
+
+
+    }
+
+    public function actionDataCustomer($id)
+    {
+
+        $model_p = Home::findOne($id);
+
+        if ($model_p->customer_id != '') {
+
+            $out = ['id' => $model_p->customer->id, 'mobile' => $model_p->customer->mobile, 'prefixname' => $model_p->customer->prefixname, 'value' => $model_p->customer->firstname . ' ' . $model_p->customer->lastname];
+
+        } else {
+
+            $out = ['id' => '', 'mobile' => '', 'prefixname' => '', 'value' => ''];
+
+        }
+
+        echo Json::encode($out);
+
+    }
+
+    public function actionWord($id)
+    {
+
+        $model = $this->findModel($id);
+
+        return $this->renderPartial('templateWord', ['model' => $model,
+
+            'file' => true
+
+        ]);
+
+    }
+
+    public function actionCustomerService($id)
+    {
+
+        $modelMain = $this->findModel($id);
+
+        $post = Yii::$app->request->post();
+
+        if ($post) {
+
+            if (!empty($post['ResponseChoice'])) {
+
+                foreach ($post['ResponseChoice'] as $Vchoices) {
+
+                    if (!empty($Vchoices['id'])) {
+
+                        $model = ResponseChoice::findOne($Vchoices['id']);
+
+                        $model->choice_id = $Vchoices['choice_id'];
+
+                        $model->save();
+
+                    } elseif (!empty($Vchoices['choice_id'])) {
+
+                        $model = new ResponseChoice ();
+
+                        $model->table_name = $Vchoices['table_talbe'];
+
+                        $model->table_key = $Vchoices['table_key'];
+
+                        $model->question_id = $Vchoices['question_id'];
+
+                        $model->choice_id = $Vchoices['choice_id'];
+
+                        $model->type = $Vchoices['type'];
+
+                        $model->save();
+
+                    }
+
+                }
+
+            }
+
+            if (!empty($post['ResponseOther'])) {
+
+                foreach ($post['ResponseOther'] as $VOther) {
+
+                    if (!empty($VOther['other_id'])) {
+
+                        $model = ResponseOther::findOne($VOther['other_id']);
+
+                        $model->choice_id = $VOther['choice_id'];
+
+                        $model->response = $VOther['response'];
+
+                        $model->save();
+
+                    } elseif (!empty($VOther['choice_id'])) {
+
+                        $model = new ResponseOther();
+
+                        $model->table_name = $VOther['table_talbe'];
+
+                        $model->table_key = $VOther['table_key'];
+
+                        $model->question_id = $VOther['question_id'];
+
+                        $model->choice_id = $VOther['choice_id'];
+
+                        $model->response = $VOther['response'];
+
+                        $model->save();
+
+                    }
+
+                }
+
+            }
+
+            if (!empty($post['ResponseText'])) {
+
+                foreach ($post['ResponseText'] as $VText) {
+
+                    //echo $VText['table_key'];
+
+                    $modelText = ResponseText::find()
+                        ->where('table_name = "fix_inform_fix" AND table_key="' . $VText['table_key'] . '" AND question_id="' . $VText['question_id'] . '" ')->one();
+
+                    if (isset($modelText->question_id)) {
+
+                        $modelText->response = $VText['response'];
+
+                        $modelText->save();
+
+                    } else {
+
+                        $modelText = new ResponseText();
+
+                        $modelText->table_name = $VText['table_talbe'];
+
+                        $modelText->table_key = $VText['table_key'];
+
+                        $modelText->question_id = $VText['question_id'];
+
+
+                        $modelText->response = $VText['response'];
+
+                        $modelText->save();
+
+                    }
+
+
+                } //findOne
+
+            }
+
+            return '1';
+
+        }
+
+        $modelQuestion = new Question();
+        $dataq = $modelQuestion->getDataQuestion('fix_inform_fix', $id);
+
+
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('form_customer_service', [
+                'dataQuestion' => $dataq,
+                'model' => $modelMain
+            ]);
+
+        } else {
+
+            return $this->renderPartial('form_customer_service', ['dataQuestion' => $dataq,]);
+
+        }
 
     }
 

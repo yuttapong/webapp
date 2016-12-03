@@ -1,13 +1,7 @@
 <?php
 
-
-use yii\widgets\Breadcrumbs;
-use common\widgets\Alert;
-use yii\helpers\Html;
-use yii\bootstrap\Nav;
-
  ?>
-<?php $this->beginContent('@frontend/views/layouts/main.php'); ?>
+<?php $this->beginContent('@frontend/views/layouts/main-full.php'); ?>
 <div class="row">
     <div class="col-md-3">
         <?php

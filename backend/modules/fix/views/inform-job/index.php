@@ -1,8 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+
 use yii\helpers\Url;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\fix\Models\InformJobSearch */
@@ -22,10 +23,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
            // 'id',
-           // 'inform_fix_id',
+            'informFix.code',
             'list',
-            'description:ntext',
-            'status',
+            'problem:ntext',
+            'solution:ntext',
+            //'description:ntext',
+             [
+             'class'=>'kartik\grid\BooleanColumn',
+             'attribute'=>'status',
+             'vAlign'=>'middle',
+            ],
             // 'job_list_id',
             // 'created_at',
             // 'created_by',
@@ -50,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
             											],
             													'template' => '{edit}{view}'
             ],
-            ['class' => 'yii\grid\ActionColumn'],
+          //  ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

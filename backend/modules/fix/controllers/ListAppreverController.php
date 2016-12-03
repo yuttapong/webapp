@@ -3,21 +3,21 @@
 namespace backend\modules\fix\controllers;
 
 use Yii;
-use backend\modules\fix\models\ListApprover;
-use backend\modules\fix\models\ListApproverSearch;
+use backend\modules\fix\models\ListApprever;
+use backend\modules\fix\models\ListAppreverSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\modules\org\models\OrgApprove;
 use backend\modules\fix\models\InformFix;
-use backend\modules\fix\models\ListApproverJob;
+use backend\modules\fix\models\ListAppreverJob;
 use GuzzleHttp\json_decode;
 use backend\modules\fix\models\InformJob;
 
 /**
- * ListApproverController implements the CRUD actions for ListApprover model.
+ * ListAppreverController implements the CRUD actions for ListApprever model.
  */
-class ListApproverController extends Controller
+class ListAppreverController extends Controller
 {
     /**
      * @inheritdoc
@@ -35,12 +35,12 @@ class ListApproverController extends Controller
     }
 
     /**
-     * Lists all ListApprover models.
+     * Lists all ListApprever models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ListApproverSearch();
+        $searchModel = new ListAppreverSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -50,7 +50,7 @@ class ListApproverController extends Controller
     }
 
     /**
-     * Displays a single ListApprover model.
+     * Displays a single ListApprever model.
      * @param integer $id
      * @return mixed
      */
@@ -62,13 +62,13 @@ class ListApproverController extends Controller
     }
 
     /**
-     * Creates a new ListApprover model.
+     * Creates a new ListApprever model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate($inform_fix_id)
     {
-        $model = new ListApprover();
+        $model = new ListApprever();
 
        /* if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -99,7 +99,7 @@ class ListApproverController extends Controller
 	        			$modeljob->save();
 	        		} 
 	        	}
-	        	$modelisApp=new \common\models\ListApprover();
+	        	$modelisApp=new \common\models\ListApprever();
 	        	$modelisApp->titie=$modelFix->title; 
 	        	$modelisApp->user_id=$modelFix->created_by;
 	        	$modelisApp->table_name='fix_inform_fix';
@@ -128,7 +128,7 @@ class ListApproverController extends Controller
     }
 
     /**
-     * Updates an existing ListApprover model.
+     * Updates an existing ListApprever model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -150,7 +150,7 @@ class ListApproverController extends Controller
         if($post){
         	
 	    	/*$job_check=true;
-	    	if(isset($post['ListApprover']['job_selected'])&&$post['ListApprover']['job_selected']=='[]'){
+	    	if(isset($post['ListApprever']['job_selected'])&&$post['ListApprever']['job_selected']=='[]'){
 	    		$job_check=false;
 	    		$model->job_selected=null;
 	    	}*/
@@ -207,7 +207,7 @@ class ListApproverController extends Controller
     }
 
     /**
-     * Deletes an existing ListApprover model.
+     * Deletes an existing ListApprever model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -220,15 +220,15 @@ class ListApproverController extends Controller
     }
 
     /**
-     * Finds the ListApprover model based on its primary key value.
+     * Finds the ListApprever model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return ListApprover the loaded model
+     * @return ListApprever the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ListApprover::findOne($id)) !== null) {
+        if (($model = ListApprever::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

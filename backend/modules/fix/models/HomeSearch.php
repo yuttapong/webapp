@@ -20,7 +20,7 @@ class HomeSearch extends Home
         return [
             [['id', 'project_id',  'status', 'home_status', 'compact_status', 'transfer_status', 'created_at', 'created_by', 'date_insurance'], 'integer'],
             [['plan_no', 'home_no', 'type'], 'safe'],
-            [['home_prices', 'land', 'use_area'], 'number'],
+            [['home_price', 'land', 'use_area'], 'number'],
         ];
     }
 
@@ -48,6 +48,11 @@ class HomeSearch extends Home
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        		 'sort' => ['defaultOrder'=>[
+        		 	'project_id' => SORT_ASC,
+           			 'home_no' => SORT_ASC,
+       			 ]
+        	 ]
         ]);
 
         $this->load($params);
@@ -62,8 +67,8 @@ class HomeSearch extends Home
         $query->andFilterWhere([
             'id' => $this->id,
             'project_id' => $this->project_id,
-            'status' => $this->status,
-            'home_prices' => $this->home_prices,
+            'plan_no' => $this->plan_no,
+            'home_price' => $this->home_price,
             'land' => $this->land,
             'use_area' => $this->use_area,
             'home_status' => $this->home_status,
@@ -74,8 +79,8 @@ class HomeSearch extends Home
             'date_insurance' => $this->date_insurance,
         ]);
 
-        $query->andFilterWhere(['like', 'plan_no', $this->plan_no])
-            ->andFilterWhere(['like', 'home_no', $this->home_no])
+        $query->andFilterWhere(['like', 'home_no', $this->home_no])
+
             ->andFilterWhere(['like', 'type', $this->type]);
 
         return $dataProvider;

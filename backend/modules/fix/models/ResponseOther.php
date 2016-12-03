@@ -34,7 +34,7 @@ class ResponseOther extends \yii\db\ActiveRecord
     {
         return [
             [['table_key', 'question_id', 'choice_id'], 'required'],
-            [['table_key', 'seq', 'question_id', 'choice_id', 'created_at', 'created_by'], 'integer'],
+            [['table_key', 'seq', 'question_id', 'choice_id', 'created_at', 'created_by','status'], 'integer'],
             [['response'], 'string'],
             [['table_name'], 'string', 'max' => 100],
         ];
@@ -55,6 +55,18 @@ class ResponseOther extends \yii\db\ActiveRecord
             'response' => 'Response',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
+        		'status'=> 'Created By',
         ];
+    }
+    public function beforeSave($insert){
+    	if (parent::beforeSave($insert)) {
+    		if ($this->isNewRecord) {
+    			$this->created_at=time();
+    			$this->created_by=Yii::$app->user->id;
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 }

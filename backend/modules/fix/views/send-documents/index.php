@@ -75,10 +75,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     $url = Url::to(['/fix/send-documents/send-acknowledge', 'id' => $data->id]);
 
                     if ($data->is_khow == 0) {
-                        $m_re = Html::a('<i class="fa fa-thumbs-up" aria-hidden="true"></i> เปลี่ยนสถานะ', $url, [
+                        $m_re = Html::a('รับทราบ', $url, [
                             'title' => \Yii::t('yii', 'รับทราบ'),
                             'onclick' => "
-             			   $.ajax({
+             			$.ajax({
 	             			type     :'POST',
 	             			cache    : false,
 	             			url  : '$url',
@@ -89,8 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
 				             }
 			             });return false;",
                             'data-pjax' => '0',
-                            'class' => 'btn btn-success'
-
                         ]);
 
 

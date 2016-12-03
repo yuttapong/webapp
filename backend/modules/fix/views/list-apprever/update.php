@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\fix\Models\ListApprover */
+/* @var $model backend\modules\fix\Models\ListApprever */
 
 $this->title = 'Update List Apprever: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'List Apprevers', 'url' => ['index']];

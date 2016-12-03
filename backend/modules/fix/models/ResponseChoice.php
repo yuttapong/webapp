@@ -7,6 +7,7 @@ use Yii;
 /**
  * This is the model class for table "fix_response_choice".
  *
+ * @property integer $id
  * @property string $table_name
  * @property integer $table_key
  * @property string $question_id
@@ -14,6 +15,7 @@ use Yii;
  * @property string $type
  * @property integer $created_at
  * @property integer $created_by
+ * @property integer $status
  */
 class ResponseChoice extends \yii\db\ActiveRecord
 {
@@ -32,7 +34,7 @@ class ResponseChoice extends \yii\db\ActiveRecord
     {
         return [
             [['table_name', 'table_key', 'question_id', 'choice_id'], 'required'],
-            [['table_key', 'question_id', 'choice_id', 'created_at', 'created_by'], 'integer'],
+            [['table_key', 'question_id', 'choice_id', 'created_at', 'created_by', 'status'], 'integer'],
             [['type'], 'string'],
             [['table_name'], 'string', 'max' => 100],
         ];
@@ -44,6 +46,7 @@ class ResponseChoice extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => 'ID',
             'table_name' => 'Table Name',
             'table_key' => 'Table Key',
             'question_id' => 'Question ID',
@@ -51,6 +54,18 @@ class ResponseChoice extends \yii\db\ActiveRecord
             'type' => 'Type',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
+            'status' => 'Status',
         ];
+    }
+    public function beforeSave($insert){
+    	if (parent::beforeSave($insert)) {
+    		if ($this->isNewRecord) {
+    			$this->created_at=time();
+    			$this->created_by=Yii::$app->user->id;
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 }

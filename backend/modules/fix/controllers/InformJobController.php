@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use backend\models\Model;
 use backend\modules\fix\models\InformMaterial;
 use backend\modules\org\models\OrgApprove;
+use yii\db\Query;
 
 /**
  * InformJobController implements the CRUD actions for InformJob model.
@@ -118,9 +119,9 @@ class InformJobController extends Controller
     	$model = $this->findModel($job_id);
     	$modelInven=$model->material;
     	$post=Yii::$app->request->post ();
-    	echo '<pre>';
-    	print_r($_POST);
-    	echo '</pre>';
+    	//echo '<pre>';
+    	//print_r($_POST);
+    	//echo '</pre>';
     	//exit();
     	
     	if (Yii::$app->request->post ()) {
@@ -140,7 +141,7 @@ class InformJobController extends Controller
     				if (Yii::$app->request->isAjax) {
     					return '1';
     				}else{
-    					return $this->redirect(['view', 'id' =>$job_id]);
+    					return $this->redirect(['index', 'id' =>$job_id]);
     				}
     			}
     		} catch (Exception $e) {
@@ -237,4 +238,5 @@ class InformJobController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+  
 }

@@ -15,7 +15,7 @@ use yii\helpers\Url;
 
 <?= yii2fullcalendar\yii2fullcalendar::widget([
       'options' => [
-        'lang' => 'th',
+        'lang' => 'en',
       ],
       'ajaxEvents' => Url::to(['/fix/work-event/jsoncalendar'])
     ]);

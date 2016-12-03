@@ -7,6 +7,7 @@ use common\models\Project;
 use common\models\Home;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "fix_inform_fix".
@@ -57,8 +58,14 @@ customer
     }
     public function beforeSave($insert){
     	if (parent::beforeSave($insert)) {
-    		$this->date_inform = strtotime($this->date_inform);
+    			
     		if ($this->isNewRecord) {
+    			if($this->date_inform!='' && $this->date_inform!='0'){
+    				$this->date_inform = strtotime($this->date_inform);
+    			}
+    			if($this->date_modify!='' && $this->date_modify!='0'){
+    				$this->date_modify = strtotime($this->date_modify);
+    			}
     			$this->created_at=time();
     			$this->created_by=Yii::$app->user->id;
     		}else{
@@ -82,10 +89,11 @@ customer
     {
         return [
         	[['project_id','prefixname', 'home_id', 'customer_name','date_inform'], 'required'],
-            [['id', 'project_id','is_send','is_delete', 'home_id', 'seq', 'customer_id', 'job_status', 'job_sub_status', 'work_status', 'created_at', 'created_by', 'type'], 'integer'],
+            [['id', 'project_id','is_send','is_delete', 'home_id', 'seq', 'customer_id', 'job_status', 'job_sub_status', 'work_status', 'created_at', 'created_by','is_calendar', 'type'], 'integer'],
             [['description'], 'string'],
             [[ 'customer_name','telephone'], 'string', 'max' => 255],
         	[['code'], 'string', 'max' => 20],
+        	[['date_modify'], 'safe'],
         ];
     }
 
@@ -99,7 +107,7 @@ customer
             'project_id' => 'โครงการ',
             'home_id' => 'แปลงบ้าน',
             'seq' => 'Seq',
-        	'code' => 'เลขที่ ',
+        	'code' => 'เลขที่เอกสาร',
             'telephone' => 'เบอร์โทรศัพท์',
             'description' => 'ลายละเอียด',
             'date_inform' => 'วันที่แจ้ง',
@@ -114,10 +122,11 @@ customer
             'type' => 'Type',
         	'is_send'=> 'ส่ง',
         	'is_delete'=> 'ลบข้อมูล',
-            'home_no' => 'บ้านเลขที่',
-            'plan_no' => 'แปลง',
+        	'date_modify'=>'วันที่แก้ไข',
+        	'is_calendar'=>'is_calendar'
         ];
     }
+
     public static function getTypeItems()
     {
     	return [
@@ -130,8 +139,12 @@ customer
     	return [
     			self::STATUS_WAIT => 'รอดำเนินการ',
     			self::STATUS_PROCEED => 'กำลังดำเนินการ',
-    			self::STATUS_COMPLETE => 'พนักงานแจ้งเอง'
+    			self::STATUS_COMPLETE => 'เสร็จ'
     	];
+    }
+    
+    public function getWorkStatusName(){
+    	return ArrayHelper::getValue(self::getWorkStatus(), $this->work_status);
     }
     public function getProject()
     {
@@ -157,9 +170,10 @@ customer
     	return $this->hasMany(SendDocuments::className(), ['table_key' => 'id'])
     	->andWhere(['table_name' => 'fix_inform_fix']);
     }
-    public function getListApprover()
+ 
+    public function getListApprever()
     {
-    	return $this->hasMany(ListApprover::className(), ['inform_fix_id' => 'id']);
+    	return $this->hasMany(ListApprever::className(), ['inform_fix_id' => 'id']);
     }
     public function getUploads()
     {
@@ -195,8 +209,7 @@ customer
 	    				'path'=>$file->real_filename,//self::getUploadPath().'/'.$ref.'/'.$file->real_filename,
 	    				'name'=>$file->file_name,
 	    				'href'=>self::getUploadUrl(true).'/'.$ref.'/'.$file->real_filename,
-	    				'upload_id'=>$file->upload_id,
-
+	    				'upload_id'=>$file->upload_id,
 	    		];
 	    	}
     	}

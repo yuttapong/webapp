@@ -22,9 +22,9 @@ use yii\helpers\Url;
     <?php //= $form->field($model, 'job_list_id')->textInput() ?>
     <?php //= $form->field($model, 'responsible_id')->textInput() ?>
     <?php ///= $form->field($model, 'responsible_name')->textInput(['maxlength' => true]) ?>
-
-   
-     <?= $form->field($model, 'description')->textarea(['rows' => 2]) ?>
+ <?= $form->field($model, 'problem')->textarea(['rows' => 1]) ?>
+    <?= $form->field($model, 'solution')->textarea(['rows' => 1]) ?>
+     <?= $form->field($model, 'description')->textarea(['rows' => 1]) ?>
       <?php 
     echo'<h5>วัสดุที่ใช้งาน</h5>';
     echo $this->render("_items-inventory",[

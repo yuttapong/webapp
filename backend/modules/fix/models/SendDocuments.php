@@ -7,6 +7,7 @@ use backend\modules\org\models\OrgPersonnel;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\bootstrap\Html;
+use common\models\User;
 
 /**
  * This is the model class for table "fix_send_documents".
@@ -29,7 +30,7 @@ class SendDocuments extends \yii\db\ActiveRecord
     const  STATUS_NEW = 0;
     const  STATUS_DONE = 1;
     const  STATUS_NOT_DONE = 2;
-
+	public  $password;
 
     /**
      * @inheritdoc
@@ -156,8 +157,12 @@ class SendDocuments extends \yii\db\ActiveRecord
         return [
             self::STATUS_NEW=> 'เอกสารใหม่',
             self::STATUS_DONE=> 'รับทราบแล้ว',
-            self::STATUS_NOT_DONE => 'ไม่เกี่ยวข้อง',
+            self::STATUS_NOT_DONE => 'เสนอเนะ',
         ];
+    }
+    public function getUser()
+    {
+    	return $this->hasOne(User::className(), ['id' => 'recipient_user_id']);
     }
 
 

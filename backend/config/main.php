@@ -33,7 +33,7 @@ return [
         'urlManager' => require('url-manager.php'),
         'urlManagerFrontend' => [
             'class' => 'yii\web\urlManager',
-            'baseUrl' => '/siricenter/',
+            'baseUrl' => '/yii/webapp/frontend/web',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],

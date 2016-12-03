@@ -19,7 +19,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'project_id') ?>
 
-    <?= $form->field($model, 'home_plan_id') ?>
 
     <?= $form->field($model, 'plan_no') ?>
 
@@ -29,7 +28,7 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'type') ?>
 
-    <?php // echo $form->field($model, 'home_prices') ?>
+    <?php // echo $form->field($model, 'home_price') ?>
 
     <?php // echo $form->field($model, 'land') ?>
 

@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 
+
 /* @var $this \yii\web\View */
 /* @var $content string */
 
@@ -23,6 +24,9 @@ if (Yii::$app->controller->action->id === 'login') {
     }
 
     dmstr\web\AdminLteAsset::register($this);
+    //\backend\themes\adminlte\AdminLteAsset::register($this);
+    //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/themes/adminlte/assets');
+
 
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 

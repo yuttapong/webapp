@@ -5,8 +5,9 @@ vendor/
 ################
 .idea
 siricenter_main_product.sql
-backend/web/assets/*
-frontend/web/assets/*
+vendor/
+backend/web/assets/
+frontend/web/assets/
 
 
 #################

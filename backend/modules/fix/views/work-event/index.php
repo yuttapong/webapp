@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use common\siricenter\thaiformatter\ThaiDate;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\fix\Models\WorkEventSearch */
@@ -21,30 +22,49 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-           // 'id',
+
             'title',
-            'description',
-            'start_date:datetime', 
-            'end_date:datetime',
+            [
+            'attribute' =>   'description',
+            'format' => 'raw',
+            'value' => function ($model) {
+          
+            	return $model->description;
+            },
+            ],
+            [
+            'attribute' =>   'start_date',
+            'format' => 'raw',
+            'value' => function ($model) {
+            	$date_modify='';
+            	if($model->start_date!=''){
+            		$date_modify=  ThaiDate::widget([
+            				'timestamp' => $model->start_date,
+            				'type' => ThaiDate::TYPE_MEDIUM,
+            				'showTime' => false   ]);
+            	}
+            	return $date_modify;
+            },
+            ],
+            [
+            'attribute' =>   'end_date',
+            'format' => 'raw',
+            'value' => function ($model) {
+            	$date_modify='';
+            	if($model->end_date!=''){
+            		$date_modify=  ThaiDate::widget([ 
+            				'timestamp' => $model->end_date, 
+            				'type' => ThaiDate::TYPE_MEDIUM, 
+            				 'showTime' => false   ]);
+            	}
+            	return $date_modify;
+            },
+            ],
             [
             'class'=>'kartik\grid\BooleanColumn',
             'attribute'=>'status',
             'vAlign'=>'middle',
             ],
-            [
-                'attribute' => 'status',
-                'format' => 'raw',
-                'value' => function($model){
-                    $appStatus = '';
-                    if ($model->status == '1') {
-                        $appStatus = '<span class="app-status label label-success" >'.$model->statusName.'</span>';
-                    } elseif($model->status =='0') {
-                        $appStatus = '<span class="app-status label label-danger" > '. $model->statusName .'</span>';
-                    }
-                    return $appStatus;
-                }
-            ],
-            'status',
             // 'create_by',
 
             ['class' => 'yii\grid\ActionColumn'],

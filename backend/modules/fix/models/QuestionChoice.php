@@ -33,7 +33,7 @@ class QuestionChoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['question_id', 'seq', 'created_at', 'created_by'], 'integer'],
+            [['id', 'question_id', 'seq', 'created_at', 'created_by'], 'integer'],
             [['content'], 'required'],
             [['content', 'type', 'log_status'], 'string'],
             [['score'], 'number'],
@@ -56,5 +56,19 @@ class QuestionChoice extends \yii\db\ActiveRecord
             'type' => 'Type',
             'log_status' => 'Log Status',
         ];
+    }
+    public function beforeSave($insert){
+    	if (parent::beforeSave($insert)) {
+    		if ($this->isNewRecord) {
+    			$this->created_at=time();
+    			$this->created_by=Yii::$app->user->id;
+    		}else{
+    
+    		}
+    		return true;
+    	} else {
+    		 
+    		return false;
+    	}
     }
 }

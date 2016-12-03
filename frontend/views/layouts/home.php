@@ -11,14 +11,8 @@ use frontend\assets\AppAsset;
 use common\widgets\Alert;
 use kartik\icons\Icon;
 
-// Initialize framework as per <code>icon-framework</code> param in Yii config
-Icon::map($this);
-
-// Initialize a specific framework - e.g. Web Hosting Hub Glyphs
-Icon::map($this, Icon::WHHG);
-
-
 AppAsset::register($this);
+\rmrevin\yii\fontawesome\AssetBundle::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -35,8 +29,8 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php echo $this->render('header');?>
-    
-<br><br>
+
+
     <div class="container-fluid">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

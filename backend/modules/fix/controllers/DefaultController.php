@@ -20,8 +20,9 @@ class DefaultController extends Controller
     {
     	$searchModel = new ListMessageSearch();
     	
-    	$app['ListMessageSearch']['module_id']=11;
+    	$app['ListMessageSearch']['slug']='fix';
     	$app['ListMessageSearch']['user_apprever_id']=\Yii::$app->user->id;
+    	$app['ListMessageSearch']['app_status']=0;
     	$dataProvider = $searchModel->search($app);
     	
 
