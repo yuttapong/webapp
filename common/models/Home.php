@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
  * @property string $home_no
  * @property integer $status
  * @property string $type
- * @property string $home_prices
+ * @property string $home_price
  * @property string $land
  * @property string $use_area
  * @property integer $home_status
@@ -117,11 +117,11 @@ class Home extends \yii\db\ActiveRecord
     {
         return [
             [['project_id', 'plan_no'], 'required'],
-            [['project_id', 'customers_id', 'status', 'home_status', 'compact_status', 'transfer_status', 'created_at', 'created_by'], 'integer'],
+            [['project_id', 'customer_id', 'status', 'home_status', 'compact_status', 'transfer_status', 'created_at', 'created_by'], 'integer'],
             [['type'], 'string'],
-            [['home_prices', 'land', 'use_area'], 'number'],
+            [['home_price', 'land', 'use_area'], 'number'],
             [['plan_no', 'home_no'], 'string', 'max' => 20],
-            [['customers_name'], 'string', 'max' => 150],
+            [['customer_name'], 'string', 'max' => 150],
         ];
     }
 
@@ -145,7 +145,7 @@ class Home extends \yii\db\ActiveRecord
             'home_no' => 'บ้านเลขที่',
             'status' => 'เปิดใช้งาน',
             'type' => 'ประเภท',
-            'home_prices' => 'ราคา',
+            'home_price' => 'ราคา',
             'land' => 'Land',
             'use_area' => 'Use Area',
             'home_status' => 'สถานะจอง',
@@ -154,8 +154,8 @@ class Home extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'date_insurance' => 'วันหมดประกัน',
-            'customers_id' => 'ลูกค้า',
-            'customers_name' => 'ลูกค้า',
+            'customer_id' => 'ลูกค้า',
+            'customer_name' => 'ลูกค้า',
             'project.name' => 'Project',
         ];
     }

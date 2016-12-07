@@ -40,6 +40,10 @@ class Response extends \yii\db\ActiveRecord
     public  $datetime_string;
     public $exportToExel;
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
+
     /**
      * @inheritdoc
      */
@@ -55,7 +59,7 @@ class Response extends \yii\db\ActiveRecord
     {
         return [
             [['survey_id'], 'required'],
-            [['survey_id', 'table_key', 'created_at', 'created_by', 'site_id', 'customer_id', 'seq', 'updated_by', 'updated_at','datetime'], 'integer'],
+            [['survey_id', 'table_key', 'created_at', 'created_by', 'site_id', 'customer_id', 'seq', 'updated_by', 'updated_at','datetime','active'], 'integer'],
             [['submitted','datetime_string'], 'safe'],
             [['complete'], 'string'],
             [['username'], 'string', 'max' => 64],
@@ -90,6 +94,7 @@ class Response extends \yii\db\ActiveRecord
             'dateEnd' => 'ถึงวันที่',
             'datetime' => 'วันที่แบบสอบถาม',
             'exportToExel' => 'ส่งออกเป็นไฟล์ Exel',
+            'active' => 'Active',
         ];
     }
 

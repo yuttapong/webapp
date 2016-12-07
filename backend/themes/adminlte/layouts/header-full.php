@@ -5,6 +5,7 @@ use common\models\SysDocument;
 $newMessages = SysDocument::countNewDocument();
 $totalNewMessage = SysDocument::CountTotalNewDocument();
 $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
+
 /* @var $this \yii\web\View */
 /* @var $content string */
 ?>
@@ -38,7 +39,8 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
                     <li  class="hidden"><a href="<?= Yii::$app->urlManagerFrontend->baseUrl ?>"><i class="fa fa-windows"></i>
                             เว็บไซต์บริษัท</a></li>
                     <!-- Messages: style can be found in dropdown.less-->
-                    <li class="dropdown messages-menu hidden">
+
+                    <li class="dropdown messages-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-envelope-o"></i>
                             <span class="label label-success">4</span>
@@ -124,6 +126,7 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
                             <li class="footer"><a href="#">See All Messages</a></li>
                         </ul>
                     </li>
+                -->
                     <li class="dropdown notifications-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-bell-o"></i>

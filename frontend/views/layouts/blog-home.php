@@ -1,7 +1,7 @@
 <?php
 
  ?>
-<?php $this->beginContent('@frontend/views/layouts/main-full.php'); ?>
+<?php $this->beginContent('@frontend/views/layouts/main.php'); ?>
 <div class="row">
     <div class="col-md-3">
         <?php

@@ -10,9 +10,10 @@ use yii\web\AssetBundle as BaseAdminLteAsset;
  */
 class AdminLteAsset extends BaseAdminLteAsset
 {
-    public $sourcePath = '@backend/themes/adminlte/assets';
+    public $sourcePath = '@backend/themes/adminlte/assets/dist';
     public $css = [
         'css/AdminLTE.min.css',
+        'https://fonts.googleapis.com/css?family=Roboto|Taviraj|Mitr',
     ];
     public $js = [
         'js/app.min.js'

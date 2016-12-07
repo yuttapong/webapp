@@ -19,7 +19,7 @@ class HomeUnitSearch extends Home
     {
         return [
             [['id', 'project_id',  'status', 'home_status', 'compact_status', 'transfer_status', 'created_at', 'created_by', 'date_insurance', 'customer_id'], 'integer'],
-            [['plan_no', 'home_no', 'type', 'customers_name'], 'safe'],
+            [['plan_no', 'home_no', 'type', 'customer_name'], 'safe'],
             [['home_price', 'land', 'use_area'], 'number'],
         ];
     }

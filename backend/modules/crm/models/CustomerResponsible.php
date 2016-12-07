@@ -2,6 +2,7 @@
 
 namespace backend\modules\crm\models;
 
+use backend\modules\org\models\OrgPersonnel;
 use Yii;
 
 /**
@@ -29,7 +30,8 @@ class CustomerResponsible extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'customer_id'], 'required'],
-            [['user_id', 'customer_id', 'created_at', 'created_by'], 'integer'],
+            [['user_id', 'customer_id', 'created_at', 'created_by','active'], 'integer'],
+            [['note'],'safe']
         ];
     }
 
@@ -43,7 +45,9 @@ class CustomerResponsible extends \yii\db\ActiveRecord
             'customer_id' => Yii::t('crm.customer', 'Customer ID'),
             'created_at' => Yii::t('crm.customer', 'Created At'),
             'created_by' => Yii::t('crm.customer', 'Created By'),
-        ];
+            'active' =>  Yii::t('crm.customer', 'Active'),
+            'note' =>  Yii::t('crm.customer', 'Note')
+    ];
     }
 
     /**
@@ -56,6 +60,14 @@ class CustomerResponsible extends \yii\db\ActiveRecord
     }
 
     public function getCustomer(){
-        return $this->hasOne(Customer::className(),['id'=>'customer_id']);
+        return @$this->hasOne(Customer::className(),['id'=>'customer_id']);
+    }
+
+    public function getPersonnel(){
+        return @$this->hasOne(OrgPersonnel::className(), ['user_id' => 'user_id']);
+    }
+
+    public function getCreatedName() {
+        return @$this->hasOne(OrgPersonnel::className(), ['user_id' => 'created_by']);
     }
 }

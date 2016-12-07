@@ -21,10 +21,12 @@ if (Yii::$app->controller->action->id === 'login') {
     } else {
         app\assets\AppAsset::register($this);
     }
-
-    //dmstr\web\AdminLteAsset::register($this);
-
+    /*
+    dmstr\web\AdminLteAsset::register($this);
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+    */
+    \backend\themes\adminlte\AdminLteAsset::register($this);
+    $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/themes/adminlte/assets');
     ?>
     <?php $this->beginPage() ?>
 

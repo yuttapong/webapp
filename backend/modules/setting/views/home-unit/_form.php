@@ -2,8 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use kartik\widgets\Typeahead;
-use yii\helpers\Url;
 use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
@@ -39,47 +37,42 @@ use yii\bootstrap\Modal;
                 </div>
 
         </div>
-        <div class="col-xs-12 col-sm-6 col-md-4">
+        <div class="col-xs-12 col-sm-6 col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">ข้อมูลลูกค้า</div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="row">
-                                <div class="col-xs-10 col-sm-11 col-md-10">
+                                <div class="col-xs-10 col-sm-10 col-md-10">
+
                                 <?=$form->field($model,'customer_name')->textInput([
                                     'id' => 'customer-name',
                                     'class'=>'form-control','readonly'=>true
                                 ])->label(false)?>
                                     </div>
-                                <div class="col-xs-1 col-sm-1 col-md-2">
-                                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search text-muted"></span></button>
+                                <div class="col-xs-1 col-sm-1 col-md-1">
+                                    <?php
+                                    Modal::begin([
+                                        'options' => [
+                                            'id' =>'modal-customer',
+                                        ],
+                                        'toggleButton' => [
+                                            'label' => '<i class="fa fa-search"></i>',
+                                            'class' => 'btn btn-default'
+                                        ],
+                                        'closeButton' => [
+                                            'label' => 'Close',
+                                            'class' => 'btn btn-danger btn-sm pull-right',
+                                        ],
+                                        'size' => 'modal-lg',
+                                    ]);
+                                    echo $this->render('modal/addcustomer', ['model' => new \backend\modules\crm\models\Customer()]);
+                                    Modal::end();
+                                    ?>
                             </div>
-                            <?php
-                                /*
-                                $form->field($model, 'customers_name')->widget(Typeahead::className(), [
-                                'options' => [
-                                    'placeholder' => 'พิมชื่อลูกค้า...',
-                                    'onl'
-                                ],
-                                'pluginOptions' => ['highlight' => true, 'minLength' => 2],
-                                'pluginEvents' => [
-                                    "typeahead:selected" => "function(obj, item) { $('#home-customers_id').val(item.id);  return true; }",
-                                ],
-                                'dataset' => [
-                                    [
-                                        'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
-                                        'display' => 'value',
-                                        'remote' => [
-                                            'url' => Url::to(['customer-list']) . '?q=%QUERY',
-                                            'wildcard' => '%QUERY'
-                                        ]
-                                    ]
-                                ]
-                            ]) */
-                                ?>
                         </div>
-                            </div>
+                        </div>
                         <div class="col-xs-12">
                             <?= $form->field($model, 'customer_id')->textInput([
                                 'required' => true,
@@ -105,32 +98,15 @@ use yii\bootstrap\Modal;
     </div>
 <?php ActiveForm::end(); ?>
 
-<?php
-Modal::begin([
-    'options' => [
-      'id' =>'modal-customer',
-    ],
-    'toggleButton' => [
-        'label' => '<i class="fa fa-plus"></i> เพิ่มรายชื่อลูกค้า',
-        'class' => 'btn btn-default btn-xs'
-    ],
-    'closeButton' => [
-        'label' => 'Close',
-        'class' => 'btn btn-danger btn-sm pull-right',
-    ],
-    'size' => 'modal-lg',
-]);
-echo $this->render('modal/addcustomer', ['model' => new \backend\modules\crm\models\Customer()]);
-Modal::end();
-?>
+
 
 
 <?php
 echo $this->registerJs('
-  $("#home-customers_name").on("blur", function(e){
+  $("#home-customer_name").on("blur", function(e){
         var name = $(this).val();
         if(name==""){
-            $("#home-customers_id").val("");
+            $("#home-customer_id").val("");
         }
   });
   $(".btn-add-customer").on("click", function(){

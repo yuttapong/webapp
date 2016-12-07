@@ -19,7 +19,7 @@ echo Nav::widget([
     'encodeLabels' => false,
     'activateParents' => true,
     'items' => [
-        ['label' => '<i class="fa fa-user  fa-2x"></i> ลูกค้า', 'url' => ['customer/index'],'items'=>[
+        ['label' => '<i class="fa fa-user"></i> ลูกค้า', 'url' => ['customer/index'],'items'=>[
             [
                 'label' => '<i class="fa fa-search"></i> ลูกค้า',
                 'url'=>['customer/index']
@@ -37,18 +37,18 @@ echo Nav::widget([
                 'url'=>['customer/communication']
             ],
         ]],
-        ['label' => '<i class="fa fa-list  fa-2x"></i> ประเภทแบบสอบถาม', 'url' => ['survey/index']],
-        ['label' => '<i class="fa fa-book fa-2x"></i> แบบสอบถามลูกค้า', 'url' => ['response/index']],
-        ['label' => '<i class="fa fa-file-text-o fa-2x"></i> Booking', 'items' => [
+        ['label' => '<i class="fa fa-list"></i> ประเภทแบบสอบถาม', 'url' => ['survey/index']],
+        ['label' => '<i class="fa fa-book "></i> แบบสอบถามลูกค้า', 'url' => ['response/index']],
+        ['label' => '<i class="fa fa-file-text-o "></i> Booking', 'items' => [
             ['label' => '<i class="fa fa-home"></i> แปลงบ้าน', 'url' => ['booking/home']],
             ['label' => '<i class="fa fa-home"></i> ใบจอง', 'url' => ['booking/home']],
             ['label' => '<i class="fa fa-home"></i> สัญญา', 'url' => ['booking/home']],
             ['label' => '<i class="fa fa-home"></i> ยื่นกู้', 'url' => ['booking/home']],
         ]],
-        ['label' => '<i class="fa fa-bar-chart fa-2x"></i> รายงาน', 'items' => [
+        ['label' => '<i class="fa fa-bar-chart "></i> รายงาน', 'items' => [
             ['label' => '<i class="fa fa-file-excel-o"></i> Export to Excel', 'url' => ['report/excel']],
         ]],
-        ['label' => '<i class="fa fa-cog fa-2x"></i> Setting', 'items' => [
+        ['label' => '<i class="fa fa-cog "></i> Setting', 'items' => [
             ['label' => '<i class="fa fa-general"></i> General', 'url' => ['setting/index']],
             ['label' => '<i class="fa fa-list"></i> ประเภทแบบสอบถาม', 'url' => ['setting/survey']],
             ['label' => '<i class="fa fa-man"></i> ผู้ใช้งาน', 'url' => ['setting/ce']],

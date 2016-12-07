@@ -10,11 +10,6 @@ use yii\helpers\Url;
 /* @var $model common\models\home */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<?php $form = ActiveForm::begin([
-    'options' => [
-
-    ]
-]); ?>
 
         <div class="row">
             <div class="col-xs-12">
@@ -22,13 +17,13 @@ use yii\helpers\Url;
                     <?= Typeahead::widget ([
                         'name'=> 'searchCustomer',
                         'options' => [
-                            'placeholder' => 'ชื่อ, หรือ นามสกุล ลูกค้า',
+                            'placeholder' => 'ค้นหาลูกค้า:: ชื่อ, นามสกุล',
                             'id' => 'search-customer',
                         ],
                         'pluginOptions' => ['highlight' => true, 'minLength' => 2],
                         'pluginEvents' => [
                             "typeahead:selected" => "function(obj, item) { 
-                                $('#home-customers_id').val(item.id);  
+                                $('#home-customer_id').val(item.id);  
                                 $('#customer-name').val(item.value);  
                                 return true;
                              }",
@@ -52,10 +47,10 @@ use yii\helpers\Url;
 
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-3">
-            <?=Html::textInput('_firstname',null, ['class'=>'form-control'])?>
+            <?=Html::textInput('_firstname',null, ['class'=>'form-control','placeholder' => 'ชื่อ'])?>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3">
-            <?=Html::textInput('_lastname',null, ['class'=>'form-control'])?>
+            <?=Html::textInput('_lastname',null, ['class'=>'form-control','placeholder' => 'นามสกุล'])?>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3">
             <?=Html::button('<i class="fa fa-plus"></i>',['ฺclass'=> 'btn btn-success']) ?>
@@ -69,9 +64,6 @@ use yii\helpers\Url;
 </div>
     </p>
 
-
-
-<?php ActiveForm::end(); ?>
 <?php
 echo $this->registerJs('
   $("#search-customer").on("blur", function(e){

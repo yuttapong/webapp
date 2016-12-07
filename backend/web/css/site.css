@@ -1,8 +1,10 @@
+/*
 html,
 body {
     height: 100%;
     font-family: 'Taviraj', serif;
 }
+*/
 
 .wrap {
     min-height: 100%;
@@ -42,7 +44,7 @@ a.asc:after, a.desc:after {
     position: relative;
     top: 1px;
     display: inline-block;
-    font-family: 'Glyphicons Halflings';
+    font-family: 'Mitr','Glyphicons Halflings';
     font-style: normal;
     font-weight: normal;
     line-height: 1;

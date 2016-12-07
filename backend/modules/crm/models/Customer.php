@@ -59,7 +59,7 @@ class Customer extends \yii\db\ActiveRecord
         return [
             [['firstname', 'lastname', 'prefixname', 'gender', 'active'], 'required'],
             [['id', 'age', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active', 'is_vip'], 'integer'],
-            [['birthday','day_visit'], 'safe'],
+            [['birthday', 'day_visit'], 'safe'],
             [['prefixname', 'mobile', 'tel', 'gender', 'source', 'prefixname_other'], 'string', 'max' => 20],
             [['firstname', 'lastname'], 'string', 'max' => 45],
             ['email', 'email'],
@@ -110,6 +110,8 @@ class Customer extends \yii\db\ActiveRecord
             'is_vip' => 'ลูกค้า VIP ? ',
             'prefixname_other' => 'คำนำหน้าพิเศษ',
             'day_visit' => 'เยี่ยมชมโครงการเมื่อ',
+            'createdName' => 'บันทึกโดย',
+            'updatedName' =>'แก้ไขล่าสุดโดย'
         ];
     }
 
@@ -241,6 +243,39 @@ class Customer extends \yii\db\ActiveRecord
     public function getOrgPersonnel()
     {
         return $this->hasOne(OrgPersonnel::className(), ['user_id' => 'created_by']);
+    }
+
+    private function _findUser($id)
+    {
+        $user = OrgPersonnel::find()->where(['user_id'=>$this->created_by])->one();
+        if($user)
+            return $user;
+    }
+
+    public function getCreatedName(){
+        $user = self::_findUser($this->created_by);
+        return @$user->fullnameTH;
+    }
+
+    public function getUpdatedName(){
+        $user = self::_findUser($this->updated_by);
+        return @$user->fullnameTH;
+    }
+
+    // ผุ้ครับผิดชอบคนล่าสุด
+    public function getPersonInCharge(){
+        CustomerResponsible::find()
+            ->where(['customer_id'=>$this->id,'active'=>1])
+            ->orderBy(['created_at'=>SORT_DESC])
+            ->limit(1);
+    }
+
+    // จำนวนแบบสอบถามของลูกค้า
+    public function getCountQuestionnaire() {
+        $questionnaire = Response::find()
+            ->where(['customer_id'=>$this->id, 'active' => Response::STATUS_ACTIVE])
+            ->count();
+        return $questionnaire;
     }
 
 }

@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'home_no',
                     'status:boolean',
                     'type',
-                    'home_prices',
+                    'home_price',
                     'land',
                     'use_area',
                 ],
