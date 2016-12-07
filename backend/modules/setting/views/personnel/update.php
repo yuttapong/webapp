@@ -11,7 +11,15 @@ $this->params['breadcrumbs'][] = ['label' => $model->fullnameTH, 'url' =>
     ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'แก้ไข';
 ?>
-<div class="org-personnel-update">
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+        <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <?= Html::a('<i class="fa fa-arrow-left"></i> ฺBack', ['index'], ['class' => 'btn btn-default']) ?>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
 
 
     <?= $this->render('_form', [
@@ -28,4 +36,7 @@ $this->params['breadcrumbs'][] = 'แก้ไข';
 
     ]) ?>
 
-</div>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div><!-- box-footer -->
+</div><!-- /.box -->

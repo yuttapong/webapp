@@ -11,9 +11,18 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('setting.role', 'ผู้ใช้งาน');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">User</h3>
+        <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+
     <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -23,11 +32,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+           // ['class' => 'yii\grid\SerialColumn'],
             //'id',
-            'role_id',
             'username',
-            'personnel.firstname_th',
             [
                 'attribute' => '_fullname',
                 'value' => 'personnel.fullnameTH',
@@ -38,7 +45,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'email:email',
 
              'statusName',
-             'created_at:datetime',
+             [
+               'attribute' => 'created_at',
+                 'value' => function($model) {
+                    return  $model->created_at>0?Yii::$app->formatter->asDatetime($model->created_at, 'medium'):null;
+                 }
+             ],
             // 'updated_at',
             // 'access_token',
             // 'logged_in_ip',
@@ -51,4 +63,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-    <?php Pjax::end(); ?></div>
+    <?php Pjax::end(); ?>
+        </div><!-- /.box-body -->
+        <div class="box-footer">
+
+        </div><!-- box-footer -->
+    </div><!-- /.box -->

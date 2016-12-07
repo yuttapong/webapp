@@ -13,7 +13,7 @@ use yii\bootstrap\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
-        'layout' => 'inline',
+
     ]); ?>
     <?= $form->field($model, 'code')->textInput(['placeholder' => 'รหัสพนักงาน']) ?>
     <?php echo $form->field($model, 'firstname_th')->textInput(['placeholder' => 'ชื่อจริง']) ?>
@@ -77,8 +77,8 @@ use yii\bootstrap\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
-        <?= Html::a('เพิ่มบุคคากร', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+
     </div>
 
     <?php ActiveForm::end(); ?>

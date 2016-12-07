@@ -11,7 +11,16 @@ $this->params['breadcrumbs'][] = ['label' => 'บุคลากร', 'url' => [
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="org-personnel-view">
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+        <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <?= Html::a('<i class="fa fa-arrow-left"></i> ฺBack', ['index'], ['class' => 'btn btn-default']) ?>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+
     <p>
         <?= Html::a('<i class="fa fa-edit"></i> แก้ไข', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?php Html::a('<i class="fa fa-trash"></i> ลบ', ['delete', 'id' => $model->id], [
@@ -20,9 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'confirm' => 'คุณต้องการลบข้อมูลผู้ใช้งานนี้ ใช่หรือไม่ ?',
                 'method' => 'post',
             ],
-        ]) ?>
-        <?= Html::a('<i class="fa fa-user"></i> ออกรหัสพนักงาน (Code)', ['build-code', 'id' => $model->id], [
-            'class' => 'btn btn-default',
         ]) ?>
 
         <?= Html::a('<i class="fa fa-key"></i> ตั้ง/กู้ Password', ['build-username', 'id' => $model->id], [
@@ -132,4 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
 
-</div>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div><!-- box-footer -->
+</div><!-- /.box -->

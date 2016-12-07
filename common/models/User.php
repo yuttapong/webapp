@@ -61,8 +61,11 @@ class User extends ActiveRecord implements IdentityInterface
             [['email', 'username'], 'unique'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
+            [['roles'], 'safe'],
         ];
     }
+
+
 
     /**
      * @inheritdoc

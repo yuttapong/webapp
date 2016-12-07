@@ -22,7 +22,6 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
             <?php if (!Yii::$app->user->isGuest) : ?>
                 <ul class="nav navbar-nav">
                     <li class="dropdown notifications-menu">
-                    <li class=""> <a href="<?=Yii::$app->urlManagerFrontend->baseUrl?>"><i class="fa fa-windows"></i> Website</a></li>
                         <a href="#"  class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-windows"></i> App</a>
                         <ul class="dropdown-menu">
                             <li class="header">Application</li>
@@ -41,7 +40,7 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
                         </ul>
                     </li>
 
-                    <li class="hidden"><a href="<?= Yii::$app->urlManagerFrontend->baseUrl ?>"><i
+                    <li class=""><a href="<?= Yii::$app->urlManagerFrontend->baseUrl ?>"><i
                                 class="fa fa-windows"></i> เว็บไซต์บริษัท</a></li>
                     <!-- Messages: style can be found in dropdown.less-->
                     <li class="dropdown messages-menu hidden">
@@ -156,8 +155,6 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
                                     echo '</ul>';
                                 }
                                 ?>
-
-
                                 <!-- inner menu: contains the actual data -->
                                 <ul class="menu">
                                     <li>
@@ -333,7 +330,7 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
                         </li>
                     <?php endif; ?>
                     <!-- User Account: style can be found in dropdown.less -->
-                    <li class="hidden">
+                    <li class="">
                         <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
                     </li>
                 </ul>

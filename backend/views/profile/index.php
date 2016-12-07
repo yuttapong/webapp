@@ -22,7 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
     <?php
-
     echo Html::img($model->getImageUrl('avatar'));
     echo Html::img($model->getImageUrl('logo', 'mini')); //get url of thumbnail named 'mini' for 'logo' attribute
 

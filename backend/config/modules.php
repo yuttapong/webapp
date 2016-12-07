@@ -5,7 +5,7 @@ return [
             'layout' => 'left-menu',
             'menus' => [
                 'assignment' => [
-                    'label' => 'Grant Access' // change label
+                    'label' => 'กำหนดสิทธิ์' // change label
                 ],
               //  'route' => null, // disable menu
             ],

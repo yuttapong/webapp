@@ -3,6 +3,7 @@ use yii\jui\JuiAsset;
 use kartik\form\ActiveForm;
 use yii\bootstrap\Html;
 use kartik\tabs\TabsX;
+JuiAsset::register($this);
 ?>
 
 <?php $form = ActiveForm::begin([
@@ -12,10 +13,6 @@ use kartik\tabs\TabsX;
         'enctype' => 'multipart/form-data',
     ],
 ]); ?>
-
-    <div class="form-group">
-<?= Html::submitButton($model->isNewRecord ? 'บันทึก' : 'บันทึก', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
 <?= $form->errorSummary($model) ?>
 <?php
 $items = [
@@ -119,10 +116,8 @@ if( ! $model->isNewRecord){
     echo Html::activeHiddenInput($model,'id');
 }
 ?>
-
+    <div class="form-group">
+        <?= Html::submitButton($model->isNewRecord ? 'บันทึก' : 'บันทึก', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary btn-block']) ?>
+    </div>
 
 <?php ActiveForm::end(); ?>
-
-<?php
-
-JuiAsset::register($this);

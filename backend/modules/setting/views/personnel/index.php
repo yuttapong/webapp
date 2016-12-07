@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\bootstrap\Modal;
+
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\org\models\OrgPersonnelSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -10,12 +12,36 @@ use yii\widgets\Pjax;
 $this->title = 'บุคลากร';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="org-personnel-index">
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+        <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <?php
+            Modal::begin([
+                'options' => [
+                    'id' =>'modal-customer',
+                ],
+                'toggleButton' => [
+                    'label' => '<i class="fa fa-search"></i>',
+                    'class' => 'btn btn-default'
+                ],
+                'closeButton' => [
+                    'label' => 'Close',
+                    'class' => 'btn btn-danger btn-sm pull-right',
+                ],
+                'size' => 'modal-sm',
+            ]);
+            echo $this->render('_search', ['model' => $searchModel]);
+            Modal::end();
+            ?>
+            <?= Html::a('<i class="fa fa-plus"></i> เพิ่มบุคคากร', ['create'], ['class' => 'btn btn-success']) ?>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
 
-    <p>
-        <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
-    </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
+<?php Pjax::begin(); ?>
+        <?= GridView::widget([
         'dataProvider' => $dataProvider,
      //   'filterModel' => $searchModel,
         'columns' => [
@@ -23,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'photo',
                 'value' => function ($model){
-                    return ($model->photo)?Html::img($model->photoThumbnailLink,['class'=>'img img-responsive img-thumbnail']):'';
+                    return ($model->photo)?Html::img($model->photoThumbnailLink,['class'=>'img img-responsive img-thumbnail','width'=>75]):'';
                 },
                 'format'=> 'raw'
             ],
@@ -81,4 +107,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-<?php Pjax::end(); ?></div>
+<?php Pjax::end(); ?>
+
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div><!-- box-footer -->
+</div><!-- /.box -->

@@ -2,12 +2,15 @@
 
 namespace backend\modules\setting\controllers;
 
+use backend\modules\setting\models\UserCreateForm;
 use common\models\AuthUserModule;
 use common\models\SysModule;
 use Yii;
 use backend\modules\setting\models\User;
 use backend\modules\setting\models\UserSearch;
 use yii\helpers\ArrayHelper;
+use yii\rbac\Assignment;
+use yii\rbac\DbManager;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -77,11 +80,14 @@ class RoleController extends Controller
         $modules = SysModule::find()->where(['active' => 1])->all();
         $moduleItems = ArrayHelper::map($modules, 'id', 'name_th');
 
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'userModule' => $userModule,
             'modules' => $modules,
             'moduleItems' => $moduleItems,
+            'itemsAssigned' => $this->getRolesByUser($id),
+            'itemsAllRole' => $this->getRolesAll(),
         ]);
     }
 
@@ -92,28 +98,63 @@ class RoleController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new UserCreateForm();
+
         $modules = SysModule::find()->where(['active' => 1])->all();
         $moduleItems = ArrayHelper::map($modules, 'id', 'name_th');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if( $user = $model->signup()){
+                return $this->redirect(['view','id'=>$user->id]);
+            }
+
         } else {
             return $this->render('create', [
                 'model' => $model,
                 'userModule' => [],
                 'modules' => $modules,
                 'moduleItems' => $moduleItems,
-                'allRoles' => $this->getAllRoles(),
+                'itemsAssigned' => [],
+                'itemsAllRole' => $this->getRolesAll(),
             ]);
         }
     }
 
-    public function getAllRoles()
+    private function getRolesAll()
     {
         $auth = $auth = Yii::$app->authManager;
         return ArrayHelper::map($auth->getRoles(), 'name', 'name');
     }
+
+    private function getRolesByUser($id)
+    {
+        $rolesUser = \Yii::$app->authManager->getRolesByUser($id);
+        return ArrayHelper::map($rolesUser,'name','name');
+    }
+
+    private function afterSaveAndUpdate($model){
+
+        $auth = Yii::$app->authManager;
+
+        /*
+        $roleDiff = array_diff(ArrayHelper::map($auth->getRoles(),'name','name'),$model->roles);
+        if(is_array($roleDiff) && count($roleDiff)>0) {
+            foreach ($roleDiff as $delRole){
+                $item = $auth->getRole($delRole);
+                $item = $item ? : $auth->getPermission($delRole);
+                $auth->revoke($item, $model->id);
+            }
+        }
+        */
+
+        $auth->revokeAll($model->getId());
+        if ($model->roles && is_array($model->roles)) {
+            foreach ($model->roles as $role) {
+                $auth->assign($auth->getRole($role), $model->getId());
+            }
+        }
+    }
+
 
     /**
      * Updates an existing User model.
@@ -130,6 +171,10 @@ class RoleController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
+
+                // update roles
+                $this->afterSaveAndUpdate($model);
+
                 AuthUserModule::deleteAll(['user_id' => $model->id]);
                 $selectedModules = isset($_POST['module']) ? $_POST['module'] : [];
                 if (!empty($selectedModules)) {
@@ -143,12 +188,17 @@ class RoleController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
+        $itemsAssigned = $this->getRolesByUser($id);
+        $model->roles = $itemsAssigned;
         return $this->render('update', [
             'model' => $model,
             'userModule' => $userModule,
             'modules' => $modules,
             'moduleItems' => $moduleItems,
-            'roles' => $this->getAllRoles(),
+            'roles' => $this->getRolesAll(),
+            'rolesUser' => $this->getRolesByUser($id),
+            'itemsAssigned' => $this->getRolesByUser($id),
+            'itemsAllRole' => $this->getRolesAll(),
         ]);
 
     }
@@ -181,4 +231,7 @@ class RoleController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+
+
 }

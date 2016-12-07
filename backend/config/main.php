@@ -48,7 +48,7 @@ return [
             'linkAssets' => true,
             'bundles' => [
                 'dmstr\web\AdminLteAsset' => [
-                    'skin' => 'skin-purple-light',
+                    'skin' => 'skin-red-light',
                 ],
             ],
 

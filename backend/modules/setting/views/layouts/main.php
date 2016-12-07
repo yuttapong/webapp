@@ -10,11 +10,7 @@ use yii\bootstrap\Html;
 <?php $this->endBlock() ?>
 
 <?php $this->beginContent('@app/views/layouts/main.php'); ?>
-    <div class="panel panel-default">
-    <div class="panel-body">
-    <div class="panel-content">
+
     <?= $content?>
-    </div>
-    </div>
-    </div>
+
 <?php $this->endContent();

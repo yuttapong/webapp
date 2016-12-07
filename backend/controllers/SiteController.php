@@ -88,8 +88,6 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            // $user = User::findOne(Yii::$app->user->id);
-            // $user->logged_in_ip = Yii::app()->request->getUserHostAddress;
             return $this->goBack();
         } else {
             return $this->render('login', [
@@ -104,7 +102,6 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
-
 
     /**
      * Requests password reset.

@@ -2,7 +2,7 @@
 
 namespace backend\modules\setting\models;
 
-use backend\modules\org\models\OrgPersonnel;
+
 use Yii;
 
 /**
@@ -31,30 +31,16 @@ use Yii;
 class User extends \common\models\User
 {
     public $_fullname;
+    public $roles;
+
+
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return 'user';
-    }
-
-    /**
-     * @inheritdoc
-     */
-
-    public function rules()
-    {
-        return [
-            [['role_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at','status'], 'required'],
-            [['logged_in_at'], 'safe'],
-            [['username', 'password_hash', 'password_reset_token', 'email', 'access_token', 'logged_in_ip', 'banned_reason'], 'string', 'max' => 255],
-            [['auth_key'], 'string', 'max' => 32],
-            ['email', 'email'],
-            [['email','username'], 'unique'],
-            [['username', 'email'], 'required'],
-        ];
     }
 
 
@@ -78,45 +64,17 @@ class User extends \common\models\User
             'logged_in_ip' => Yii::t('setting.role', 'Logged In Ip'),
             'logged_in_at' => Yii::t('setting.role', 'Logged In At'),
             'banned_reason' => Yii::t('setting.role', 'Banned Reason'),
+            '_fullname' => Yii::t('setting.role', 'Fullname'),
+            'statusName' => 'Status',
+            'roles' => 'Roles',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfiles()
-    {
-        return $this->hasMany(Profile::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRole()
-    {
-        return $this->hasOne(DelRole::className(), ['id' => 'role_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserAuths()
-    {
-        return $this->hasMany(UserAuth::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserTokens()
-    {
-        return $this->hasMany(UserToken::className(), ['user_id' => 'id']);
     }
 
     /**
      * @inheritdoc
      * @return UserQuery the active query used by this AR class.
      */
+
     public static function find()
     {
         return new UserQuery(get_called_class());
