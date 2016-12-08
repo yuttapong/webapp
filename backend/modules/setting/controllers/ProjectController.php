@@ -35,7 +35,7 @@ class ProjectController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ProjectSearch();
+        $searchModel = new ProjectSearch(['status'=>Project::STATUS_ACTIVE]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -101,8 +101,9 @@ class ProjectController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->status = Project::STATUS_DELETED;
+        $model->save();
         return $this->redirect(['index']);
     }
 

@@ -43,13 +43,15 @@ class UserSearch extends User
     {
         $query = User::find();
 
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
                 'defaultOrder' => ['created_at'=>SORT_DESC],
-            ]
+            ],
+            'pagination'=> ['defaultPageSize' =>15]
         ]);
 
         $this->load($params);
@@ -59,6 +61,7 @@ class UserSearch extends User
             // $query->where('0=1');
             return $dataProvider;
         }
+
         $query->joinWith(['personnel']);
 
         // grid filtering conditions

@@ -25,12 +25,15 @@ use yii\helpers\ArrayHelper;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 10;
+    const STATUS_DELETED = -1;
 
     public $password;
     public $confirm_password;
     public $roles;
+    public $modules;
 
     /**
      * @inheritdoc
@@ -60,8 +63,8 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'email'],
             [['email', 'username'], 'unique'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
-            [['roles'], 'safe'],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['roles','modules'], 'safe'],
         ];
     }
 
@@ -210,7 +213,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             self::STATUS_ACTIVE => 'Active',
-            self::STATUS_INACTIVE => 'Inactive'
+            self::STATUS_INACTIVE => 'Inactive',
+            self::STATUS_DELETED => 'Deleted'
         ];
     }
 

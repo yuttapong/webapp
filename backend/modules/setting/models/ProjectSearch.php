@@ -18,8 +18,8 @@ class ProjectSearch extends Project
     public function rules()
     {
         return [
-            [['id', 'site_id', 'company_id', 'status', 'created_at', 'created_by'], 'integer'],
-            [['name', 'type'], 'safe'],
+            [['id', 'site_id', 'company_id', 'created_at', 'created_by'], 'integer'],
+            [['name', 'type','status'], 'safe'],
         ];
     }
 
@@ -55,6 +55,7 @@ class ProjectSearch extends Project
         ]);
 
         $this->load($params);
+
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

@@ -21,6 +21,7 @@ class UserCreateForm extends Model
     public $password;
     public $status;
     public $roles;
+    public $modules;
 
     /**
      * @inheritdoc
@@ -41,7 +42,8 @@ class UserCreateForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 4],
             [['status'],'number'],
-            [['roles','status'],'required']
+            [['roles','status'],'required'],
+            [['modules'],'safe'],
         ];
     }
 
@@ -51,7 +53,7 @@ class UserCreateForm extends Model
      * @return User|null the saved model or null if saving fails
      */
 
-    public function signup()
+    public function createUser()
     {
         if ($this->validate()) {
             $user = new User();
@@ -72,4 +74,28 @@ class UserCreateForm extends Model
             }
         }
     }
+
+    public function update($id)
+    {
+        if ($this->validate()) {
+            $user = User::find()->where(['id'=>$id])->one();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->status = $this->status;
+            //$user->setPassword($this->password);
+            //$user->generateAuthKey();
+            if ($user->save()) {
+                $auth = Yii::$app->authManager;
+                $auth->revokeAll($user->id);
+                if ($this->roles && is_array($this->roles)) {
+                    foreach ($this->roles as $role) {
+                        $auth->assign($auth->getRole($role), $user->id);
+                    }
+                }
+                return $user;
+            }
+        }
+    }
+
+
 }

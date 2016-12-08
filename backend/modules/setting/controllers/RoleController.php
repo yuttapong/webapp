@@ -2,6 +2,7 @@
 
 namespace backend\modules\setting\controllers;
 
+use backend\modules\setting\models\CustomerSearch;
 use backend\modules\setting\models\UserCreateForm;
 use common\models\AuthUserModule;
 use common\models\SysModule;
@@ -9,6 +10,7 @@ use Yii;
 use backend\modules\setting\models\User;
 use backend\modules\setting\models\UserSearch;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\rbac\Assignment;
 use yii\rbac\DbManager;
 use yii\web\Controller;
@@ -104,8 +106,8 @@ class RoleController extends Controller
         $moduleItems = ArrayHelper::map($modules, 'id', 'name_th');
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if( $user = $model->signup()){
-                return $this->redirect(['view','id'=>$user->id]);
+            if( $user = $model->createUser()){
+                return $this->redirect(['update','id'=>$user->id]);
             }
 
         } else {
@@ -120,6 +122,77 @@ class RoleController extends Controller
         }
     }
 
+    /**
+     * Updates an existing User model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        $userModule = ArrayHelper::map(AuthUserModule::find()->where(['user_id' => $id])->all(), 'module_id', 'module_id');
+        $modules = SysModule::find()->where(['active' => 1])->all();
+        $moduleItems = ArrayHelper::map($modules, 'id', 'name_th');
+
+
+
+        if ($model->load(Yii::$app->request->post())) {
+
+
+            if ($model->validate() && $model->save()) {
+
+                // update roles
+                $this->updateRoles($model);
+
+                AuthUserModule::deleteAll(['user_id' => $model->id]);
+                //$selectedModules = isset($_POST['module']) ? $_POST['module'] : [];
+                $selectedModules = $model->modules;
+                if (!empty($selectedModules)) {
+                    foreach ($selectedModules as $m) {
+                        $insertModule = new  AuthUserModule();
+                        $insertModule->user_id = $model->id;
+                        $insertModule->module_id = $m;
+                        $insertModule->save();
+                    }
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+        $itemsAssigned = $this->getRolesByUser($id);
+        $model->roles = $itemsAssigned;
+        $model->modules = $userModule;
+
+        if(Yii::$app->request->isAjax) {
+            return $this->renderPartial('update', [
+                'model' => $model,
+                'userModule' => $userModule,
+                'modules' => $modules,
+                'moduleItems' => $moduleItems,
+                'roles' => $this->getRolesAll(),
+                'rolesUser' => $this->getRolesByUser($id),
+                'itemsAssigned' => $this->getRolesByUser($id),
+                'itemsAllRole' => $this->getRolesAll(),
+            ]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+                'userModule' => $userModule,
+                'modules' => $modules,
+                'moduleItems' => $moduleItems,
+                'roles' => $this->getRolesAll(),
+                'rolesUser' => $this->getRolesByUser($id),
+                'itemsAssigned' => $this->getRolesByUser($id),
+                'itemsAllRole' => $this->getRolesAll(),
+            ]);
+        }
+
+
+    }
+
+
+
+
     private function getRolesAll()
     {
         $auth = $auth = Yii::$app->authManager;
@@ -132,7 +205,8 @@ class RoleController extends Controller
         return ArrayHelper::map($rolesUser,'name','name');
     }
 
-    private function afterSaveAndUpdate($model){
+
+    private function updateRoles($model){
 
         $auth = Yii::$app->authManager;
 
@@ -156,52 +230,6 @@ class RoleController extends Controller
     }
 
 
-    /**
-     * Updates an existing User model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        $userModule = ArrayHelper::map(AuthUserModule::find()->where(['user_id' => $id])->all(), 'module_id', 'module_id');
-        $modules = SysModule::find()->where(['active' => 1])->all();
-        $moduleItems = ArrayHelper::map($modules, 'id', 'name_th');
-
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-
-                // update roles
-                $this->afterSaveAndUpdate($model);
-
-                AuthUserModule::deleteAll(['user_id' => $model->id]);
-                $selectedModules = isset($_POST['module']) ? $_POST['module'] : [];
-                if (!empty($selectedModules)) {
-                    foreach ($selectedModules as $m) {
-                        $insertModule = new  AuthUserModule();
-                        $insertModule->user_id = $model->id;
-                        $insertModule->module_id = $m;
-                        $insertModule->save();
-                    }
-                }
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        }
-        $itemsAssigned = $this->getRolesByUser($id);
-        $model->roles = $itemsAssigned;
-        return $this->render('update', [
-            'model' => $model,
-            'userModule' => $userModule,
-            'modules' => $modules,
-            'moduleItems' => $moduleItems,
-            'roles' => $this->getRolesAll(),
-            'rolesUser' => $this->getRolesByUser($id),
-            'itemsAssigned' => $this->getRolesByUser($id),
-            'itemsAllRole' => $this->getRolesAll(),
-        ]);
-
-    }
 
     /**
      * Deletes an existing User model.
@@ -211,9 +239,15 @@ class RoleController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $user = $this->findModel($id);
+        $user->status = User::STATUS_INACTIVE;
+        if(Yii::$app->request->isAjax){
+            $user->save();
+            return  1;
+        }else{
+            $user->save();
+            return $this->redirect(['index']);
+        }
     }
 
     /**
@@ -231,6 +265,7 @@ class RoleController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 
 
 

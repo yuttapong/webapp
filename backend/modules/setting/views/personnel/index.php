@@ -41,9 +41,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
 
 <?php Pjax::begin(); ?>
-        <?= GridView::widget([
+<div class="table-responsive">
+
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
-     //   'filterModel' => $searchModel,
+        //   'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -54,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'=> 'raw'
             ],
             'code',
-           // 'firstname_th',
+            // 'firstname_th',
             //'lastname_th',
             'fullnameTH:ntext',
             // 'first_name_th',
@@ -67,8 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'day_probation',
             // 'work_status',
             'age',
-             'workStatusName:ntext',
-             'workTypeName:ntext',
+            'workStatusName:ntext',
+            'workTypeName:ntext',
             // 'nationality',
             // 'race',
             // 'religion',
@@ -107,6 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+</div>
 <?php Pjax::end(); ?>
 
     </div><!-- /.box-body -->

@@ -48,7 +48,7 @@ return [
             'linkAssets' => true,
             'bundles' => [
                 'dmstr\web\AdminLteAsset' => [
-                    'skin' => 'skin-red-light',
+                    'skin' => 'skin-red-light ',
                 ],
             ],
 
@@ -57,7 +57,7 @@ return [
     ],
     'params' => $params,
     'modules' => require 'modules.php',
-
+    /*
     'as beforeRequest' => [
         'class' => 'yii\filters\AccessControl',
         'rules' => [
@@ -74,4 +74,5 @@ return [
             return Yii::$app->response->redirect(['site/login']);
         },
     ],
+    */
 ];

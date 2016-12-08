@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use backend\modules\org\models\OrgCompany;
+use backend\modules\org\models\OrgSite;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "sys_project".
@@ -18,6 +21,15 @@ use Yii;
  */
 class Project extends \yii\db\ActiveRecord
 {
+
+
+    /**
+     * Status of project
+     */
+    const STATUS_ACTIVE = 'ACTIVE';
+    const STATUS_INACTIVE = 'INACTIVE';
+    const STATUS_DELETED = 'DELETED';
+
     /**
      * @inheritdoc
      */
@@ -32,8 +44,9 @@ class Project extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['site_id', 'company_id', 'status', 'created_at', 'created_by'], 'integer'],
-            [['type'], 'string'],
+            [['name', 'site_id', 'company_id', 'status'], 'required'],
+            [['site_id', 'company_id', 'created_at', 'created_by'], 'integer'],
+            [['type','status'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -45,31 +58,65 @@ class Project extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'site_id' => 'Site ID',
-            'company_id' => 'Company ID',
-            'status' => 'สถานะ',
-            'type' => 'โครงการ',
+            'name' => 'Project',
+            'site_id' => 'Site',
+            'company_id' => 'Company',
+            'status' => 'Status',
+            'type' => 'ประเภทโครงการ',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
         ];
     }
- 
-    public function getHome()
+
+    public function getHomes()
     {
-    	return $this->hasMany(Home::className(), ['project_id' => 'id']);
+        return $this->hasMany(Home::className(), ['project_id' => 'id']);
     }
-    public function beforeSave($insert){
-    	 
-    	if (parent::beforeSave($insert)) {
-    		if ($this->isNewRecord) {
-    			$this->created_at=time();
-    			$this->created_by=Yii::$app->user->id;
-    		}
-    		return true;
-    	} else {
-    		 
-    		return false;
-    	}
+
+    public function beforeSave($insert)
+    {
+
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->created_at = time();
+                $this->created_by = Yii::$app->user->id;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    public function getSite()
+    {
+        return $this->hasOne(OrgSite::className(), ['site_id' => 'site_id']);
+    }
+
+
+    public function getCompany()
+    {
+        return $this->hasOne(OrgCompany::className(), ['id' => 'company_id']);
+    }
+
+    public function getCompanyItems()
+    {
+        $companies = OrgCompany::find()->all();
+        return ArrayHelper::map($companies, 'id', 'name');
+    }
+
+    public function getSiteItems()
+    {
+        $sites = OrgSite::find()->all();
+        return ArrayHelper::map($sites, 'site_id', 'site_name');
+    }
+
+    public function getStatusItems()
+    {
+        return [
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_INACTIVE => 'Inactive',
+            self::STATUS_DELETED => 'Deleted',
+        ];
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace backend\modules\setting\models;
 
 
+use backend\modules\org\models\OrgPersonnel;
 use Yii;
 
 /**
@@ -32,8 +33,16 @@ class User extends \common\models\User
 {
     public $_fullname;
     public $roles;
+    public $modules;
 
 
+    public function rules()
+    {
+        return [
+           [[ 'modules'],'safe'],
+            [[ 'modules','username','email','status','roles'],'required']
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -78,6 +87,11 @@ class User extends \common\models\User
     public static function find()
     {
         return new UserQuery(get_called_class());
+    }
+
+    public function getPersonnel()
+    {
+        return $this->hasOne(OrgPersonnel::className(),['user_id'=>'id']);
     }
 
 

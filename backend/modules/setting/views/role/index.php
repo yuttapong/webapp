@@ -28,27 +28,39 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a(Yii::t('setting.role', 'Create User'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <?php Pjax::begin(); ?>    <?= GridView::widget([
+    <?php Pjax::begin(); ?>
+        <div class="table-responsives">
+        <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
            // ['class' => 'yii\grid\SerialColumn'],
-            //'id',
-            'username',
+            [
+                'attribute' => 'id',
+                'format' => 'html',
+                'value' => function($model, $key,$index) {
+                    return Html::a($model->id,['view','id'=>$model->id]);
+                }
+            ],
+
+            [
+                'attribute' => 'username',
+                'format' => 'html',
+                'value' => function($model, $key,$index) {
+                    return Html::a($model->username,['view','id'=>$model->id]);
+                }
+            ],
+            'email:email',
             [
                 'attribute' => '_fullname',
                 'value' => 'personnel.fullnameTH',
             ],
-            // 'auth_key',
-            // 'password_hash',
-            // 'password_reset_token',
-            'email:email',
 
-             'statusName',
              [
                'attribute' => 'created_at',
+                 'format' => 'raw',
                  'value' => function($model) {
-                    return  $model->created_at>0?Yii::$app->formatter->asDatetime($model->created_at, 'medium'):null;
+                    return  '<small>'.($model->created_at>0?Yii::$app->formatter->asDatetime($model->created_at, 'medium'):null).'</small>';
                  }
              ],
             // 'updated_at',
@@ -56,13 +68,23 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'logged_in_ip',
             // 'logged_in_at',
             // 'banned_reason',
-
+            [
+                'attribute' => 'status',
+                'format' => 'html',
+                'filter' => $searchModel->getItemStatus(),
+                'value' => 'statusName',
+            ],
+            [
+                'header' => 'HR Status',
+                'value' => 'personnel.workStatusName'
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update}',
+                'template' => '{update}{delete}',
             ],
         ],
     ]); ?>
+        </div>
     <?php Pjax::end(); ?>
         </div><!-- /.box-body -->
         <div class="box-footer">

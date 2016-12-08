@@ -2,14 +2,17 @@
 
 namespace backend\modules\setting\controllers;
 
-use backend\modules\crm\models\Customer;
+
+use backend\modules\setting\models\CustomerSearch;
 use Yii;
 use common\models\Home;
 use backend\modules\setting\models\HomeUnitSearch;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
 
 /**
  * HomeUnitController implements the CRUD actions for home model.
@@ -37,7 +40,7 @@ class HomeUnitController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new HomeUnitSearch();
+        $searchModel = new HomeUnitSearch(['status'=>Home::STATUS_ACTIVE]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -51,11 +54,17 @@ class HomeUnitController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+    public function actionView($id) {
+        $model = $this->findModel($id);
+         if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('view', [
+                'model' => $model
+            ]);
+        } else {
+            return $this->render('view', [
+                'model' => $model
+            ]);
+        }
     }
 
     /**
@@ -69,7 +78,11 @@ class HomeUnitController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+        } elseif(Yii::$app->request->isAjax) {
+            return $this->renderPartial('create', [
+                'model' => $model,
+            ]);
+        }else{
             return $this->render('create', [
                 'model' => $model,
             ]);
@@ -86,11 +99,16 @@ class HomeUnitController extends Controller
     {
         $model = $this->findModel($id);
 
+        $searchModelCustomer = new CustomerSearch();
+        $dataProviderCustomer = $searchModelCustomer->search(Yii::$app->request->queryParams);
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'dataProviderCustomer' => $dataProviderCustomer,
+                'searchModelCustomer' => $searchModelCustomer,
             ]);
         }
     }
@@ -104,11 +122,32 @@ class HomeUnitController extends Controller
     public function actionDelete($id)
     {
         $home = $this->findModel($id);
-        $home->status = Home::STATUS_INACTIVE;
+        $home->status = Home::STATUS_DELETED;
         $home->save();
 
         return $this->redirect(['index']);
     }
+
+
+    public function actionModelSearchCustomer(){
+        if(Yii::$app->request->isAjax) {
+            $searchModelCustomer = new CustomerSearch();
+            $dataProviderCustomer = $searchModelCustomer->search(Yii::$app->request->queryParams);
+            return $this->renderPartial('modal/find-customer', [
+                'dataProviderCustomer' => $dataProviderCustomer,
+                'searchModelCustomer' => $searchModelCustomer,
+            ]);
+        }else{
+            $searchModelCustomer = new CustomerSearch();
+            $dataProviderCustomer = $searchModelCustomer->search(Yii::$app->request->queryParams);
+            return $this->renderPartial('modal/find-customer', [
+                'dataProviderCustomer' => $dataProviderCustomer,
+                'searchModelCustomer' => $searchModelCustomer,
+            ]);
+        }
+    }
+
+
 
     /**
      * Finds the home model based on its primary key value.

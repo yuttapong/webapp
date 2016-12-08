@@ -10,12 +10,24 @@ $this->title = 'Create Project';
 $this->params['breadcrumbs'][] = ['label' => 'Projects', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="project-create">
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?=$this->title?></h3>
+        <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
 
-</div>
+
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div><!-- box-footer -->
+</div><!-- /.box -->
+

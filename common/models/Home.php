@@ -32,20 +32,21 @@ class Home extends \yii\db\ActiveRecord
     // Status Active - สถานะเปิดใช้งาน/ไม่ใช้งาน
     const  STATUS_INACTIVE = 0;
     const   STATUS_ACTIVE = 1;
+    const  STATUS_DELETED = -1;
 
     // ฺBooking status - สถานะการจอง
     const  STATUS_HOME_READY = 1;
-    const  STATUS_HOME_RESERVED = '2';
+    const  STATUS_HOME_RESERVED = 2;
 
 
     // constract status - สถานะการทำสัญญาซื้อขาย
     const  STATUS_CONTRACT_READY = 1;
-    const  STATUS_CONTRACT_SUCCESS = '2';
+    const  STATUS_CONTRACT_SUCCESS = 2;
 
 
     // transfer status - สถานะการทำเรื่องโอน
     const  STATUS_TRANSFER_READY = 1;
-    const  STATUS_TRANSFER_SUCCESS = '2';
+    const  STATUS_TRANSFER_SUCCESS = 2;
 
 
     // ประเภทสิ่งก่อสร้าง
@@ -60,6 +61,16 @@ class Home extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'sys_home';
+    }
+
+
+    public function getStatusItems()
+    {
+        return [
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_INACTIVE  => 'Inactive',
+            self::STATUS_DELETED  => 'Deleted',
+        ];
     }
 
     public function getBookingStatusItems()
@@ -110,6 +121,16 @@ class Home extends \yii\db\ActiveRecord
         return ArrayHelper::getValue(self::getTransferStatusItems(),$this->transfer_status);
     }
 
+
+    /**
+     *  status name
+     * @return mixed
+     */
+    public function getStatusName() {
+        return ArrayHelper::getValue(self::getStatusItems(),$this->status);
+    }
+
+
     /**
      * @inheritdoc
      */
@@ -143,7 +164,7 @@ class Home extends \yii\db\ActiveRecord
             'project_id' => 'โครงการ',
             'plan_no' => 'แปลงที่',
             'home_no' => 'บ้านเลขที่',
-            'status' => 'เปิดใช้งาน',
+            'status' => 'สถานะ',
             'type' => 'ประเภท',
             'home_price' => 'ราคา',
             'land' => 'Land',
@@ -172,7 +193,9 @@ class Home extends \yii\db\ActiveRecord
 
     public function getProjectItems()
     {
-        return ArrayHelper::map(Project::find()->all(), 'id', 'name');
+        return ArrayHelper::map(Project::find()
+            ->where(['status' => Project::STATUS_ACTIVE])
+            ->all(), 'id', 'name');
     }
 
 
