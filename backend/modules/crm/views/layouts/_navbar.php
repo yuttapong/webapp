@@ -21,19 +21,27 @@ echo Nav::widget([
     'items' => [
         ['label' => '<i class="fa fa-user"></i> ลูกค้า', 'url' => ['customer/index'],'items'=>[
             [
-                'label' => '<i class="fa fa-search"></i> ลูกค้า',
-                'url'=>['customer/index']
+                'label' => '<i class="fa fa-search"></i> ค้นหาลูกค้า - Search Customer',
+                'url'=>['customer/search']
             ],
             [
-                'label' => '<i class="fa fa-search"></i> ลูกค้าทั้งหมด',
+                'label' => '<i class="fa fa-plus"></i> เพิ่มลูกค้าใหม่ - New Customer',
+                'url'=>['customer/search']
+            ],
+            [
+                'label' => '<i class="fa fa-user-circle"></i> ลูกค้าที่ฉับผิดชอบ - My Lead',
+                'url'=>['customer/mylead']
+            ],
+            [
+                'label' => '<i class="fa fa-group"></i> ลูกค้าทั้งหมด - All Customer',
                 'url'=>['customer/all']
             ],
             [
-                'label' => '<i class="fa fa-book"></i> แบบสอบถาม',
+                'label' => '<i class="fa fa-book"></i> แบบสอบถาม - Questionnaire',
                 'url'=>['customer/questionnaire']
             ],
             [
-                'label' => '<i class="fa fa-commenting"></i> ประวัติการติดต่อ',
+                'label' => '<i class="fa fa-commenting"></i> ประวัติการติดต่อ - Communication',
                 'url'=>['customer/communication']
             ],
         ]],

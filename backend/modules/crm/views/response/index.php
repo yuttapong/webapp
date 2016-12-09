@@ -31,11 +31,12 @@ echo $msg;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
            // 'id',
-            'datetime:datetime',
-            [
+             [
                 'header' => 'โครงการ',
                 'value' => 'survey.site.site_name',
             ],
+            'datetime:datetime',
+
             [
                 'attribute' => 'survey.name',
                 'value' => function ($model) {

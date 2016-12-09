@@ -1,18 +1,32 @@
 <?php
 use yii\helpers\Html;
 use kartik\grid\GridView;
-
 ?>
-<p>
-    <?php  echo Html::a('<i class="fa fa-plus"></i>',
-        ['customer/change-person-in-charge', 'customerId' => $modelCustomer->id],
-        [
-            'class' => 'btn btn-success btn-sm  modal-add-personincharge',
-            'title' => 'กำหนดผู้รับผิดชอบ',
-            'data-header' => 'กำหนด: ผู้รับชอบ',
-        ]);
-    ?>
-</p>
+
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-user-plus fa-2x"></i> ผู้รับผิดชอบ</h3>
+        <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <?php
+            // ผู้ใช้งานสามารถกำหนดผู้รับผิดชอบได้หรือไม่ ?
+            if(  Yii::$app->user->can('/crm/customer/change-person-in-charge'))
+            {
+                echo Html::a('<i class="fa fa-plus"></i>',
+                    ['customer/change-person-in-charge', 'customerId' => $modelCustomer->id],
+                    [
+                        'class' => 'btn btn-success btn-sm  modal-add-personincharge',
+                        'title' => 'กำหนดผู้รับผิดชอบ',
+                        'data-header' => 'กำหนด: ผู้รับชอบ',
+                    ]);
+            }
+            ?>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+
+
 
 <?php  echo GridView::widget([
     'dataProvider' => $dataProviderPersonInCharge,
@@ -56,7 +70,7 @@ use kartik\grid\GridView;
         ],
         [
           'header' => 'สร้างโดย',
-            'value' => 'createdName.fullnameTH'
+            'value' => 'createdName.firstname_th'
         ],
         'active:boolean',
         [
@@ -108,4 +122,8 @@ use kartik\grid\GridView;
                 'showFooter'=>false
             ],*/
 ]);?>
-
+</div><!-- /.box-body -->
+<div class="box-footer">
+    The footer of the box
+</div><!-- box-footer -->
+</div><!-- /.box -->
