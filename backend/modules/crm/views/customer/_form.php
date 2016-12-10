@@ -4,18 +4,16 @@ use kartik\widgets\ActiveForm;
 use kartik\builder\Form;
 use yii\bootstrap\Modal;
 use common\siricenter\thaiformatter\ThaiDate;
-
+use yii\bootstrap\Collapse;
 /**
  * @var yii\web\View $this
  * @var backend\modules\crm\models\Customer $model
  * @var yii\widgets\ActiveForm $form
  */
 
-
 \backend\modules\crm\CustomerAsset::register($this);
+
 ?>
-
-
 
 
     <?php $form = ActiveForm::begin([
@@ -27,87 +25,35 @@ use common\siricenter\thaiformatter\ThaiDate;
 
     <div class="box box-info">
     <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-user-circle fa-2x"></i> ข้อมูลทั่วไป</h3>
+        <h3 class="box-title"><i class="fa fa-user-circle fa-2x"></i> ข้อมูลทั่วไป - General</h3>
         <div class="box-tools pull-right">
             <!-- Buttons, labels, and many other things can be placed here! -->
             <!-- Here is a label for example -->
             <?php
-            echo Html::tag('p',
-                Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'บันทึกข้อมูล'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']),
-                ['align' => 'center']);
-
+            echo
+                Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'บันทึกข้อมูล'), [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
+                ]);
             ?>
-
+            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
         </div><!-- /.box-tools -->
     </div><!-- /.box-header -->
     <div class="box-body">
     <?php
-    echo Form::widget([
-        'model' => $model,
-        'form' => $form,
-        'columns' => 4,
-        'attributes' => [
-            'gender' => [
-                'type' => Form::INPUT_DROPDOWN_LIST,
-                'items' => $model->getGenderItems(),
-                'options' => ['prompt' => '-เพศ-']
-            ],
-            'prefixname' => ['type' => Form::INPUT_DROPDOWN_LIST,'items'=>$model->getPrefixNameItems(),'options'=> [
-                'prompt' => '-คำนำหน้า-'
-            ]],
-            'prefixname_other' => ['type' => Form::INPUT_TEXT, 'options' => ['placeholder' => 'คำนำหน้าพิเศษ...']],
-
-            'firstname' => ['type' => Form::INPUT_TEXT, 'options' => ['placeholder' => 'ระบุ ชื่อจริง...']],
-            'lastname' => ['type' => Form::INPUT_TEXT, 'options' => ['placeholder' => 'ระบุ นามสกุล...']],
-
-            'age' => ['type' => Form::INPUT_TEXT, 'options' => ['placeholder' => 'ระบุ อายุ...']],
-           // 'birthday' => ['type' => Form::INPUT_WIDGET, 'widgetClass' => DateControl::classname(), 'options' => ['type' => DateControl::FORMAT_DATE]],
-            'birthday' => [
-                'type' => Form::INPUT_WIDGET,
-                'widgetClass' => \yii\widgets\MaskedInput::className(),
-                'options' => [
-
-                    'clientOptions' => [
-                        'alias' => ['99-99-9999']
-                    ]
-                ],
-            ],
-            'tel' => ['type' => Form::INPUT_TEXT, 'options' => ['placeholder' => 'ระบุ เบอร์โทร...']],
-            'mobile' => [
-                'type' => Form::INPUT_WIDGET,
-                'widgetClass' => \yii\widgets\MaskedInput::className(),
-                'options' => [
-                    'clientOptions' => [
-                        'alias' => ['9999999999']
-                    ]
-                ],
-            ],
-
-            'email' => ['type' => Form::INPUT_TEXT, 'options' => ['placeholder' => 'ระบุ Email...']],
-            'source' => [
-                'type' => Form::INPUT_DROPDOWN_LIST,
-                'items'=>$model->getSourceItems(),
-                'options'=> [
-                    'prompt' => '-แหล่งที่มา-'
-                ]
-            ],
-            'is_vip' => ['type' => Form::INPUT_CHECKBOX, 'options' => ['title' => 'เป็นลูกค้า VIP']],
-
-        ]
-
-    ]);
+  /// $this->render('customer/_form-general',['model' => $model,'form'=>$form]);
 ?>
 
-
+<?php if( ! $model->isNewRecord):?>
         <?=Html::activeLabel($model,'createdName')?> : <?=$model->getCreatedName()?> (<?=ThaiDate::widget([
         'timestamp' => $model->created_at,
         'showTime' => true,
         ])?>)
-<br>
         <?=Html::activeLabel($model,'updatedName')?> : <?=$model->getUpdatedName()?> (<?=ThaiDate::widget([
             'timestamp' => $model->updated_at,
             'showTime' => true,
         ])?>)
+  <?php endif;?>
+
 
 </div><!-- /.box-body -->
 <div class="box-footer">
@@ -116,6 +62,44 @@ use common\siricenter\thaiformatter\ThaiDate;
 </div><!-- /.box -->
 
 
+<?php
+
+echo Collapse::widget([
+    'encodeLabels' => false,
+    'items' => [
+        // equivalent to the above
+        [
+            'label' => '<i class="fa fa-user-circle fa-2x"></i> ข้อมูลทั่วไป - General',
+            'content' => $this->render('customer/_form-general',['model' => $model,'form'=>$form]),
+            // open its content by default
+            'contentOptions' => ['class' => 'in']
+        ],
+        // another group item
+        [
+            'label' => '<i class="fa fa-address-card fa-2x"></i> ที่อยู่ - Address',
+            'content' => [$this->render($model->isNewRecord?'address/create':'address/update',[
+                'modelCustomer' => $model,
+                'form' => $form,
+                'modelAddressContact'=>isset($modelAddressContact)?$modelAddressContact:null,
+                'modelAddressOffice'=> isset($modelAddressOffice)?$modelAddressOffice:null,
+                'dataProviderAddress'=>$dataProviderAddress
+                ]),
+            ],
+            'contentOptions' => [],
+            'options' => [],
+        ],
+        // if you want to swap out .panel-body with .list-group, you may use the following
+        [
+            'label' => '<i class="fa fa-user-circle fa-2x"></i> ผู้รับผิดชอบ - General',
+            'content' => [],
+            'contentOptions' => [],
+            'options' => [],
+            'footer' => 'Footer' // the footer label in list-group
+        ],
+    ]
+]);
+
+?>
 
 
 
@@ -142,9 +126,6 @@ use common\siricenter\thaiformatter\ThaiDate;
     }
 
 ?>
-
-
-
     <?php
     ActiveForm::end();
 
@@ -156,28 +137,6 @@ use common\siricenter\thaiformatter\ThaiDate;
 //แสดงปุ่มเพิ่มที่อยุู่ในหน้าแก้ไข
 if ( ! $model->isNewRecord) {
 ?>
-    <div class="row">
-        <div class="col-xs-12 col-sm-6">
-            <?php
-
-            echo $this->render('address/index',[
-                'modelCustomer' => $model,
-                'dataProviderAddress'=>$dataProviderAddress
-            ]);
-            ?>
-        </div>
-
-        <div class="col-xs-12 col-sm-6">
-            <?php
-            echo $this->render('person-in-charge/index',[
-                'modelCustomer' => $model,
-                'dataProviderPersonInCharge'=>$dataProviderPersonInCharge
-            ]);
-            ?>
-        </div>
-    </div>
-
-
 
 <?php
     Modal::begin([
@@ -206,7 +165,6 @@ if ( ! $model->isNewRecord) {
 
 
 }
-
 
 ?>
 

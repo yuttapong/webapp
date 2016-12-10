@@ -12,7 +12,6 @@ use backend\modules\crm\models\SurveySearch;
 use backend\modules\crm\models\Response;
 
 
-
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -70,84 +69,91 @@ class SurveyController extends \yii\web\Controller
         ]);
     }
 
-    public function actionDo($id, $customer_id)
+    public function actionDo()
     {
-        $modelSurvey = Survey::findOne($id);
-
-        if (Yii::$app->request->post()) {
-            $this->_answer = Yii::$app->request->post();
-
-            $survey_id = $this->_answer['survey_id'];
-            $customer_id = $this->_answer['customer_id'];
-            //$submitted = $this->_answer['submitted_date'] . ' ' . $this->_answer['submitted_time'];
-            $submitted = date("Y-m-d") . ' ' . $this->_answer['submitted_time'];
+        $id = Yii::$app->request->get('id');
+        $customer_id = Yii::$app->request->get('customer_id');
+        if ($id && $customer_id) {
 
 
-            //ตรวจสอบว่าทำแบบสอบถามนี้แล้วหรือยังก่อน
-            $countResponse = Response::find()->where([
-                'survey_id' => $survey_id,
-                'table_name' => Customer::TABLE_NAME,
-                'table_key' => $customer_id,
-            ])->count();
+            $modelSurvey = Survey::findOne($id);
+
+            if (Yii::$app->request->post()) {
+                $this->_answer = Yii::$app->request->post();
+
+                $survey_id = $this->_answer['survey_id'];
+                $customer_id = $this->_answer['customer_id'];
+                //$submitted = $this->_answer['submitted_date'] . ' ' . $this->_answer['submitted_time'];
+                $submitted = date("Y-m-d") . ' ' . $this->_answer['submitted_time'];
 
 
-            if ($countResponse == 0) {
-                $seq = 1;
-            } else {
-                $modelResponse = Response::find()
-                    ->where([
-                        'survey_id' => $survey_id,
-                        'table_name' => Customer::TABLE_NAME,
-                        'table_key' => $customer_id,
-                    ])
+                //ตรวจสอบว่าทำแบบสอบถามนี้แล้วหรือยังก่อน
+                $countResponse = Response::find()->where([
+                    'survey_id' => $survey_id,
+                    'table_name' => Customer::TABLE_NAME,
+                    'table_key' => $customer_id,
+                ])->count();
+
+
+                if ($countResponse == 0) {
+                    $seq = 1;
+                } else {
+                    $modelResponse = Response::find()
+                        ->where([
+                            'survey_id' => $survey_id,
+                            'table_name' => Customer::TABLE_NAME,
+                            'table_key' => $customer_id,
+                        ])
+                        ->orderBy(['id' => SORT_DESC])
+                        ->one();
+                    $seq = $modelResponse->seq + 1;
+                }
+
+
+                $modelResponse = new Response();
+                $modelResponse->datetime = strtotime($submitted);
+                $modelResponse->customer_id = $customer_id;
+                $modelResponse->table_name = Customer::TABLE_NAME;
+                $modelResponse->submitted = $submitted; // ทีแรกใช้ field นี้
+
+
+                //ใช้ field ชื่อว่า datetime เป็นหลัก ในการเก็บข้อมูลวันที่ลูกค้ามาเยี่ยมชม
+                $modelResponse->datetime = strtotime($submitted);
+                $modelResponse->table_key = $customer_id;
+                $modelResponse->survey_id = $survey_id;
+                $modelResponse->created_at = time();
+                $modelResponse->created_by = Yii::$app->user->id;
+                $modelResponse->updated_at = time();
+                $modelResponse->updated_by = Yii::$app->user->id;
+                $modelResponse->seq = $seq;
+                $modelResponse->site_id = $modelSurvey->site_id;
+
+
+                if ($modelResponse->save()) {
+                    return $this->redirect(['response/update', 'id' => $modelResponse->id]);
+                }
+            }
+
+
+            $countSeq = $this->countSeqOfResponse($id, $customer_id);
+            if ($countSeq > 0) {
+                $rs = Response::find()
+                    ->where(['table_key' => $customer_id, 'survey_id' => $id])
                     ->orderBy(['id' => SORT_DESC])
                     ->one();
-                $seq = $modelResponse->seq + 1;
+                return $this->redirect(['response/view', 'id' => $rs->id]);
             }
+            return $this->render('do', [
+                'modelSurvey' => $modelSurvey,
+                'answerSingle' => [],
+                'answerMultiple' => [],
+                'answerOther' => [],
+                'answerText' => [],
+                'countSeq' => $countSeq,
+                'modelCustomer' => Customer::findOne($customer_id),
+            ]);
 
-
-            $modelResponse = new Response();
-            $modelResponse->datetime = strtotime($submitted);
-            $modelResponse->customer_id = $customer_id;
-            $modelResponse->table_name = Customer::TABLE_NAME;
-            $modelResponse->submitted = $submitted; // ทีแรกใช้ field นี้
-
-
-            //ใช้ field ชื่อว่า datetime เป็นหลัก ในการเก็บข้อมูลวันที่ลูกค้ามาเยี่ยมชม
-            $modelResponse->datetime = strtotime($submitted);
-            $modelResponse->table_key = $customer_id;
-            $modelResponse->survey_id = $survey_id;
-            $modelResponse->created_at = time();
-            $modelResponse->created_by = Yii::$app->user->id;
-            $modelResponse->updated_at = time();
-            $modelResponse->updated_by = Yii::$app->user->id;
-            $modelResponse->seq = $seq;
-            $modelResponse->site_id = $modelSurvey->site_id;
-
-
-            if ($modelResponse->save()){
-                return $this->redirect(['response/update', 'id' => $modelResponse->id]);
-            }
         }
-
-
-        $countSeq = $this->countSeqOfResponse($id, $customer_id);
-        if ($countSeq > 0) {
-            $rs = Response::find()
-                ->where(['table_key' => $customer_id, 'survey_id' => $id])
-                ->orderBy(['id' => SORT_DESC])
-                ->one();
-            return $this->redirect(['response/view', 'id' => $rs->id]);
-        }
-        return $this->render('do', [
-            'modelSurvey' => $modelSurvey,
-            'answerSingle' => [],
-            'answerMultiple' => [],
-            'answerOther' => [],
-            'answerText' => [],
-            'countSeq' => $countSeq,
-            'modelCustomer' => Customer::findOne($customer_id),
-        ]);
     }
 
     /**
@@ -244,7 +250,7 @@ class SurveyController extends \yii\web\Controller
             'query' => Question::find()->where(['survey_id' => $model->id]),
             'sort' => [
                 'defaultOrder' => [
-                    'seq' => SORT_ASC ,                ]
+                    'seq' => SORT_ASC,]
             ]
         ]);
         return $this->render('update', [

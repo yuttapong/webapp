@@ -12,20 +12,14 @@ use yii\bootstrap\Nav;
  * @var backend\modules\crm\models\CustomerSearch $searchModel
  */
 
-
 $this->title = 'ข้อมูลลูกค้า';
-
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 <?php
  echo $this->render('toolbar/customer');
 ?>
 <br>
 
-<?php
- \yii\widgets\Pjax::begin();
-?>
 
 
 
@@ -36,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <br>
     <?php
-
     echo ButtonDropdown::widget([
         'label' => 'เพิ่ม',
         'dropdown' => [
@@ -47,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
 
     ?>
+<div class="table-responsive">
     <?php
 
     echo GridView::widget([
@@ -164,16 +158,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
             ],
         ],
-        'responsive' => true,
-        'hover' => true,
-        'condensed' => true,
-        'floatHeader' => false,
     ]);
 
     ?>
+</div>
 
-
-
-
-<?php \yii\widgets\Pjax::end()?>
 

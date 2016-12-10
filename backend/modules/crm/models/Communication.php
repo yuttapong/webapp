@@ -23,9 +23,10 @@ use yii\behaviors\BlameableBehavior;
 class Communication extends \yii\db\ActiveRecord
 {
     public $fromTime;
-    public  $toTime;
-    public  $date;
+    public $toTime;
+    public $date;
     public $time;
+
     /**
      * @inheritdoc
      */
@@ -40,12 +41,12 @@ class Communication extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date','time','detail','datetime'], 'required'],
+            [['date', 'time', 'detail', 'datetime','title'], 'required'],
             [['detail'], 'string'],
-            [['created_at', 'created_by', 'updated_at', 'updated_by', 'customer_id','timestamp'], 'integer'],
+            [['created_at', 'created_by', 'updated_at', 'updated_by', 'customer_id', 'timestamp'], 'integer'],
             [['title'], 'string', 'max' => 120],
             [['type'], 'string', 'max' => 60],
-            [['datetime'],'safe'],
+            [['datetime'], 'safe'],
         ];
     }
 
@@ -98,15 +99,17 @@ class Communication extends \yii\db\ActiveRecord
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 
-    public function getCreatedName(){
-         $model = OrgPersonnel::findOne(['created_by'=>$this->created_by]);
+    public function getCreatedName()
+    {
+        $model = OrgPersonnel::findOne(['created_by' => $this->created_by]);
         return @$model->fullnameTH;
     }
 
-    public function getUpdatedName(){
-         $model = OrgPersonnel::findOne(['updated_by'=>$this->updated_by]);
+    public function getUpdatedName()
+    {
+        $model = OrgPersonnel::findOne(['updated_by' => $this->updated_by]);
         return @$model->fullnameTH;
     }
-    
-    
+
+
 }
