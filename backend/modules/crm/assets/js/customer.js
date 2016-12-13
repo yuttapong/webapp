@@ -33,9 +33,7 @@ $('.modal-add-questionnaire').on('click', function(e) {
     showModalCustomer(header, link)
 });
 
-
 // communication
-
 $('.modal-add-communication').on('click', function(e) {
     e.preventDefault();
     var header = $(this).data('header');
@@ -52,7 +50,6 @@ $('.modal-edit-communication').on('click', function(e) {
     showModalCommunication(header, link)
 });
 
-
 $('.modal-view-communication').on('click', function(e) {
     e.preventDefault();
     var header = $(this).data('header');
@@ -60,9 +57,6 @@ $('.modal-view-communication').on('click', function(e) {
     console.log('add-questionnaire : ', link);
     showModalCommunication(header, link)
 });
-
-
-
 
 // person in charge
 $(".modal-add-personincharge").on("click", function(e) {

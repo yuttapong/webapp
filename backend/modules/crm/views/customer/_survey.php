@@ -1,18 +1,17 @@
 <?php
 use yii\helpers\Html;
 use yii\grid\GridView;
+
+
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\crm\models\ResponseSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-?>
 
-<p>
-<?php  Html::a('<i class="fa fa-plus"></i> เพิ่มแบบสอบถามใหม่', ['survey','customerId'=>$modelCustomer->id], [
-    'class' => 'btn btn-success btn-sm modal-add-questionnaire',
-    'title' => 'เพิ่มแบบสอบถาม',
-    'data-header' => 'เลือกแบบสอบถาม ที่ต้องการกรอก',
-]) ?>
-</p>
+$this->title = 'เลือกแบบสอบถาม - Choose Questionnaire';
+$this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' =>  $modelCustomer->fullname, 'url' => ['view','id'=>$modelCustomer->id]];
+$this->params['breadcrumbs'][] = $this->title;
+?>
 <div class="table-responsive">
     <?php
     \yii\widgets\Pjax::begin();
@@ -44,7 +43,7 @@ use yii\grid\GridView;
                 ],
                 'urlCreator' => function ($action, $model, $key, $index) {
                     if ($action === 'do') {
-                        $customerId = Yii::$app->request->get('id');
+                        $customerId = Yii::$app->request->get('customerId');
                         $url = \yii\helpers\Url::to(['survey/do', 'id' => $model->id, 'customer_id' => $customerId]);
                         return $url;
                     }
@@ -55,8 +54,5 @@ use yii\grid\GridView;
     ]);
     \yii\widgets\Pjax::end();
     ?>
-
-
-
 </div>
 

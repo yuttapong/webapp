@@ -3,14 +3,6 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 ?>
-
-<div class="box-tools pull-right">
-    <!-- Buttons, labels, and many other things can be placed here! -->
-    <!-- Here is a label for example -->
-
-</div>
-
-
 <div class="table-responsive">
     <?php
     \yii\widgets\Pjax::begin();
@@ -25,7 +17,7 @@ use yii\grid\GridView;
                                 ?'<span class="label label-success">Active</span>'
                                 :'<span class="label label-danger">Inactive</span>';
                         }
-                    ],*/
+            ],*/
             [
                 'attribute' => 'type',
                 'value' => function ($model) {
@@ -77,3 +69,4 @@ use yii\grid\GridView;
 
     \yii\widgets\Pjax::end();
     ?>
+  </div>

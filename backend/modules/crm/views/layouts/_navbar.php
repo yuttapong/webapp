@@ -26,7 +26,7 @@ echo Nav::widget([
             ],
             [
                 'label' => '<i class="fa fa-plus"></i> เพิ่มลูกค้าใหม่ - New Customer',
-                'url'=>['customer/search']
+                'url'=>['customer/create']
             ],
             [
                 'label' => '<i class="fa fa-user-circle"></i> ลูกค้าที่ฉับผิดชอบ - My Lead',

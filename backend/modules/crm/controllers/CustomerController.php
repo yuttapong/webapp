@@ -16,20 +16,17 @@ use backend\modules\crm\models\CustomerSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\modules\crm\models\Survey;
 use backend\modules\crm\models\SurveySearch;
 use backend\modules\crm\models\ResponseSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
-use backend\models\Model;
 use common\models\SysAmphur;
-
 use common\models\SysTambon;
 use yii\helpers\Json;
 use yii\filters\AccessControl;
 use yii\widgets\ActiveForm;
-
 use backend\modules\crm\models\CommunicationSearch;
+
 
 /**
  * CustomerController implements the CRUD actions for Customer model.
@@ -69,7 +66,6 @@ class CustomerController extends Controller
         ];
 
     }
-
 
 
     /**
@@ -117,16 +113,16 @@ class CustomerController extends Controller
         $query = CustomerResponsible::find();
         //$query->joinWith('customer');
 
-         $dataProvider =  new ActiveDataProvider([
-             'query' =>  $query
-         ]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query
+        ]);
 
         $query->filterWhere(['active' => 1]);
         $query->filterWhere(['user_id' => Yii::$app->user->getId()]);
 
         return $this->render('mylead', [
             'dataProvider' => $dataProvider,
-           //  'searchModel' => $searchModel,
+            //  'searchModel' => $searchModel,
         ]);
     }
 
@@ -147,7 +143,6 @@ class CustomerController extends Controller
             'searchModel' => $searchModel,
         ]);
     }
-
 
 
     /**
@@ -209,6 +204,13 @@ class CustomerController extends Controller
             //  'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]],
 
         ]);
+
+        $CustomerResponsible = $model->getPersonsInCharge();
+        $dataProviderPersonInCharge = new ActiveDataProvider([
+            'query' => $CustomerResponsible
+        ]);
+
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -221,6 +223,7 @@ class CustomerController extends Controller
                 'dataProviderSurvey' => $dataProviderSurvey,
                 'searchComm' => $searchComm,
                 'dataProviderComm' => $dataProviderComm,
+                'dataProviderPersonInCharge' => $dataProviderPersonInCharge,
                 'customerId' => $id,
             ]);
 
@@ -235,25 +238,25 @@ class CustomerController extends Controller
      * @return mixed
      */
 
-    public function actionSurvey($customerId)
-    {
-        $modelCustomer = $this->findModel($customerId);
-        $searchModelSurvey = new  SurveySearch();
-        $dataProviderSurvey = new ActiveDataProvider([
-            'query' => Survey::find()->where(['status' => 1])
-        ]);
+    /*    public function actionSurvey($customerId)
+        {
+            $modelCustomer = $this->findModel($customerId);
+            $searchModelSurvey = new  SurveySearch();
+            $dataProviderSurvey = new ActiveDataProvider([
+                'query' => Survey::find()->where(['status' => 1])
+            ]);
 
-        $searchModel = new  SurveySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $searchModel = new  SurveySearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->renderAjax('_survey', [
-            'modelCustomer' => $modelCustomer,
-            'searchModelSurvey' => $searchModel,
-            'dataProviderSurvey' => $dataProvider,
-            'customerId' => $customerId,
-        ]);
+            return $this->renderAjax('_survey', [
+                'modelCustomer' => $modelCustomer,
+                'searchModelSurvey' => $searchModel,
+                'dataProviderSurvey' => $dataProvider,
+                'customerId' => $customerId,
+            ]);
 
-    }
+        }*/
 
 
     /**
@@ -264,6 +267,12 @@ class CustomerController extends Controller
 
     public function actionCreate()
     {
+        /*
+        $CustomerResponsible = $modelCustomer->getPersonsInCharge();
+        $dataProviderPersonInCharge = new ActiveDataProvider([
+            'query' => $CustomerResponsible
+        ]);
+        */
         $model = new Customer();
         $modelAddressContact = new GeneralAddress();
         $modelAddressOffice = new AddressOfficeForm();
@@ -323,10 +332,10 @@ class CustomerController extends Controller
         ]);
 
         $CustomerResponsible = $modelCustomer->getPersonsInCharge();
-        $dataProviderPersonInCharge =  new ActiveDataProvider([
+        $dataProviderPersonInCharge = new ActiveDataProvider([
             'query' => $CustomerResponsible
         ]);
-        
+
 
         if ($modelCustomer->load(Yii::$app->request->post())) {
 
@@ -371,6 +380,20 @@ class CustomerController extends Controller
 
     }
 
+
+    public function actionChooseSurvey($customerId)
+    {
+        if ($customerId) {
+            //แบบสอบถาม
+            $searchModelSurvey = new  SurveySearch();
+            $dataProviderSurvey = $searchModelSurvey->searchCustomerServey(Yii::$app->request->queryParams);
+            return $this->render('_survey', [
+                'dataProviderSurvey' => $dataProviderSurvey,
+                'searchModelSurvey' => $searchModelSurvey,
+                'modelCustomer' => $this->findModel($customerId),
+            ]);
+        }
+    }
 
     /**
      * Finds the Customer model based on its primary key value.
@@ -437,17 +460,9 @@ class CustomerController extends Controller
         $modelAddress->active = 1;
 
         if (Yii::$app->request->post() && $modelAddress->load(Yii::$app->request->post())) {
-
-            /*         if ($modelAddress->type == GeneralAddress::TYPE_OFFICE) {
-                         $modelAddress->scenario == GeneralAddress::TYPE_OFFICE;
-                     } else {
-                         $modelAddress->scenario = GeneralAddress::TYPE_CONTACT;
-                     }*/
-
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                 return ActiveForm::validate($modelAddress);
-
             }
 
 
@@ -613,36 +628,37 @@ class CustomerController extends Controller
 
     public function actionChangePersonInCharge($customerId)
     {
-        $customerId = Yii::$app->request->get('customerId');
-        $model = new CustomerResponsible();
-        $model->customer_id = $customerId;
+        $customerId = Yii::$app->request->get('customerId', '');
+        if ($customerId != '') {
+            $model = new CustomerResponsible();
+            $model->customer_id = $customerId;
 
-        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
-            $model->created_by = Yii::$app->user->id;
-            $model->created_at = time();
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'เพิ่มที่ข้อมูลเรียบร้อย');
-                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                return ['success' => 1,'msg' => 'เพิ่มผู้รับผิดชอบเรียบร้อยแล้ว','msgClass'=>'text text-success'];
-            } else {
-                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                return [
-                    'success' => 0,
-                    'msg' => 'ไม่สามารถเพิ่มข้อมูลได้',
-                    'msgClass'=>'text text-danger',
-                    'errors'=> $model->errors
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+                $model->created_by = Yii::$app->user->id;
+                $model->created_at = time();
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'เพิ่มที่ข้อมูลเรียบร้อย');
+                    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                    return ['success' => 1, 'msg' => 'เพิ่มผู้รับผิดชอบเรียบร้อยแล้ว', 'msgClass' => 'text text-success'];
+                } else {
+                    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                    return [
+                        'success' => 0,
+                        'msg' => 'ไม่สามารถเพิ่มข้อมูลได้',
+                        'msgClass' => 'text text-danger',
+                        'errors' => $model->errors
                     ];
+                }
+            } else {
+                return $this->renderAjax('person-in-charge/_form', [
+                    'model' => $model,
+                    'customer' => Customer::findOne($customerId),
+                ]);
+
             }
-        } else {
-            return $this->renderAjax('person-in-charge/_form', [
-                'model' => $model,
-                'customer' => Customer::findOne($customerId),
-            ]);
-
         }
+
     }
-
-
 
 
     public function actionGetAmphur()
@@ -721,7 +737,8 @@ class CustomerController extends Controller
     /**
      * action to fetch customer
      */
-    public function actionPersonnelList($q = null) {
+    public function actionPersonnelList($q = null)
+    {
         $customers = OrgPersonnel::find()
             ->filterWhere(['like', 'firstname_th', $q])
             ->orFilterWhere(['like', 'lastname_th', $q])
@@ -732,7 +749,7 @@ class CustomerController extends Controller
             $out[] = [
                 'id' => $d->user_id,
                 'value' => $d->fullnameTH,
-                'name'=>$d->code.' :: ' .$d->fullnameTH
+                'name' => $d->code . ' :: ' . $d->fullnameTH
             ];
         }
         echo Json::encode($out);

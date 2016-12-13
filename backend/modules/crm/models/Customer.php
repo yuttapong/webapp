@@ -111,7 +111,8 @@ class Customer extends \yii\db\ActiveRecord
             'prefixname_other' => 'คำนำหน้าพิเศษ',
             'day_visit' => 'เยี่ยมชมโครงการเมื่อ',
             'createdName' => 'บันทึกโดย',
-            'updatedName' =>'แก้ไขล่าสุดโดย'
+            'updatedName' => 'แก้ไขล่าสุดโดย',
+            'currentPersonInCharge' => 'ผู้รับผิดชอบ',
         ];
     }
 
@@ -247,58 +248,63 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getPersonsInCharge()
     {
-        return $this->hasOne(CustomerResponsible::className(), ['customer_id' => 'id']);
+        return $this->hasMany(CustomerResponsible::className(), ['customer_id' => 'id']);
     }
 
 
     private function _findUser($id)
     {
-        $user = OrgPersonnel::find()->where(['user_id'=>$this->created_by])->one();
-        if($user)
+        $user = OrgPersonnel::find()->where(['user_id' => $this->created_by])->one();
+        if ($user)
             return $user;
     }
 
-    public function getCreatedName(){
+    public function getCreatedName()
+    {
         $user = self::_findUser($this->created_by);
         return @$user->firstname_th;
     }
 
-    public function getUpdatedName(){
+    public function getUpdatedName()
+    {
         $user = self::_findUser($this->updated_by);
         return @$user->firstname_th;
     }
 
 
-
     // ค้นหา ผุ้ครับผิดชอบคนล่าสุด
-    private function _findCurrentPersonInCharge(){
+    private function _findCurrentPersonInCharge()
+    {
         $user = CustomerResponsible::find()
-            ->where(['customer_id'=> $this->id])
-            ->orderBy(['created_at'=>SORT_DESC])
+            ->where(['customer_id' => $this->id])
+            ->orderBy(['created_at' => SORT_DESC])
             ->limit(1)
             ->one();
-        if($user)
+        if ($user)
             return $user;
 
     }
 
     // ผุ้ครับผิดชอบคนล่าสุด
-    public function getCurrentPersonInCharge(){
+    public function getCurrentPersonInCharge()
+    {
         $user = $this->_findCurrentPersonInCharge();
-        return  @$user->personnel->firstname_th;
+        return @$user->personnel->firstname_th;
     }
 
     // ผุ้ครับผิดชอบคนล่าสุด ชื่อแบบเต็ม
-    public function getCurrentPersonInChargeFullname(){
+    public function getCurrentPersonInChargeFullname()
+    {
         $user = $this->_findCurrentPersonInCharge();
-        return  @$user->personnel->fullnameTH;
+        return @$user->personnel->fullnameTH;
     }
 
 
     // จำนวนแบบสอบถามของลูกค้า
-    public function getCountQuestionnaire() {
+    public function getCountQuestionnaire()
+    {
         $questionnaire = Response::find()
-            ->where(['customer_id'=>$this->id, 'active' => Response::STATUS_ACTIVE])
+            ->where(['customer_id' => $this->id, 'active' => Response::STATUS_ACTIVE])
             ->count();
         return $questionnaire;
     }

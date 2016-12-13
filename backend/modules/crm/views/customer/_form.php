@@ -12,7 +12,7 @@ use yii\bootstrap\Collapse;
  */
 
 \backend\modules\crm\CustomerAsset::register($this);
-
+use yii\bootstrap\Tabs;
 ?>
 
 
@@ -23,7 +23,7 @@ use yii\bootstrap\Collapse;
     ]);
 ?>
 
-    <div class="box box-info">
+    <div class="box box-default">
     <div class="box-header with-border">
         <h3 class="box-title"><i class="fa fa-user-circle fa-2x"></i> ข้อมูลทั่วไป - General</h3>
         <div class="box-tools pull-right">
@@ -63,38 +63,35 @@ use yii\bootstrap\Collapse;
 
 
 <?php
-
-echo Collapse::widget([
+echo Tabs::widget([
     'encodeLabels' => false,
     'items' => [
         // equivalent to the above
         [
             'label' => '<i class="fa fa-user-circle fa-2x"></i> ข้อมูลทั่วไป - General',
-            'content' => $this->render('customer/_form-general',['model' => $model,'form'=>$form]),
+            'content' =>'<p>'.$this->render('customer/_form-general',['model' => $model,'form'=>$form]).'</p>',
             // open its content by default
-            'contentOptions' => ['class' => 'in']
         ],
         // another group item
         [
             'label' => '<i class="fa fa-address-card fa-2x"></i> ที่อยู่ - Address',
-            'content' => [$this->render($model->isNewRecord?'address/create':'address/update',[
+            'content' => '<p>' . $this->render($model->isNewRecord?'address/create':'address/update',[
                 'modelCustomer' => $model,
                 'form' => $form,
                 'modelAddressContact'=>isset($modelAddressContact)?$modelAddressContact:null,
                 'modelAddressOffice'=> isset($modelAddressOffice)?$modelAddressOffice:null,
                 'dataProviderAddress'=>$dataProviderAddress
-                ]),
-            ],
-            'contentOptions' => [],
-            'options' => [],
+            ]).'</p>',
+            'visible'=>true,
         ],
-        // if you want to swap out .panel-body with .list-group, you may use the following
         [
-            'label' => '<i class="fa fa-user-circle fa-2x"></i> ผู้รับผิดชอบ - General',
-            'content' => [],
-            'contentOptions' => [],
-            'options' => [],
-            'footer' => 'Footer' // the footer label in list-group
+            'label' => '<i class="fa fa-address-card fa-2x"></i> ผู้รับผิดชอบ - Person In Charge',
+            'content' => '<p>' . $this->render($model->isNewRecord?'person-in-charge/index':'person-in-charge/index',[
+                    'modelCustomer' => $model,
+                    'form' => $form,
+                    'dataProviderPersonInCharge'=>$dataProviderPersonInCharge
+                ]).'</p>',
+            'visible'=>$model->isNewRecord?false:true,
         ],
     ]
 ]);
@@ -104,26 +101,28 @@ echo Collapse::widget([
 
 
     <?php
-    if($model->isNewRecord){
-        echo '<br>';
-        /**
-         * ที่อยุ่ที่สามาติดต่อได้
-         */
-        echo  $this->render('address/_form-type-contact',[
-            'modelCustomer' => $model,
-            'form' => $form,
-            'modelAddress'=>$modelAddressContact,
-        ]);
-        echo '<br>';
-        /**
-         * ที่อยุ่ที่ทำงาน
-         */
-        echo  $this->render('address/_form-type-office',[
-            'modelCustomer' => $model,
-            'form' => $form,
-            'modelAddress'=>$modelAddressOffice,
-        ]);
-    }
+
+//    if($model->isNewRecord){
+//        echo '<br>';
+//        /**
+//         * ที่อยุ่ที่สามาติดต่อได้
+//         */
+//        echo  $this->render('address/_form-type-contact',[
+//            'modelCustomer' => $model,
+//            'form' => $form,
+//            'modelAddress'=>$modelAddressContact,
+//        ]);
+//        echo '<br>';
+//        /**
+//         * ที่อยุ่ที่ทำงาน
+//         */
+//        echo  $this->render('address/_form-type-office',[
+//            'modelCustomer' => $model,
+//            'form' => $form,
+//            'modelAddress'=>$modelAddressOffice,
+//        ]);
+//    }
+
 
 ?>
     <?php

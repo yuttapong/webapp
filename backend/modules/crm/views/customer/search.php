@@ -6,7 +6,7 @@
  */
 
 
-$this->title = 'ค้นหาลูกค้า';
+$this->title = '';
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="div">
     <div class="col-xs-12 col-sm-6 col-md-5 col-md-offset-3">
-     <div class="well">
+     <div class="wells">
 
          <?php echo $this->render('_search-index', [
              'model' => $searchModel,
