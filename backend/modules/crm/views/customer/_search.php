@@ -19,7 +19,6 @@ use kartik\form\ActiveForm;
         <?php  echo $form->field($model, 'mobile') ?>
         <?php  echo $form->field($model, 'tel') ?>
         <?= Html::submitButton('<i class="fa fa-search"></i> '. Yii::t('app','Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('app','Reset'), ['class' => 'btn btn-default']) ?>
         <?=Html::a('<i class="fa fa-plus"></i> เพิ่มข้อมูลลูกค้าใหม่', ['create'], ['class' => 'btn btn-success'])?>
     <?php ActiveForm::end(); ?>
 

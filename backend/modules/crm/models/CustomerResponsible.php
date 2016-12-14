@@ -31,7 +31,7 @@ class CustomerResponsible extends \yii\db\ActiveRecord
         return [
             [['user_id', 'customer_id'], 'required'],
             [['user_id', 'customer_id', 'created_at', 'created_by','active'], 'integer'],
-            [['note'],'safe']
+            [['note','name'],'safe']
         ];
     }
 
@@ -41,7 +41,7 @@ class CustomerResponsible extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('crm.customer', 'User ID'),
+            'user_id' => Yii::t('crm.customer', 'User'),
             'customer_id' => Yii::t('crm.customer', 'Customer ID'),
             'created_at' => Yii::t('crm.customer', 'Created At'),
             'created_by' => Yii::t('crm.customer', 'Created By'),

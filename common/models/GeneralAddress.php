@@ -58,6 +58,7 @@ class GeneralAddress extends \yii\db\ActiveRecord
             [['road'], 'string', 'max' => 100],
             [['zipcode'], 'string', 'max' => 10],
             [['table_name'], 'string', 'max' => 255],
+            [['is_default'],'boolean'],
         ];
     }
 
@@ -88,6 +89,7 @@ class GeneralAddress extends \yii\db\ActiveRecord
             'created_by' => 'สร้างโดย',
             'active' => 'Active',
             'typeName'  => 'ประเภทที่อยู่',
+            'is_default' => 'ตั้งเป็นที่อยู่เริ่มต้น (Default)',
         ];
     }
 

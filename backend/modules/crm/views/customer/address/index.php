@@ -3,6 +3,22 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 ?>
+
+<p>
+    <?php
+    if (Yii::$app->user->can('/crm/customer/add-address')) :
+        echo Html::a('<i class="fa fa-plus"></i>',
+            ['customer/add-address', 'customerId' => $modelCustomer->id],
+            [
+                'class' => 'btn btn-sm btn-success modal-add-address',
+                'title' => 'เพิ่มที่อยู่ - New Address',
+                'data-header' => 'เพิ่ม: ที่อยู่ใหม่',
+            ]);
+    endif;
+    ?>
+</p>
+
+
 <div class="table-responsive">
     <?php
     \yii\widgets\Pjax::begin();
@@ -32,6 +48,17 @@ use yii\grid\GridView;
             'no',
             // 'amphur.name_th',
             'province.name_th',
+            [
+                'attribute' => 'is_default',
+                'format' => 'html',
+                'value' => function($model) {
+                    if($model->is_default === 1 ) {
+                        return '<span class="label label-default">ค่าเริ่มต้น</span>';
+                    }else{
+                        return '';
+                    }
+                }
+            ],
             [
                 'class' => '\yii\grid\ActionColumn',
                 'template' => '{update-address} {view-address} {delete-address}',

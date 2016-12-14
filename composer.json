@@ -21,6 +21,7 @@
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": ">=2.0.4",
+    "yiisoft/yii2-faker": "~2.0.0",
     "yiisoft/yii2-bootstrap": "*",
     "yiisoft/yii2-swiftmailer": "*",
     "dmstr/yii2-adminlte-asset": "2.*",

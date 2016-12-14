@@ -7,7 +7,7 @@
  */
 
 return [
-    'Create' => 'สร้าง',
+    'Create' => 'บันทึก',
     'Update' => 'อัพเดท',
     'Delete' => 'ลบ',
     'Reset' => 'รีเซ็ท',

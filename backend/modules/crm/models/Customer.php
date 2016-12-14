@@ -58,7 +58,7 @@ class Customer extends \yii\db\ActiveRecord
     {
         return [
             [['firstname', 'lastname', 'prefixname', 'gender', 'active'], 'required'],
-            [['id', 'age', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active', 'is_vip'], 'integer'],
+            [['id', 'age', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active', 'is_vip','person_in_charge'], 'integer'],
             [['birthday', 'day_visit'], 'safe'],
             [['prefixname', 'mobile', 'tel', 'gender', 'source', 'prefixname_other'], 'string', 'max' => 20],
             [['firstname', 'lastname'], 'string', 'max' => 45],
@@ -113,6 +113,7 @@ class Customer extends \yii\db\ActiveRecord
             'createdName' => 'บันทึกโดย',
             'updatedName' => 'แก้ไขล่าสุดโดย',
             'currentPersonInCharge' => 'ผู้รับผิดชอบ',
+            'person_in_charge' => 'ผู้รับผิดชอบ',
         ];
     }
 
@@ -174,7 +175,8 @@ class Customer extends \yii\db\ActiveRecord
     {
         return $this->hasMany(GeneralAddress::className(), [
             'table_key' => 'id'
-        ]);
+        ])->where(['active' =>1])
+            ->orderBy(['is_default'=>SORT_DESC]);
     }
 
     /**
@@ -248,7 +250,9 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getPersonsInCharge()
     {
-        return $this->hasMany(CustomerResponsible::className(), ['customer_id' => 'id']);
+        return $this->hasMany(CustomerResponsible::className(), ['customer_id' => 'id'])->orderBy([
+            'created_at' => SORT_DESC
+        ]);
     }
 
 
@@ -276,7 +280,7 @@ class Customer extends \yii\db\ActiveRecord
     private function _findCurrentPersonInCharge()
     {
         $user = CustomerResponsible::find()
-            ->where(['customer_id' => $this->id])
+            ->where(['customer_id' => $this->id,'active'=> 1])
             ->orderBy(['created_at' => SORT_DESC])
             ->limit(1)
             ->one();

@@ -279,6 +279,7 @@ class CustomerController extends Controller
         $model->active = Customer::STATUS_ACTIVE;
 
         $modelAddressContact->type = GeneralAddress::TYPE_CONTACT;
+        $modelAddressContact->is_default = 1;
 
         if ($model->load(Yii::$app->request->post())
             && $modelAddressContact->load(Yii::$app->request->post())
@@ -471,6 +472,13 @@ class CustomerController extends Controller
 
             $modelAddress->table_name = Customer::TABLE_NAME;
             $modelAddress->table_key = $customerId;
+
+
+            if( ! empty($modelAddress->is_default)) {
+                GeneralAddress::updateAll(['is_default'=>0],['table_key'=>$modelAddress->table_key]);
+            }
+
+
             if ($modelAddress->save()) {
                 Yii::$app->session->setFlash('success', 'เพิ่มที่อยู่เรียบร้อย');
                 return $this->redirect(['customer/view', 'id' => $modelAddress->table_key]);
@@ -504,6 +512,11 @@ class CustomerController extends Controller
 
             }
 
+                if( ! empty($modelAddress->is_default)) {
+                    GeneralAddress::updateAll(['is_default'=>0],['table_key'=>$modelAddress->table_key]);
+                }
+
+
 
             if ($modelAddress->save()) {
                 Yii::$app->session->setFlash('success', 'แก้ไขที่อยู่เรียบร้อยแล้ว');
@@ -530,10 +543,17 @@ class CustomerController extends Controller
         if (Yii::$app->request->isPost) {
             $modelAddress = GeneralAddress::findOne($id);
             $customerId = $modelAddress->table_key;
-            if ($modelAddress->delete()) {
-                Yii::$app->session->setFlash('success', 'ลบเรียบร้อยแล้ว');
+            if($modelAddress->is_default === 1) {
+                Yii::$app->session->setFlash('warning', 'ที่อยู่นี้เป็นที่อยู่เริ่มต้นไม่สามารถลบได้');
                 return $this->redirect(['view', 'id' => $customerId]);
+            }else{
+                $modelAddress->active = 0;
+                if ($modelAddress->save()) {
+                    Yii::$app->session->setFlash('success', 'ลบเรียบร้อยแล้ว');
+                    return $this->redirect(['view', 'id' => $customerId]);
+                }
             }
+
         }
     }
 
@@ -633,10 +653,27 @@ class CustomerController extends Controller
             $model = new CustomerResponsible();
             $model->customer_id = $customerId;
 
-            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post()) && $model->validate()) {
+
+                // ปิดสถานะก่อนหน้าทั้งหมดเป็น Inacttive ก่อน
+                CustomerResponsible::updateAll(['active'=>0],['customer_id'=>$customerId,'active'=>1]);
+
                 $model->created_by = Yii::$app->user->id;
                 $model->created_at = time();
+
+
+                $personnel =  OrgPersonnel::findOne(['user_id'=> $model->user_id]);
+                $model->name = $personnel->fullnameTH;
+
+                // เปิดใช้งาน user ปัจจุบัน เป็น Active แทน
+                $model->active = 1;
+
                 if ($model->save()) {
+                    // update ผู้รับผิดที่ชอบที่ ตาราง customer
+                    $customer = Customer::findOne($customerId);
+                    $customer->person_in_charge = $model->user_id;
+                    $customer->save(false);
+
                     Yii::$app->session->setFlash('success', 'เพิ่มที่ข้อมูลเรียบร้อย');
                     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                     return ['success' => 1, 'msg' => 'เพิ่มผู้รับผิดชอบเรียบร้อยแล้ว', 'msgClass' => 'text text-success'];

@@ -29,7 +29,7 @@ echo Nav::widget([
                 'url'=>['customer/create']
             ],
             [
-                'label' => '<i class="fa fa-user-circle"></i> ลูกค้าที่ฉับผิดชอบ - My Lead',
+                'label' => '<i class="fa fa-user-circle"></i> ลูกค้าที่ฉันรับผิดชอบอยู่ - My Lead',
                 'url'=>['customer/mylead']
             ],
             [
@@ -41,7 +41,7 @@ echo Nav::widget([
                 'url'=>['customer/questionnaire']
             ],
             [
-                'label' => '<i class="fa fa-commenting"></i> ประวัติการติดต่อ - Communication',
+                'label' => '<i class="fa fa-commenting"></i> ประวัติการติดต่อของฉัน - My Communication',
                 'url'=>['customer/communication']
             ],
         ]],

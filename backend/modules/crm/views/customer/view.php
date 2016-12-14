@@ -17,60 +17,16 @@ CustomerAsset::register($this);
 $this->title = $model->firstname . '  ' . $model->lastname;
 $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+\yii\bootstrap\Nav::widget([
+
+]);
 ?>
-
-<p>
-    <?php
-    if (Yii::$app->user->can('/crm/customer/add-address')) :
-        echo Html::a('<i class="fa fa-plus"></i>  เพิ่มที่อยู่ - New Address',
-            ['customer/add-address', 'customerId' => $model->id],
-            [
-                'class' => 'btn btn-sm btn-success modal-add-address',
-                'title' => 'เพิ่มที่อยู่ - New Address',
-                'data-header' => 'เพิ่ม: ที่อยู่ใหม่',
-            ]);
-    endif;
-    ?>
-
-    <?php
-    if (Yii::$app->user->can('/crm/customer/choose-survey')) :
-        echo Html::a('<i class="fa fa-plus"></i> เพิ่มแบบสอบถอบ - New Questionnaire',
-            ['customer/choose-survey', 'customerId' => $model->id],
-            [
-                'class' => 'btn btn-sm btn-success',
-                'title' => 'เพิ่มกิจกรรม - New Activity',
-                'data-header' => 'เพิ่ม: ข้อมูลการติดต่อสื่อสารกับลูกค้า',
-            ]);
-    endif;
-    ?>
-    <?php
-    if (Yii::$app->user->can('/crm/customer/change-person-in-charge')) :
-        echo Html::a('<i class="fa fa-plus"></i> กำหนดผู้รับผิดชอบ',
-            ['customer/change-person-in-charge', 'customerId' => $model->id],
-            [
-                'class' => 'btn btn-sm btn-success modal-add-personincharge',
-                'title' => 'กำหนดผู้รับผิดชอบ',
-                'data-header' => 'เพิ่ม: ผู้รับผิดชอบ',
-            ]);
-    endif;
-    ?>
-
-    <?php
-    if (Yii::$app->user->can('/crm/customer/add-communication')) :
-        echo Html::a('<i class="fa fa-plus"></i> เพิ่มกิจกรรม-New Activity',
-            ['customer/add-communication', 'customerId' => $model->id],
-            [
-                'class' => 'btn btn-sm btn-success modal-add-communication',
-                'title' => 'เพิ่มข้อมูลการติดต่อสื่อสารกับลูกค้า',
-                'data-header' => 'เพิ่ม: ข้อมูลการติดต่อสื่อสารกับลูกค้า',
-            ]);
-    endif;
-    ?>
-</p>
-
-
 <div class="row">
-    <div class="col-md-5">
+    <div class="col-xs-2 col-sm-2 col-md-2">
+        <div align="center"><i class="fa fa-user-circle-o fa-5x" aria-hidden="true"></i></div>
+    </div>
+    <div class="col-xs-10 col-sm-5 col-md-5">
 
         <?php
         if ($model->prefixname) {
@@ -131,9 +87,9 @@ $this->params['breadcrumbs'][] = $this->title;
         }
         ?>
         <?php
-        if ($model->currentPersonInCharge) {
-            echo Html::tag('div', Html::activeLabel($model, 'currentPersonInCharge') . ': ' . Html::tag('span', $model->currentPersonInChargeFullname));
-        }
+        // if ($model->currentPersonInCharge) {
+        echo Html::tag('div', Html::activeLabel($model, 'currentPersonInCharge') . ': ' . Html::tag('span', $model->currentPersonInChargeFullname));
+        // }
         ?>
         <?php
         if ($model->created_by) {
@@ -163,44 +119,67 @@ $this->params['breadcrumbs'][] = $this->title;
             echo Html::a('<i class="fa fa-edit"></i> Edit', ['customer/update', 'id' => $model->id], ['class' => 'btn btn-default btn-sm']);
             ?>
         </p>
-    </div>
-    <div class="col-md-7">
-        <!-- start communication of customer -->
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-commenting fa-2x"></i> Communication -
-                    การติดต่อสื่อสาร</h3>
 
-                <div class="box-tools pull-right">
-                </div>
-                <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <?php
-                echo $this->render('communication/index', ['modelCustomer' => $model,
-                    'dataProvider' => $dataProviderComm,
-                    'searchModel' => $searchComm,
-                    'dataProviderResponse' => $dataProviderResponse,
-                ]);
-                ?>
-            </div>
-            <!-- /.box-body -->
+    </div>
+
+
+    <div class="col-xs-12 col-sm-5 col-md-5">
+        <div style="text-align:left;">
+            <?php
+            if (Yii::$app->user->can('/crm/customer/add-address')) :
+                echo Html::a('<i class="fa fa-plus"></i>  เพิ่มที่อยู่ - New Address',
+                    ['customer/add-address', 'customerId' => $model->id],
+                    [
+                        'class' => 'btn btn-sm btn-success modal-add-address btn-block',
+                        'title' => 'เพิ่มที่อยู่ - New Address',
+                        'data-header' => 'เพิ่ม: ที่อยู่ใหม่',
+                    ]);
+            endif;
+            ?>
+
+            <?php
+            if (Yii::$app->user->can('/crm/customer/choose-survey')) :
+                echo Html::a('<i class="fa fa-plus"></i> เพิ่มแบบสอบถอบ - New Questionnaire',
+                    ['customer/choose-survey', 'customerId' => $model->id],
+                    [
+                        'class' => 'btn btn-sm btn-success btn-block',
+                        'title' => 'เพิ่มกิจกรรม - New Activity',
+                        'data-header' => 'เพิ่ม: ข้อมูลการติดต่อสื่อสารกับลูกค้า',
+                    ]);
+            endif;
+            ?>
+
+
+
         </div>
-        <!-- /.box -->
+
+
+
 
     </div>
+
+
 </div>
 
 
-
 <?php
-echo \kartik\tabs\TabsX::widget([
+echo Tabs::widget([
     'encodeLabels' => false,
     'items' => [
+
+        //Communication
+        [
+            'label' => '<i class="fa fa-commenting"></i> ประวัติการติดต่อสื่อสาร - Communication ',
+            'content' => '<p>' . $this->render('communication/index', ['modelCustomer' => $model,
+                    'dataProvider' => $dataProviderComm,
+                    'searchModel' => $searchComm,
+                    'dataProviderResponse' => $dataProviderResponse,
+                ]) . '</p>',
+            'visible' => true,
+        ],
         //Address
         [
-            'label' => '<i class="fa fa-address-card fa-2x"></i> ที่อยู่ - Address',
+            'label' => '<i class="fa fa-address-card"></i> ที่อยู่ - Address',
             'content' => '<p>' . $this->render('address/index', [
                     'modelCustomer' => $model,
                     'modelAddressContact' => isset($modelAddressContact) ? $modelAddressContact : null,
@@ -211,15 +190,16 @@ echo \kartik\tabs\TabsX::widget([
         ],
         //Survey
         [
-            'label' => '<i class="fa fa-list fa-2x"></i> แบบสอบถาม - Questionnaire',
+            'label' => '<i class="fa fa-list"></i> แบบสอบถาม - Questionnaire',
             'content' => '<p>' . $this->render('_questionnaire', ['modelCustomer' => $model,
                     'dataProviderResponse' => $dataProviderResponse,
                 ]) . '</p>',
             'visible' => true,
         ],
-        //Survey
+
+        //Person in charge
         [
-            'label' => '<i class="fa fa-list fa-2x"></i> แบบส',
+            'label' => '<i class="fa fa-user-circle"></i> ผู้รับผิดชอบ ' ,
             'content' => '<p>' . $this->render('person-in-charge/index', ['modelCustomer' => $model,
                     'dataProviderPersonInCharge' => $dataProviderPersonInCharge
                 ]) . '</p>',

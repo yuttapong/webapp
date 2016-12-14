@@ -77,7 +77,9 @@ echo Html::button($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 
            $('#res-result').html(rs.msg).addClass(rs.msgClass);
         }
         }
-    });"
+    });
+    return false;
+    "
 
 ]);
 echo '&nbsp;&nbsp;' . Html::tag('span',null,['id'=>'res-result']);
