@@ -131,7 +131,7 @@ class SysModule extends \yii\db\ActiveRecord
         return new SysModuleQuery(get_called_class());
     }
 
-    public function getListModuleForWidget()
+    public static function getListModuleForWidget()
     {
         $db = Yii::$app->getDb();
         $command = $db->createCommand("
@@ -171,7 +171,7 @@ class SysModule extends \yii\db\ActiveRecord
 
 
     //for dropdown list
-    public function getAModuleList()
+    public  function getAModuleList()
     {
         $model = SysModule::find()->orderBy('name_th')->all();
         return ArrayHelper::map($model, 'id', 'name_th');
@@ -184,7 +184,7 @@ class SysModule extends \yii\db\ActiveRecord
      * @param $module_id
      * @return array
      */
-    public function  getMenuForNav($module_id)
+    public static function  getMenuForNav($module_id)
     {
         $models = SysMenu::find(['parent' => 0])
             ->where(['module_id' => $module_id])
@@ -206,7 +206,7 @@ class SysModule extends \yii\db\ActiveRecord
      * @param $id
      * @return array
      */
-    private function  getMenuChild($id)
+    private static function  getMenuChild($id)
     {
         $model = SysMenu::find()
             ->where(['parent' => $id])
@@ -229,7 +229,7 @@ class SysModule extends \yii\db\ActiveRecord
      *  get menu  of app for navbar
      * @return array
      */
-    public function getItemModuleForButtonApp(){
+    public static  function getItemModuleForButtonApp(){
         $models = SysModule::find()
             ->where(['active' => 1])
             ->all();
@@ -237,7 +237,7 @@ class SysModule extends \yii\db\ActiveRecord
         if ($models) {
             foreach ($models as $m) {
                 $items[$m->id]= [
-                    'icon' => $m->icon,
+                    'icon' => $m->img,
                     'label' => $m->name_en,
                     'name_th' => $m->name_th,
                     'name_en' => $m->name_en,

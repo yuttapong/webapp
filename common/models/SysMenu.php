@@ -42,7 +42,6 @@ class SysMenu extends \yii\db\ActiveRecord
     {
         return [
             [['is_header', 'module_id', 'parent', 'order', 'table_id', 'table_key', 'created_at', 'created_by', 'active'], 'integer'],
-             [['name'], 'required'],
             [['order', 'is_header', 'parent'], 'default', 'value' => 0],
             [['data', 'icon'], 'string'],
             [['name'], 'string', 'max' => 128],

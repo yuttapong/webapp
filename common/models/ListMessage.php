@@ -41,7 +41,7 @@ class ListMessage extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['document_id','module_id', 'table_key', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id'], 'integer'],
+            [['document_id', 'table_key', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id'], 'integer'],
             [['titie', 'option', 'link', 'description'], 'string'],
             [['table_name'], 'string', 'max' => 100],
             [['user_apprever_name'], 'string', 'max' => 255],

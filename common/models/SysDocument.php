@@ -62,7 +62,7 @@ class SysDocument extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDocumentOptions()
+    public  function getDocumentOptions()
     {
         return $this->hasMany(SysDocumentOption::className(), ['document_id' => 'document_id']);
     }
@@ -81,7 +81,7 @@ class SysDocument extends \yii\db\ActiveRecord
      * นับข้อความที่ยังไม่ได้อ่านเพื่อแจ้งเตือนที่ navbar ด้านบน
      * @return array
      */
-    public function countNewDocument(){
+    public static function countNewDocument(){
         $userId = Yii::$app->user->id;
         $query = new \yii\db\Query;
         $query->select('d.name as document,m.document_id, count(m.document_id) as countNew, d.url_message')
@@ -97,7 +97,7 @@ class SysDocument extends \yii\db\ActiveRecord
      * นับความแจ้งเตือนใหม่ทั้งหมด
      * @return int
      */
-    public function CountTotalNewDocument(){
+    public  static function CountTotalNewDocument(){
         $newMessages = SysDocument::countNewDocument();
         $totalNewMessage = 0;
         foreach ($newMessages as $message){

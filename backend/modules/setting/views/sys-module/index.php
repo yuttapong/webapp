@@ -31,6 +31,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+              'attribute' => 'img',
+              'format' => 'html',
+              'value' => function($model)  {
+                 $icon = '';
+                 if($model->img) {
+                     $icon =   '<div align="center"><i class="fa-2x '.($model->img).'"></i></div>';
+                 }
+                 return $icon;
+            },
+            'options' => [
+                'style' => 'width:80px;'
+              ]
+            ],
             'slug',
             /*
             [

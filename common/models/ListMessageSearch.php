@@ -18,7 +18,7 @@ class ListMessageSearch extends ListMessage
     public function rules()
     {
         return [
-            [['id', 'module_id', 'document_id', 'table_key', 'table_key2', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id', 'type'], 'integer'],
+            [['id', 'document_id', 'table_key', 'table_key2', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id', 'type'], 'integer'],
             [['table_name', 'titie', 'option', 'user_apprever_name', 'link', 'description', 'color_code'], 'safe'],
         ];
     }
@@ -65,7 +65,6 @@ class ListMessageSearch extends ListMessage
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'module_id' => $this->module_id,
             'document_id' => $this->document_id,
             'table_key' => $this->table_key,
             'table_key2' => $this->table_key2,

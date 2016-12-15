@@ -105,7 +105,7 @@ class SysBasicData extends \yii\db\ActiveRecord
      * get data by table_id
      * @return Array
      */
-    public function getArrayGroup($table_id)
+    public static function getArrayGroup($table_id)
     {
         if ($table_id) {
             $models = SysBasicData::find()
