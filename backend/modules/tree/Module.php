@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
  */
-class Module extends  \yii\base\Module
+class Module extends \yii\base\Module
 {
     const MODULE = 'treemanager';
 

@@ -17,6 +17,7 @@ class Module extends \yii\base\Module
     public $controllerNamespace = 'backend\modules\crm\controllers';
 
     public $config = [];
+
     /**
      * @inheritdoc
      */
@@ -24,8 +25,8 @@ class Module extends \yii\base\Module
     {
         parent::init();
         $this->layout = "@backend/modules/crm/views/layouts/main";
-        $this->config  = [
-           'moduleName' => 'ระบบบริหารลูกค้า'
+        $this->config = [
+            'moduleName' => 'ระบบบริหารลูกค้า'
         ];
     }
 

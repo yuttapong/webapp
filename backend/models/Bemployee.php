@@ -253,6 +253,15 @@ class Bemployee extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return bemployeeQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new BemployeeQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
@@ -508,14 +517,5 @@ class Bemployee extends \yii\db\ActiveRecord
             'lastupdate' => Yii::t('app', 'Lastupdate'),
             'total_vacation' => Yii::t('app', 'Total Vacation'),
         ];
-    }
-
-    /**
-     * @inheritdoc
-     * @return bemployeeQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new BemployeeQuery(get_called_class());
     }
 }

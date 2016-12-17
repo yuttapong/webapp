@@ -49,7 +49,7 @@ class GooglePlacesSearch extends GooglePlaces
             'query' => $query,
         ]);
 
-        $query->orderBy(['id'=>SORT_DESC]);
+        $query->orderBy(['id' => SORT_DESC]);
         $this->load($params);
 
         if (!$this->validate()) {

@@ -22,8 +22,13 @@ class GooglePlaces extends \yii\db\ActiveRecord
 {
 
 
-
-
+    const TYPE_OTHER = 0;
+    const TYPE_RESTAURANT = 10;
+    const TYPE_COFFEESHOP = 20;
+    const TYPE_RESIDENCE = 30;
+    const TYPE_OFFICE = 40;
+    const TYPE_BAR = 50;
+    public $searchbox;
 
     /**
      * @inheritdoc
@@ -35,12 +40,21 @@ class GooglePlaces extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return GooglePlacesQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new GooglePlacesQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
             [['place_type', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['google_place_id','full_address','notes','vicinity'], 'string'],
+            [['google_place_id', 'full_address', 'notes', 'vicinity'], 'string'],
             [['name'], 'string', 'max' => 100],
         ];
     }
@@ -64,36 +78,13 @@ class GooglePlaces extends \yii\db\ActiveRecord
         ];
     }
 
-
-
-    /**
-     * @inheritdoc
-     * @return GooglePlacesQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new GooglePlacesQuery(get_called_class());
-    }
-
-
-
-    const TYPE_OTHER = 0;
-    const TYPE_RESTAURANT = 10;
-    const TYPE_COFFEESHOP = 20;
-    const TYPE_RESIDENCE = 30;
-    const TYPE_OFFICE = 40;
-    const TYPE_BAR = 50;
-    public  $searchbox;
-
-
-    public function  behaviors()
+    public function behaviors()
     {
         return [
             TimestampBehavior::className(),
             BlameableBehavior::className(),
         ];
     }
-
 
 
     public function getPlaceType($data)
@@ -130,11 +121,11 @@ class GooglePlaces extends \yii\db\ActiveRecord
         $pg->save();
     }
 
-    public function getLocation($place_id='')
+    public function getLocation($place_id = '')
     {
         $model = GooglePlaceGps::find()
             ->select("AsText(gps) as gps")
-            ->where(['place_id'=>$place_id])
+            ->where(['place_id' => $place_id])
             ->one();
         $gps = new \stdClass;
         if (is_null($model)) {
@@ -145,22 +136,23 @@ class GooglePlaces extends \yii\db\ActiveRecord
         return $gps;
     }
 
-
-    private  function extractPoint($string) {
-        $string = str_replace('point(', '', strtolower($string)); // remove leading bracket
-        $string = str_replace(')', '', $string); // remove trailing bracket
-        return explode(' ', $string);
-    }
-
-    public function addGeometry($model,$location) {
-        $x = json_decode($location,true);
+    public function addGeometry($model, $location)
+    {
+        $x = json_decode($location, true);
         reset($x);
         $lat = current($x);
         $lon = next($x);
         $pg = new GooglePlaceGps;
-        $pg->place_id=$model->id;
-        $pg->gps = new \yii\db\Expression("GeomFromText('Point(".$lat." ".$lon.")')");
+        $pg->place_id = $model->id;
+        $pg->gps = new \yii\db\Expression("GeomFromText('Point(" . $lat . " " . $lon . ")')");
         $pg->save();
+    }
+
+    private function extractPoint($string)
+    {
+        $string = str_replace('point(', '', strtolower($string)); // remove leading bracket
+        $string = str_replace(')', '', $string); // remove trailing bracket
+        return explode(' ', $string);
     }
 
 

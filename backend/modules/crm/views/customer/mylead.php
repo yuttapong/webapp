@@ -49,7 +49,14 @@ echo GridView::widget([
               ],*/
         'customer.id',
         'customer.prefixname',
-        'customer.fullname',
+        [
+            'attribute' => 'customer.fullname',
+            'format' => 'html',
+            'value' =>function($model) {
+                    return Html::a($model->customer->fullname,
+                        ['customer/view', 'id' => $model->customer_id]);         
+            }
+        ],
         //'firstname',
         //'lastname',
         'customer.mobile',
@@ -61,27 +68,26 @@ echo GridView::widget([
                 return Html::tag('span','<i class="fa fa-user-circle-o"></i> '. $model->customer->currentPersonInCharge,['class' => '']);
             }
         ],
-        'user_id',
-        'created_by',
         [
-            'attribute' => 'customer.created_at',
+            'header' => 'Assigned By',
             'value' => function($model){
-                return \common\siricenter\thaiformatter\ThaiDate::widget([
+                $time =  \common\siricenter\thaiformatter\ThaiDate::widget([
                     'timestamp' => $model->created_at,
                     'type' =>\common\siricenter\thaiformatter\ThaiDate::TYPE_SHORT,
                     'showTime' => true,
                 ]);
+                $by = $model->assignBy->firstname_th;
+                return $by.'<br>'.$time;
 
-            }
+            },
+            'format' => 'html',
+            'options' => [
+                 'style' => 'text-align:center;',
+            ]
         ],
-        [
-            'header' => 'ผู้บันทึก',
-            'value' => 'personnel.firstname_th',
-        ],
-
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{update} {view}',
+            'template' => '{update} {view} {survey}',
             'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a('<span class="glyphicon glyphicon-pencil"></span>',
@@ -89,11 +95,11 @@ echo GridView::widget([
                             'title' => Yii::t('yii', 'Edit'),
                         ]);
                 },
-                'survey' => function ($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-list"></span>',
-                        ['customer/survey', 'customerId' => $model->customer_id],
+                'view' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-search"></span>',
+                        ['customer/view', 'id' => $model->customer_id],
                         [
-                            'title' => Yii::t('yii', 'กรอกแบบสอบถาม'),
+                            'title' => Yii::t('yii', 'ดูรายละเอียด'),
                         ]);
                 }
             ],

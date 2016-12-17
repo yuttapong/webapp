@@ -123,7 +123,7 @@ class Survey extends \yii\db\ActiveRecord
     
 
     /**
-     * นับจำนวนที่พนักงานทำแบบสอบถามจากรหัสผู้ใช้งาน
+     * นับจำนวนที่พนักงานทำแบบสอบถาม
      * @param $userId
      * @return int|string
      */
@@ -133,11 +133,27 @@ class Survey extends \yii\db\ActiveRecord
             ->where([
                 'survey_id' => $surveyId,
                 'created_by' => $userId,
-                'table_name' => Customer::TABLE_NAME
             ])
             ->count();
         return $count;
     }
+
+    /**
+     * นับจำนวนลูกค้าทำแบบสอบถาม
+     * @param $userId
+     * @return int|string
+     */
+    public static function countSurveyByCustomer($surveyId,$customerId)
+    {
+        $count = Response::find()
+            ->where([
+                'survey_id' => $surveyId,
+                'customer_id' => $customerId,
+            ])
+            ->count();
+        return $count;
+    }
+
 
     public function getQuestions(){
         return $this->hasMany(Question::className(),['survey_id'=>'id'])->orderBy('seq');

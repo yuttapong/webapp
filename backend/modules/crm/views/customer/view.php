@@ -1,12 +1,10 @@
 <?php
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 use yii\bootstrap\Modal;
-use yii\widgets\Pjax;
-use \backend\modules\crm\CustomerAsset;
 use yii\bootstrap\Tabs;
+\backend\modules\crm\CustomerAsset::register($this);
 
-CustomerAsset::register($this);
+
 
 /**
  * @var yii\web\View $this
@@ -17,10 +15,9 @@ CustomerAsset::register($this);
 $this->title = $model->firstname . '  ' . $model->lastname;
 $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-
-\yii\bootstrap\Nav::widget([
-
-]);
+?>
+<?php
+echo $this->render('toolbar/customer');
 ?>
 <div class="row">
     <div class="col-xs-2 col-sm-2 col-md-2">
@@ -130,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 echo Html::a('<i class="fa fa-plus"></i>  เพิ่มที่อยู่ - New Address',
                     ['customer/add-address', 'customerId' => $model->id],
                     [
-                        'class' => 'btn btn-sm btn-success modal-add-address btn-block',
+                        'class' => 'btn btn-sm btn-default modal-add-address btn-block',
                         'title' => 'เพิ่มที่อยู่ - New Address',
                         'data-header' => 'เพิ่ม: ที่อยู่ใหม่',
                     ]);
@@ -142,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 echo Html::a('<i class="fa fa-plus"></i> เพิ่มแบบสอบถอบ - New Questionnaire',
                     ['customer/choose-survey', 'customerId' => $model->id],
                     [
-                        'class' => 'btn btn-sm btn-success btn-block',
+                        'class' => 'btn btn-sm btn-default btn-block',
                         'title' => 'เพิ่มกิจกรรม - New Activity',
                         'data-header' => 'เพิ่ม: ข้อมูลการติดต่อสื่อสารกับลูกค้า',
                     ]);

@@ -102,25 +102,15 @@ class InformFixController extends Controller
             ],
 
             'access' => [
-
                 'class' => AccessControl::className(),
-
                 'rules' => [
-
                     [
-
                         'allow' => true,
-
                         'roles' => ['@'],
-
                         'matchCallback' => function ($rule, $action) {
-
                             $module = Yii::$app->controller->module->id;
-
                             $action = Yii::$app->controller->action->id;
-
                             $controller = Yii::$app->controller->id;
-
                             $route = "/$module/$controller/$action";
 
                             if (Yii::$app->user->can($route)) {

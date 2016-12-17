@@ -12,7 +12,8 @@ class QrCodeController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionQrcode() {
+    public function actionQrcode()
+    {
         //$mailTo = new MailTo(['email' => 'email@example.com']);
         return QrCode::png("noom");
         // you could also use the following

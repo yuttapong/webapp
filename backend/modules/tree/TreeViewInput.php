@@ -99,6 +99,96 @@ class TreeViewInput extends TreeView
     /**
      * @inheritdoc
      */
+    public function run()
+    {
+        if ($this->hasModel()) {
+            $this->value = Html::getAttributeValue($this->model, $this->attribute);
+        }
+        $this->_disabled = ArrayHelper::getValue($this->options, 'disabled', false);
+        if ($this->asDropdown) {
+            $this->initDropdown();
+        }
+        $this->registerInputAssets();
+        parent::run();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function renderWidget()
+    {
+        if (!$this->showToolbar) {
+            $this->wrapperTemplate = strtr($this->wrapperTemplate, ['{footer}' => '']);
+        }
+        $content = strtr($this->renderWrapper(), [
+                '{heading}' => $this->renderHeading(),
+                '{search}' => $this->renderSearch(),
+                '{toolbar}' => $this->renderToolbar(),
+            ]) . "\n" .
+            $this->getInput();
+        if ($this->asDropdown) {
+            return $this->renderDropdown($content);
+        }
+        return $content;
+    }
+
+    /**
+     * Generates the hidden input for storage
+     *
+     * @return string
+     */
+    public function getInput()
+    {
+        if ($this->hasModel()) {
+            return Html::activeHiddenInput($this->model, $this->attribute, $this->options);
+        }
+        return Html::hiddenInput($this->name, $this->value, $this->options);
+    }
+
+    /**
+     * Renders the markup for the button actions toolbar
+     *
+     * @return string
+     */
+    public function renderToolbar()
+    {
+        if (!$this->showToolbar) {
+            return '';
+        }
+        unset($this->toolbar[self::BTN_CREATE], $this->toolbar[self::BTN_CREATE_ROOT], $this->toolbar[self::BTN_REMOVE]);
+        return parent::renderToolbar();
+    }
+
+    /**
+     * Registers assets for TreeViewInput
+     */
+    public function registerInputAssets()
+    {
+        if (!$this->asDropdown) {
+            return;
+        }
+        $view = $this->getView();
+        TreeViewInputAsset::register($view);
+        $id = $this->options['id'];
+        $name = 'treeinput';
+        $opts = Json::encode([
+            'treeId' => $this->treeOptions['id'],
+            'inputId' => $this->dropdownConfig['input']['id'],
+            'dropdownId' => $this->dropdownConfig['dropdown']['id'],
+            'placeholder' => $this->_placeholder,
+            'value' => empty($this->value) ? '' : $this->value,
+            'caret' => $this->dropdownConfig['caret'],
+            'autoCloseOnSelect' => $this->autoCloseOnSelect
+        ]);
+        $var = $name . '_' . hash('crc32', $opts);
+        $this->options['data-krajee-' . $name] = $var;
+        $view->registerJs("var {$var}={$opts};", View::POS_HEAD);
+        $view->registerJs("jQuery('#{$id}').{$name}({$var});");
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function initTreeView()
     {
         if (!$this->hasModel() && $this->name === null) {
@@ -112,22 +202,6 @@ class TreeViewInput extends TreeView
         Html::addCssClass($this->treeOptions, $css);
         parent::initTreeView();
         $this->_hasBootstrap = $this->showTooltips || $this->asDropdown;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function run()
-    {
-        if ($this->hasModel()) {
-            $this->value = Html::getAttributeValue($this->model, $this->attribute);
-        }
-        $this->_disabled = ArrayHelper::getValue($this->options, 'disabled', false);
-        if ($this->asDropdown) {
-            $this->initDropdown();
-        }
-        $this->registerInputAssets();
-        parent::run();
     }
 
     /**
@@ -169,26 +243,6 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * @inheritdoc
-     */
-    public function renderWidget()
-    {
-        if (!$this->showToolbar) {
-            $this->wrapperTemplate = strtr($this->wrapperTemplate, ['{footer}' => '']);
-        }
-        $content = strtr($this->renderWrapper(), [
-                '{heading}' => $this->renderHeading(),
-                '{search}' => $this->renderSearch(),
-                '{toolbar}' => $this->renderToolbar(),
-            ]) . "\n" .
-            $this->getInput();
-        if ($this->asDropdown) {
-            return $this->renderDropdown($content);
-        }
-        return $content;
-    }
-
-    /**
      * Generates the dropdown tree menu
      *
      * @param string $content the content to be embedded in the dropdown menu
@@ -204,64 +258,10 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * Generates the hidden input for storage
-     *
-     * @return string
-     */
-    public function getInput()
-    {
-        if ($this->hasModel()) {
-            return Html::activeHiddenInput($this->model, $this->attribute, $this->options);
-        }
-        return Html::hiddenInput($this->name, $this->value, $this->options);
-    }
-
-    /**
-     * Renders the markup for the button actions toolbar
-     *
-     * @return string
-     */
-    public function renderToolbar()
-    {
-        if (!$this->showToolbar) {
-            return '';
-        }
-        unset($this->toolbar[self::BTN_CREATE], $this->toolbar[self::BTN_CREATE_ROOT], $this->toolbar[self::BTN_REMOVE]);
-        return parent::renderToolbar();
-    }
-
-    /**
      * @return bool whether this widget is associated with a data model.
      */
     protected function hasModel()
     {
         return $this->model instanceof Model && $this->attribute !== null;
-    }
-
-    /**
-     * Registers assets for TreeViewInput
-     */
-    public function registerInputAssets()
-    {
-        if (!$this->asDropdown) {
-            return;
-        }
-        $view = $this->getView();
-        TreeViewInputAsset::register($view);
-        $id = $this->options['id'];
-        $name = 'treeinput';
-        $opts = Json::encode([
-            'treeId' => $this->treeOptions['id'],
-            'inputId' => $this->dropdownConfig['input']['id'],
-            'dropdownId' => $this->dropdownConfig['dropdown']['id'],
-            'placeholder' => $this->_placeholder,
-            'value' => empty($this->value) ? '' : $this->value,
-            'caret' => $this->dropdownConfig['caret'],
-            'autoCloseOnSelect' => $this->autoCloseOnSelect
-        ]);
-        $var = $name . '_' . hash('crc32', $opts);
-        $this->options['data-krajee-' . $name] = $var;
-        $view->registerJs("var {$var}={$opts};", View::POS_HEAD);
-        $view->registerJs("jQuery('#{$id}').{$name}({$var});");
     }
 }

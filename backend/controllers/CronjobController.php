@@ -15,20 +15,20 @@ class CronjobController extends \yii\web\Controller
     {
 
         $models = Bemployee::find()->where("EMP_STATUS in(0,1,2)")
-        ->all();
-        $dest  = ArrayHelper::map($models,'EMPID','EMPID');
-        $tartget = ArrayHelper::map(OrgPersonnel::find()->all(),'code','code');
+            ->all();
+        $dest = ArrayHelper::map($models, 'EMPID', 'EMPID');
+        $tartget = ArrayHelper::map(OrgPersonnel::find()->all(), 'code', 'code');
 
         $loop = 0;
-        foreach ($models as $model){
-            $path =  '';
-            $img  =  Html::img("/sc/hr/picture/".$model->Picture,['style'=>'width:80px;']);
-            $find = OrgPersonnel::find()->where(['code'=>$model->EMPID])->one();
+        foreach ($models as $model) {
+            $path = '';
+            $img = Html::img("/sc/hr/picture/" . $model->Picture, ['style' => 'width:80px;']);
+            $find = OrgPersonnel::find()->where(['code' => $model->EMPID])->one();
 
-            if( ! $find){
+            if (!$find) {
                 $loop++;
                 $find->code = $model->EMPID;
-                $find->firstname_th =  trim($model->EMPFNAME);
+                $find->firstname_th = trim($model->EMPFNAME);
                 $find->lastname_th = trim($model->EMPLNAME);
                 $find->nickname = trim($model->NickName);
                 $find->start_working = $model->START;
@@ -36,15 +36,15 @@ class CronjobController extends \yii\web\Controller
                 $find->weight = $model->Weight;
                 $find->height = $model->Height;
 
-                if($model->EMP_STATUS == 0 ){
+                if ($model->EMP_STATUS == 0) {
                     $find->active = 0;
                 }
-                if($model->EMP_STATUS == 1 || $model->EMP_STATUS == 2 ){
+                if ($model->EMP_STATUS == 1 || $model->EMP_STATUS == 2) {
                     $find->active = 1;
                 }
-                if(trim($model->Religion) == 'พุทธ' ){
+                if (trim($model->Religion) == 'พุทธ') {
                     $find->religion = 'Buddhism';
-                }else{
+                } else {
                     $find->religion = null;
                 }
                 //$find->save(false);
@@ -63,12 +63,12 @@ class CronjobController extends \yii\web\Controller
 
             }
 
-            if( ! $find  ){
+            if (!$find) {
                 $loop++;
-              //  echo'<p>' .  $loop . ') ' .  $img . $model->EMPID .' ' . $model->EMPFNAME.' '.$model->EMPLNAME . '</p>';
+                //  echo'<p>' .  $loop . ') ' .  $img . $model->EMPID .' ' . $model->EMPFNAME.' '.$model->EMPLNAME . '</p>';
                 $user = new OrgPersonnel();
                 $user->code = $model->EMPID;
-                $user->firstname_th =  $model->EMPFNAME;
+                $user->firstname_th = $model->EMPFNAME;
                 $user->lastname_th = $model->EMPLNAME;
                 $user->nickname = $model->NickName;
                 $user->start_working = $model->START;
@@ -76,22 +76,22 @@ class CronjobController extends \yii\web\Controller
                 $user->weight = $model->Weight;
                 $user->height = $model->Height;
 
-                if($model->EMP_STATUS == 0 ){
+                if ($model->EMP_STATUS == 0) {
                     $user->active = 0;
                 }
-                if($model->EMP_STATUS == 1 || $model->EMP_STATUS == 2 ){
+                if ($model->EMP_STATUS == 1 || $model->EMP_STATUS == 2) {
                     $user->active = 1;
                 }
-                if(trim($model->Religion) == 'พุทธ' ){
+                if (trim($model->Religion) == 'พุทธ') {
                     $user->religion = 'Buddhism';
-                }else{
+                } else {
                     $user->religion = null;
                 }
                 $user->save(false);
 
-                $login = User::find()->where(['username'=>$model->EMPID])->one();
+                $login = User::find()->where(['username' => $model->EMPID])->one();
                 $t = '';
-                if( ! $login){
+                if (!$login) {
                     $t = ' (ไม่มี usernamec)';
                     $newuser = new User();
                     $newuser->username = $model->EMPID;
@@ -121,9 +121,9 @@ class CronjobController extends \yii\web\Controller
             }
         }
 
-        echo'<pre>';
-        print_r(array_diff($dest,$tartget));
-        echo'<pre>';
+        echo '<pre>';
+        print_r(array_diff($dest, $tartget));
+        echo '<pre>';
     }
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace backend\controllers;
+
 /*
 * http://code.tutsplus.com/tutorials/building-your-startup-with-php-geolocation-and-google-places--cms-22729
 */
@@ -84,11 +85,11 @@ class GooglePlaceController extends Controller
             if (Yii::$app->user->getIsGuest()) {
                 $model->created_by = 1;
             } else {
-                $model->created_by= Yii::$app->user->getId();
+                $model->created_by = Yii::$app->user->getId();
             }
             $model->save();
             $gc = new GeocodingClient();
-            $result = $gc->lookup(array('address'=>$form['Place']['full_address'],'components'=>1));
+            $result = $gc->lookup(array('address' => $form['Place']['full_address'], 'components' => 1));
             $location = $result['results'][0]['geometry']['location'];
             if (!is_null($location)) {
                 $lat = $location['lat'];
@@ -96,7 +97,7 @@ class GooglePlaceController extends Controller
                 var_dump($lat);
                 var_dump($lng);
                 // add GPS entry in PlaceGeometry
-                $model->addGeometryByPoint($model,$lat,$lng);
+                $model->addGeometryByPoint($model, $lat, $lng);
             }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -137,23 +138,6 @@ class GooglePlaceController extends Controller
 
         return $this->redirect(['index']);
     }
-
-    /**
-     * Finds the GooglePlaces model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return GooglePlaces the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = GooglePlaces::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
 
     /**
      * Creates a new Place model via Geolocation
@@ -205,13 +189,28 @@ class GooglePlaceController extends Controller
             $model->addGeometry($model, $form['GooglePlaces']['location']);
             return $this->redirect(['view', 'id' => $model->id]);
 
-     } else {
+        } else {
             return $this->render('create_place_google', [
                 'model' => $model,
             ]);
         }
     }
 
+    /**
+     * Finds the GooglePlaces model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return GooglePlaces the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = GooglePlaces::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
 
 
 }

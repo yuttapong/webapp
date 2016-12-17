@@ -13,11 +13,7 @@ use yii\bootstrap\Html;
 <?php $this->endBlock() ?>
 
 
-
 <?php $this->beginContent('@app/views/layouts/main-full.php'); ?>
-
  <div><?= $content ?></div>
-
-
 <?php $this->endContent(); ?>
 

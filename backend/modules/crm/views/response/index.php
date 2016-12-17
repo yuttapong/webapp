@@ -35,8 +35,17 @@ echo $msg;
                 'header' => 'โครงการ',
                 'value' => 'survey.site.site_name',
             ],
-            'datetime:datetime',
-
+            //'datetime:datetime',
+            [
+                'attribute' => 'datetime',
+                'value' => function($model) {
+                       return \common\siricenter\thaiformatter\ThaiDate::widget([
+                            'timestamp' => $model->datetime,
+                            'showTime' => false,
+                            'type' => \common\siricenter\thaiformatter\ThaiDate::TYPE_SHORT,
+                        ]);
+                }
+            ],
             [
                 'attribute' => 'survey.name',
                 'value' => function ($model) {
@@ -48,9 +57,19 @@ echo $msg;
                 'header' => 'รหัสลูกค้า',
                 'value' => 'customer.id',
             ],
-            'customer.firstname',
-            'customer.lastname',
-            'created_at:datetime',
+            'customer.fullname',
+            // 'customer.lastname',
+            // 'created_at:datetime',
+            [
+                'attribute' => 'created_at',
+                'value' => function($model) {
+                       return \common\siricenter\thaiformatter\ThaiDate::widget([
+                            'timestamp' => $model->created_at,
+                            'showTime' => true,
+                            'type' => \common\siricenter\thaiformatter\ThaiDate::TYPE_SHORT,
+                        ]);
+                }
+            ],
             'created.firstname_th',
             [
                 'class' => 'yii\grid\ActionColumn',

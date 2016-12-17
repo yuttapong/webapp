@@ -3,36 +3,40 @@
 namespace backend\controllers;
 
 use Yii;
-use app\models\UploadedFile;
-use app\models\UploadedFileSearch;
+use common\models\Home;
+use common\models\HomeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
- * UploadedFileController implements the CRUD actions for UploadedFile model.
+ * HomeController implements the CRUD actions for Home model.
  */
-class UploadedFileController extends Controller
+class HomeController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all UploadedFile models.
+     * Lists all Home models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UploadedFileSearch();
+        $searchModel = new HomeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -42,7 +46,7 @@ class UploadedFileController extends Controller
     }
 
     /**
-     * Displays a single UploadedFile model.
+     * Displays a single Home model.
      * @param integer $id
      * @return mixed
      */
@@ -54,21 +58,15 @@ class UploadedFileController extends Controller
     }
 
     /**
-     * Creates a new UploadedFile model.
+     * Creates a new Home model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new UploadedFile();
+        $model = new Home();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $file = UploadedFile::getInstance($model, 'file');
-            if ($fileModel = FileModel::saveAs($file, 'web/upload')) {
-                $model->fil_id = $fileModel->id;
-                $model->save();
-
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -78,7 +76,7 @@ class UploadedFileController extends Controller
     }
 
     /**
-     * Updates an existing UploadedFile model.
+     * Updates an existing Home model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -97,7 +95,7 @@ class UploadedFileController extends Controller
     }
 
     /**
-     * Deletes an existing UploadedFile model.
+     * Deletes an existing Home model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -109,19 +107,46 @@ class UploadedFileController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionGetHome()
+    {
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+                $province_id = $parents[0];
+                $out = $this->getHome($province_id);
+                echo Json::encode(['output' => $out, 'selected' => '']);
+                return;
+            }
+        }
+        echo Json::encode(['output' => '', 'selected' => '']);
+    }
+
     /**
-     * Finds the UploadedFile model based on its primary key value.
+     * Finds the Home model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return UploadedFile the loaded model
+     * @return Home the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = UploadedFile::findOne($id)) !== null) {
+        if (($model = Home::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    protected function getHome($id)
+    {
+        $datas = Home::find()->where(['project_id' => $id])->all();
+        $obj = [];
+        foreach ($datas as $key => $value) {
+            array_push($obj, ['id' => $value->id, 'name' => 'แปลง ' . $value->plan_no . ' เลขที่  ' . $value->home_no]);
+        }
+
+        return $obj;
+    }
+
 }

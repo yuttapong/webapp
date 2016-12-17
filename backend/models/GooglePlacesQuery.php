@@ -15,7 +15,6 @@ class GooglePlacesQuery extends \yii\db\ActiveQuery
     }*/
 
 
-
     /**
      * @inheritdoc
      * @return GooglePlaces[]|array
@@ -33,7 +32,6 @@ class GooglePlacesQuery extends \yii\db\ActiveQuery
     {
         return parent::one($db);
     }
-
 
 
 }

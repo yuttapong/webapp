@@ -25,6 +25,15 @@ class GooglePlaceGps extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return GooglePlaceGpsQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new GooglePlaceGpsQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
@@ -53,14 +62,5 @@ class GooglePlaceGps extends \yii\db\ActiveRecord
     public function getPlace()
     {
         return $this->hasOne(GooglePlaces::className(), ['id' => 'place_id']);
-    }
-
-    /**
-     * @inheritdoc
-     * @return GooglePlaceGpsQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new GooglePlaceGpsQuery(get_called_class());
     }
 }

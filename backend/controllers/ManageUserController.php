@@ -19,47 +19,48 @@ use yii\helpers\Url;
  */
 class ManageUserController extends Controller
 {
-	public function init()
-	{
-	$auth = Yii::$app->authManager;
+    public function init()
+    {
+        $auth = Yii::$app->authManager;
 
-		//echo Yii::$app->authManager->checkAccess(2, 'user-edit');
+        //echo Yii::$app->authManager->checkAccess(2, 'user-edit');
 
-	}
+    }
+
     public function behaviors()
     {
         return [
-            'access'=>[
-              'class'=>AccessControl::className(), //yii\filters\AccessControl
-             //'only' => ['index', 'view', 'create', 'update', 'delete'],
-              'rules'=>[
-                  [
-                      'actions'=>['index','view','update','delete','role','load-right','fetch-tab'],
-                      'roles'=>['ManageUser'],
-                      'allow'=>true
-                  ],
-              		[
-              			'actions'=>['index','view'],
-              			'roles'=>['userView'],
-              			'allow'=>true
-              		]
-              		,
-              		[
-              			'actions'=>['create'],
-              			'roles'=>['userAdd'],
-              			'allow'=>true
-              		],
-              		[
-	              		'actions'=>['delete'],
-	              		'roles'=>['userDel'],
-	              		'allow'=>true
-              		],
-              		[
-              		'actions'=>['update'],
-              		'roles'=>['userEdit'],
-              		 ]
+            'access' => [
+                'class' => AccessControl::className(), //yii\filters\AccessControl
+                //'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'update', 'delete', 'role', 'load-right', 'fetch-tab'],
+                        'roles' => ['ManageUser'],
+                        'allow' => true
+                    ],
+                    [
+                        'actions' => ['index', 'view'],
+                        'roles' => ['userView'],
+                        'allow' => true
+                    ]
+                    ,
+                    [
+                        'actions' => ['create'],
+                        'roles' => ['userAdd'],
+                        'allow' => true
+                    ],
+                    [
+                        'actions' => ['delete'],
+                        'roles' => ['userDel'],
+                        'allow' => true
+                    ],
+                    [
+                        'actions' => ['update'],
+                        'roles' => ['userEdit'],
+                    ]
 
-              ]
+                ]
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -77,13 +78,13 @@ class ManageUserController extends Controller
     public function actionIndex()
     {
 
-	        $searchModel = new UserSearch();
-	        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-	        return $this->render('index', [
-	            'searchModel' => $searchModel,
-	            'dataProvider' => $dataProvider,
-	        ]);
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
 
     }
 
@@ -113,8 +114,8 @@ class ManageUserController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->setPassword($model->password);
             $model->generateAuthKey();
-            if($model->save()){
-              $model->assignment();
+            if ($model->save()) {
+                $model->assignment();
             }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -139,12 +140,12 @@ class ManageUserController extends Controller
         $oldPass = $model->password_hash;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-          if($oldPass!==$model->password){
-            $model->setPassword($model->password);
-          }
-          if($model->save()){
-            $model->assignment();
-          }
+            if ($oldPass !== $model->password) {
+                $model->setPassword($model->password);
+            }
+            if ($model->save()) {
+                $model->assignment();
+            }
 
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -168,6 +169,59 @@ class ManageUserController extends Controller
     }
 
     /**
+     *  manage role of user
+     */
+    public function actionRole($id)
+    {
+        $modules = SysModule::find()->all();
+        $model = $this->findModel($id);
+        $itemsTab = [];
+        foreach ($modules as $module) {
+            $itemsTab[] = [
+                'headerOptions' => [],
+                'label' => '<div style=""><i class="glyphicon glyphicon-home"></i> ' . $module->name_th . '</div>',
+                //'content' => "content".$module->_id,
+                'linkOptions' => [
+                    'data-url' => Url::to(['/manage-user/fetch-tab?module_id=' . $module->_id]),
+                ],
+                'pluginOptions' => [
+                    'enableCache' => false,
+                ]
+            ];
+        }
+
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                // $model->assignment();
+            }
+
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('role', [
+                'model' => $model,
+                'modules' => $modules,
+                'itemsTab' => $itemsTab,
+            ]);
+        }
+    }
+
+    public function actionLoadRight($module_id)
+    {
+        $module_id = Yii::$app->request->get('module_id');
+        $auth_right = AuthRight::find()->where(['module_id' => $module_id])->all();
+        return $this->renderAjax("_auth_right", ['auth_right' => $auth_right], true);
+    }
+
+    public function actionFetchTab()
+    {
+        $module_id = Yii::$app->request->get('module_id');
+        $auth_right = AuthRight::getMenuRights($module_id);
+        $html = $this->renderPartial("_auth_right", ['auth_right' => $auth_right], true);
+        return Json::encode($html);
+    }
+
+    /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -181,57 +235,5 @@ class ManageUserController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    /**
-     *  manage role of user
-     */
-    public function actionRole($id)
-    {
-        $modules = SysModule::find()->all();
-        $model = $this->findModel($id);
-        $itemsTab = [];
-        foreach ($modules as $module) {
-            $itemsTab[] = [
-                'headerOptions' => [],
-                'label' => '<div style=""><i class="glyphicon glyphicon-home"></i> ' . $module->name_th.'</div>',
-                //'content' => "content".$module->_id,
-                'linkOptions'=>[
-                    'data-url'=>Url::to(['/manage-user/fetch-tab?module_id='.$module->_id]),
-                ],
-                'pluginOptions' => [
-                    'enableCache' => false,
-                ]
-            ];
-        }
-
-
-
-        if ($model->load(Yii::$app->request->post())) {
-            if($model->save()){
-               // $model->assignment();
-            }
-
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('role', [
-                'model' => $model,
-                'modules' => $modules,
-                'itemsTab' => $itemsTab,
-            ]);
-        }
-    }
-
-    public function actionLoadRight($module_id){
-        $module_id = Yii::$app->request->get('module_id');
-        $auth_right = AuthRight::find()->where(['module_id'=>$module_id])->all();
-        return $this->renderAjax("_auth_right",['auth_right'=>$auth_right],true);
-    }
-
-    public function actionFetchTab() {
-        $module_id = Yii::$app->request->get('module_id');
-        $auth_right = AuthRight::getMenuRights($module_id);
-        $html = $this->renderPartial("_auth_right",['auth_right'=>$auth_right],true);
-         return Json::encode($html);
     }
 }

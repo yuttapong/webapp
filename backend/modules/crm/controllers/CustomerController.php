@@ -112,13 +112,12 @@ class CustomerController extends Controller
     {
         $query = CustomerResponsible::find();
         //$query->joinWith('customer');
+        $query->where(['active' => 1]);
+        $query->andFilterWhere(['user_id' => Yii::$app->user->getId()]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
         ]);
-
-        $query->filterWhere(['active' => 1]);
-        $query->filterWhere(['user_id' => Yii::$app->user->getId()]);
 
         return $this->render('mylead', [
             'dataProvider' => $dataProvider,
@@ -201,13 +200,12 @@ class CustomerController extends Controller
                 ->andFilterWhere(['like', 'title', $searchComm->title])
                 ->andFilterWhere(['like', 'detail', $searchComm->detail])
                 ->orderBy(['id' => SORT_DESC]),
-            //  'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]],
 
         ]);
 
-        $CustomerResponsible = $model->getPersonsInCharge();
+
         $dataProviderPersonInCharge = new ActiveDataProvider([
-            'query' => $CustomerResponsible
+            'query' => $model->getPersonsInCharge()
         ]);
 
 
@@ -301,6 +299,7 @@ class CustomerController extends Controller
                     //address contact
                     $modelAddressContact->table_name = Customer::TABLE_NAME;
                     $modelAddressContact->table_key = $model->id;
+                    $modelAddressContact->is_default = 1;
                     $modelAddressContact->save(false);
 
                     //address office
@@ -373,7 +372,6 @@ class CustomerController extends Controller
 
     public function actionDelete($id)
     {
-
         // $this->findModel($id)->delete();
         echo 'Not Allowed';
         exit();
@@ -388,12 +386,35 @@ class CustomerController extends Controller
             //แบบสอบถาม
             $searchModelSurvey = new  SurveySearch();
             $dataProviderSurvey = $searchModelSurvey->searchCustomerServey(Yii::$app->request->queryParams);
-            return $this->render('_survey', [
+            return $this->render('choose-survey', [
                 'dataProviderSurvey' => $dataProviderSurvey,
                 'searchModelSurvey' => $searchModelSurvey,
                 'modelCustomer' => $this->findModel($customerId),
             ]);
         }
+    }
+
+
+    /**
+     * action to fetch customer
+     */
+    public function actionFindCustomer($q)
+    {
+        $out = [];
+        if ($q) {
+            $customers = Customer::find()
+                ->filterWhere(['like', 'firstname', $q])
+                ->all();
+            $out = [];
+            foreach ($customers as $d) {
+                $out[] = [
+                    'id' => $d->id,
+                    'value' => $d->fullname,
+                    'name' => $d->id . ' - ' . $d->fullname
+                ];
+            }
+        }
+        echo Json::encode($out);
     }
 
     /**
@@ -422,9 +443,7 @@ class CustomerController extends Controller
 
 
     public function actionQuestionnareDetail()
-
     {
-
         if (isset($_POST['expandRowKey'])) {
 
             $customerId = $_POST['expandRowKey'];
@@ -436,9 +455,7 @@ class CustomerController extends Controller
             ]);
             $searchModelResponse = new ResponseSearch();
             return $this->renderPartial('_questionnaire', [
-
                 'searchModelResponse' => $searchModelResponse,
-
                 'dataProviderResponse' => $dataProvider,
                 'modelCustomer' => Customer::findOne($customerId),
                 'customerId' => $customerId,
@@ -474,8 +491,8 @@ class CustomerController extends Controller
             $modelAddress->table_key = $customerId;
 
 
-            if( ! empty($modelAddress->is_default)) {
-                GeneralAddress::updateAll(['is_default'=>0],['table_key'=>$modelAddress->table_key]);
+            if (!empty($modelAddress->is_default)) {
+                GeneralAddress::updateAll(['is_default' => 0], ['table_key' => $modelAddress->table_key]);
             }
 
 
@@ -512,10 +529,9 @@ class CustomerController extends Controller
 
             }
 
-                if( ! empty($modelAddress->is_default)) {
-                    GeneralAddress::updateAll(['is_default'=>0],['table_key'=>$modelAddress->table_key]);
-                }
-
+            if (!empty($modelAddress->is_default)) {
+                GeneralAddress::updateAll(['is_default' => 0], ['table_key' => $modelAddress->table_key]);
+            }
 
 
             if ($modelAddress->save()) {
@@ -543,10 +559,10 @@ class CustomerController extends Controller
         if (Yii::$app->request->isPost) {
             $modelAddress = GeneralAddress::findOne($id);
             $customerId = $modelAddress->table_key;
-            if($modelAddress->is_default === 1) {
+            if ($modelAddress->is_default === 1) {
                 Yii::$app->session->setFlash('warning', 'ที่อยู่นี้เป็นที่อยู่เริ่มต้นไม่สามารถลบได้');
                 return $this->redirect(['view', 'id' => $customerId]);
-            }else{
+            } else {
                 $modelAddress->active = 0;
                 if ($modelAddress->save()) {
                     Yii::$app->session->setFlash('success', 'ลบเรียบร้อยแล้ว');
@@ -656,14 +672,17 @@ class CustomerController extends Controller
             if (Yii::$app->request->post() && $model->load(Yii::$app->request->post()) && $model->validate()) {
 
                 // ปิดสถานะก่อนหน้าทั้งหมดเป็น Inacttive ก่อน
-                CustomerResponsible::updateAll(['active'=>0],['customer_id'=>$customerId,'active'=>1]);
+                CustomerResponsible::updateAll(['active' => 0], [
+                    'customer_id' => $customerId
+                ]);
 
                 $model->created_by = Yii::$app->user->id;
                 $model->created_at = time();
 
 
-                $personnel =  OrgPersonnel::findOne(['user_id'=> $model->user_id]);
-                $model->name = $personnel->fullnameTH;
+                //$personnel =  OrgPersonnel::findOne(['user_id'=> $model->user_id]);
+                //$model->name = $personnel->fullnameTH;
+
 
                 // เปิดใช้งาน user ปัจจุบัน เป็น Active แทน
                 $model->active = 1;

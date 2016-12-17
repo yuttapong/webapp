@@ -22,6 +22,14 @@ class SysKeyRun extends \yii\db\ActiveRecord
         return 'sys_key_run';
     }
 
+    /**
+     * @inheritdoc
+     * @return SysKeyRunQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SysKeyRunQuery(get_called_class());
+    }
 
     /**
      * @inheritdoc
@@ -50,16 +58,6 @@ class SysKeyRun extends \yii\db\ActiveRecord
             'seq_count' => 'Seq Count',
         ];
     }
-
-    /**
-     * @inheritdoc
-     * @return SysKeyRunQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new SysKeyRunQuery(get_called_class());
-    }
-
 
     public function generateKey($config = array())
     {

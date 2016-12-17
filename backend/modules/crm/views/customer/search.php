@@ -12,6 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
+<?php
+echo $this->render('toolbar/customer');
+?>
+
 <div class="div">
     <div class="col-xs-12 col-sm-6 col-md-5 col-md-offset-3">
      <div class="wells">

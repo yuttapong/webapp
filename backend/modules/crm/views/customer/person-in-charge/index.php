@@ -56,22 +56,28 @@ use kartik\grid\GridView;
 
                         ],
             */
-            [
-                'attribute' => 'datetime',
-                'format' => 'raw',
-                'value' => function ($model) {
-                    return \common\siricenter\thaiformatter\ThaiDate::widget([
-                        'timestamp' => $model->created_at,
-                        'type' => \common\siricenter\thaiformatter\ThaiDate::TYPE_SHORT,
-                        'showTime' => true,
-                    ]);
-                }
-            ],
+        [
+            'header' => 'Assigned By',
+            'value' => function($model){
+                $time =  \common\siricenter\thaiformatter\ThaiDate::widget([
+                    'timestamp' => $model->created_at,
+                    'type' =>\common\siricenter\thaiformatter\ThaiDate::TYPE_SHORT,
+                    'showTime' => true,
+                ]);
+                $by = $model->assignBy->firstname_th;
+                return $by.'<br>'.$time;
+            },
+            'format' => 'html',
+            'options' => [
+                 'style' => 'text-align:center;',
+            ]
+        ],
+            /*
             [
                 'attribute' => 'created_by',
                 'value' => 'createdName.firstname_th'
             ],
-
+           */
             [
                 'class' => '\yii\grid\ActionColumn',
                 'template' => '{update-communication} {view-communication} {delete-communication}',

@@ -293,7 +293,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getCurrentPersonInCharge()
     {
         $user = $this->_findCurrentPersonInCharge();
-        return @$user->personnel->firstname_th;
+         return @$user->personnel->firstname_th;
     }
 
     // ผุ้ครับผิดชอบคนล่าสุด ชื่อแบบเต็ม
