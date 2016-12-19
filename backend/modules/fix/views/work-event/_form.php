@@ -32,6 +32,7 @@ use common\models\Calendar;
 	<div class="col-sm-4">
 <?= $form->field($model, 'start_date')->widget(DateTimePicker::classname(), [
 		        		'type' => DateTimePicker::TYPE_INPUT,
+						'language' => 'th',
 					    'options' => ['placeholder' => 'Enter event time ...'],
 							'pluginOptions' => [
 							'format' => 'dd-mm-yyyy hh:ii',

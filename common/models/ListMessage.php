@@ -20,7 +20,6 @@ use Yii;
  * @property string $description
  * @property integer $app_status
  * @property integer $status
-
  * @property integer $company_id
  * @property integer $site_id
  * @property string $color_code
@@ -59,7 +58,7 @@ class ListMessage extends \yii\db\ActiveRecord
             'document_id' => 'Document ID',
             'table_name' => 'Table Name',
             'table_key' => 'Table Key',
-        	'table_key2' => 'Table Key2',
+            'table_key2' => 'Table Key2',
             'titie' => 'Titie',
             'option' => 'Option',
             'user_id' => 'User ID',
@@ -72,11 +71,12 @@ class ListMessage extends \yii\db\ActiveRecord
             'company_id' => 'Company ID',
             'site_id' => 'Site ID',
             'color_code' => 'Color Code',
-        		'module_id' => 'module_id Code',
+            'module_id' => 'module_id Code',
         ];
     }
+
     public function getDocuments()
     {
-    	return $this->hasOne(SysDocument::className(), ['document_id' => 'document_id']);
+        return $this->hasOne(SysDocument::className(), ['document_id' => 'document_id']);
     }
 }

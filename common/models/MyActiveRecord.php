@@ -8,8 +8,7 @@ class MyActiveRecord extends ActiveRecord
     public function beforeSave($insert)
     {
         //loop column ทั้งหมด
-        foreach ($this->getTableSchema()->columns as $column)
-        {
+        foreach ($this->getTableSchema()->columns as $column) {
             $attribute = $this->getAttribute($column->name);
             if (empty($attribute)) { //หากได้ค่าว่าง
                 $column->allowNull == 1 ? $this->setAttribute($column->name, null) : null;

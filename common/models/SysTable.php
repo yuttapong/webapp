@@ -21,6 +21,7 @@ class SysTable extends \yii\db\ActiveRecord
 {
     const   TYPE_DATA = 'DATA';
     const  TYPE_TABLE = 'TABLE';
+
     /**
      * @inheritdoc
      */
@@ -35,9 +36,9 @@ class SysTable extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status','name'],'required'],
-            [['detail','slug'], 'string'],
-            [['status', 'created_at', 'created_by','updated_at','updated_by'], 'integer'],
+            [['status', 'name'], 'required'],
+            [['detail', 'slug'], 'string'],
+            [['status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -49,7 +50,7 @@ class SysTable extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'Id'),
-            'slug' => Yii::t('app','Slug'),
+            'slug' => Yii::t('app', 'Slug'),
             'name' => Yii::t('app', 'ชื่อ'),
             'detail' => Yii::t('app', 'รายละเอียด'),
             'status' => Yii::t('app', 'สถานะ'),
@@ -73,21 +74,22 @@ class SysTable extends \yii\db\ActiveRecord
     /**
      * @return $this
      */
-    public function getSysBasicDatas(){
-        return $this->hasMany(SysBasicData::className(),['table_id'=>'id'])
-            ->where(['status'=> SysBasicData::STATUS_ACTIVE])
-            ->orderBy(['sorter'=>SORT_ASC]);
+    public function getSysBasicDatas()
+    {
+        return $this->hasMany(SysBasicData::className(), ['table_id' => 'id'])
+            ->where(['status' => SysBasicData::STATUS_ACTIVE])
+            ->orderBy(['sorter' => SORT_ASC]);
     }
 
 
     /**
      * @return array
      */
-    public function getTableList(){
+    public function getTableList()
+    {
         $model = SysTable::find()->all();
-        return ArrayHelper::map($model,'id','name');
+        return ArrayHelper::map($model, 'id', 'name');
     }
-
 
 
     /**
@@ -98,15 +100,14 @@ class SysTable extends \yii\db\ActiveRecord
     {
         if ($slug) {
             $model = SysTable::find()
-                ->where(['slug'=>$slug,'type'=>SysTable::TYPE_DATA])
+                ->where(['slug' => $slug, 'type' => SysTable::TYPE_DATA])
                 ->one();
-            return ArrayHelper::map( $model->sysBasicDatas, 'id', 'name');
+            return ArrayHelper::map($model->sysBasicDatas, 'id', 'name');
         } else {
         }
         return [];
 
     }
-
 
 
 }

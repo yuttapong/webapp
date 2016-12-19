@@ -28,6 +28,15 @@ class SysGeography extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return SysGeographyQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SysGeographyQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
@@ -55,15 +64,6 @@ class SysGeography extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     * @return SysGeographyQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new SysGeographyQuery(get_called_class());
-    }
-
     public function getProvinces()
     {
         return $this->hasMany(SysProvince::className(), ['geography_id' => 'id']);
@@ -81,20 +81,24 @@ class SysGeography extends \yii\db\ActiveRecord
     }
 
 
-    public function getCountProvince(){
+    public function getCountProvince()
+    {
         return count($this->provinces);
     }
 
-    public function getCountAmphur(){
+    public function getCountAmphur()
+    {
         return count($this->amphurs);
     }
 
-    public function getCountTambon(){
+    public function getCountTambon()
+    {
         return count($this->tambons);
     }
 
-    public function getArrayGeoGraphy(){
+    public static  function getArrayGeoGraphy()
+    {
         $model = SysGeography::find()->all();
-        return ArrayHelper::map($model,'id','name_th');
+        return ArrayHelper::map($model, 'id', 'name_th');
     }
 }

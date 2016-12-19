@@ -7,7 +7,7 @@ use common\widgets\modalAjax\ajaxModal;
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
 use backend\modules\fix\models\SendDocuments;
-
+use common\siricenter\thaiformatter\ThaiDate;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\fix\Models\InformFix */
 
@@ -33,7 +33,7 @@ $this->registerJsFile('@web/js/fix/inform_fix.js');
 						$('#modal').modal('show')
 						$('#modal .modal-body').html(response);
 					 }
-				  });return false;"
+				  });return false;"
  ]); ?>
   <?php 
   $url=Url::to(['inform-fix/list-pr','inform_fix_id'=>$model->id]);
@@ -48,7 +48,7 @@ $this->registerJsFile('@web/js/fix/inform_fix.js');
         		$('#modal').modal('show')
         		$('#modal .modal-body').html(response);
         		}
-        		});return false;"
+        		});return false;"
          ]);
  
         ?>
@@ -108,7 +108,17 @@ $this->registerJsFile('@web/js/fix/inform_fix.js');
 	<?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-        	'date_inform:datetime',
+ 
+        	[
+        	'attribute' => 'date_inform',
+        	'value'  => 
+        	 $model->date_inform!=''?ThaiDate::widget([
+            			'timestamp' => $model->date_inform,
+            			'type' => ThaiDate::TYPE_MEDIUM,
+            			'showTime' => true
+            	]) :'' ,
+        	
+        	],
         	[
         	'attribute' => 'home.date_insurance',
         	'value'  => $model->home->date_insurance!=''?date ( "d-m-Y", $model->home->date_insurance):'' ,
@@ -196,36 +206,26 @@ echo Html::button('เพิ่มงานที่ทำ', [ 'class' => 'btn b
         				
         				
         		],
-        		'template' => '{edit} {view}'
+        		'template' => '{edit} {view}',
+        		'visibleButtons' => [
+        				'edit' => function ($model, $key, $index) {
+        					return $model->informFix->work_status == 3 ? false : true;
+        				},
+        		
+        				]
         	],
         ],
     ]); ?>
  
 </div>
 <div class="row">
-  <?php 
-  if(count($model->sendDocumentsl)>0){
-  	echo 'ประวัติการแจ้ง<br>';
-  	$i=1;
-  	foreach ($model->sendDocumentsl as $val){
-  		$text='<span class="bg-danger" >ยังไม่่รับทราพ</span>';
-  		if( $val->is_khow==1){
-  			$text='<span class="bg-success" >รับทราพแล้ว</span>';
-  		}
-  		
-  		echo $i.'. '. $val->recipient_user_name.'   '.$text.'  '.$val->title.'<br>';
-  		$i++;
-  	}
-  	
-  }
 
-  
-  ?>
   
     <?php 
     if(Yii::$app->user->id==133){
-    echo 'วัสดุที่ใช่ในงานนี้ <br>';
-if(count($model->informMaterial)>0){
+  
+if(count($model->informMaterial)>0){ 
+	echo 'วัสดุที่ใช่ในงานนี้ <br>';
 	$inv=1;
 	foreach ($model->informMaterial as $mat){
 		echo $inv.'. '.$mat->name.'<br>';
@@ -278,7 +278,12 @@ if(count($model->listApprever)>0){
      if(!empty($item['img'])&& count($item['img'])>0){ ?>
      	<div class="panel panel-default">
   			<div class="panel-body">
-    			<?php  echo dosamigos\gallery\Gallery::widget(['items' =>$item['img']]);?>
+    			<?php 
+    			//if(Yii::$app->user->id==133){
+    			echo dosamigos\gallery\Gallery::widget(['items' =>$item['img']]);
+    			//}
+    			
+    			?>
     		</div>
 		</div>
    <?php   } ?>
@@ -335,7 +340,24 @@ if(!empty($item['other'])){
  ?>
     </p>
 
+    <?php 
+  if(count($model->sendDocumentsl)>0){
+  	echo 'ประวัติการแจ้ง<br>';
+  	$i=1;
+  	foreach ($model->sendDocumentsl as $val){
+  		$text='<span class="bg-danger" >ยังไม่่รับทราพ</span>';
+  		if( $val->is_khow==1){
+  			$text='<span class="bg-success" >รับทราพแล้ว</span>';
+  		}
+  		
+  		echo $i.'. '. $val->recipient_user_name.'   '.$text.'  '.$val->title.'<br>';
+  		$i++;
+  	}
+  	
+  }
+
   
+  ?>
 
    <?php
    Modal::begin([

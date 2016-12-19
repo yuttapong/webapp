@@ -2,21 +2,22 @@
 namespace common\models;
 
 use common\models\User;
+
 //...
 
 class Conversation extends \bubasuma\simplechat\db\Conversation
 {
-    public function getContact()
-    {
-        return $this->hasOne(User::className(), ['id' => 'contact_id']);
-    }
-
     /**
      * @inheritDoc
      */
     protected static function baseQuery($userId)
     {
-        return parent::baseQuery($userId) ->with(['contact.profile']);
+        return parent::baseQuery($userId)->with(['contact.profile']);
+    }
+
+    public function getContact()
+    {
+        return $this->hasOne(User::className(), ['id' => 'contact_id']);
     }
 
     /**

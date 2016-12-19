@@ -17,20 +17,20 @@ class MultipleModel extends Model
     /**
      * Creates and populates a set of models.
      *
-     * @param string  $modelClass
-     * @param array   $multipleModels
+     * @param string $modelClass
+     * @param array $multipleModels
      * @param  string $pk
      * @return array
      */
     public static function createMultiple($modelClass, $multipleModels = [], $pk = 'id')
     {
-        $model    = new $modelClass;
+        $model = new $modelClass;
         $formName = $model->formName();
-        $post     = Yii::$app->request->post($formName);
-        $models   = [];
+        $post = Yii::$app->request->post($formName);
+        $models = [];
 
         if (!empty($multipleModels)) {
-            $keys           = array_keys(ArrayHelper::map($multipleModels, $pk, $pk));
+            $keys = array_keys(ArrayHelper::map($multipleModels, $pk, $pk));
             $multipleModels = array_combine($keys, $multipleModels);
         }
 

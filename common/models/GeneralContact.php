@@ -32,13 +32,22 @@ class GeneralContact extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return GeneralContactQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new GeneralContactQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
             [['type', 'name'], 'required'],
             [['type'], 'string'],
-            [['table_key', 'address_id', 'created_at', 'created_by', 'seq', 'updated_at', 'updated_by','is_default'], 'integer'],
+            [['table_key', 'address_id', 'created_at', 'created_by', 'seq', 'updated_at', 'updated_by', 'is_default'], 'integer'],
             [['name', 'contact'], 'string', 'max' => 100],
             [['table_name'], 'string', 'max' => 255],
         ];
@@ -64,14 +73,5 @@ class GeneralContact extends \yii\db\ActiveRecord
             'updated_by' => 'Udpated By',
             'is_default' => 'ค่าเริ่มต้น',
         ];
-    }
-
-    /**
-     * @inheritdoc
-     * @return GeneralContactQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new GeneralContactQuery(get_called_class());
     }
 }

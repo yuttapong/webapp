@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'qty',
 		'home_id',
 		'unit_name',
-		'job_name',
+		'job_name',
 ];
  echo GridView::widget([
         'dataProvider' => $dataProvider,

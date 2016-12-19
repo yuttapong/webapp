@@ -105,7 +105,7 @@ class SysMenu extends \yii\db\ActiveRecord
      * เมนูของแต่ละโมดูล
      * get array for widget
      */
-    public function getSidebarItem($slug = '')
+    public static function getSidebarItem($slug = '')
     {
 
         $items = [];
@@ -129,8 +129,19 @@ class SysMenu extends \yii\db\ActiveRecord
         return $items;
     }
 
+    public  function getArrayParent()
+    {
+        $model = SysMenu::find()
+            ->where(['parent' => 0, 'module_id' => $this->module_id])
+            // ->andWhere(['<>', 'id', $this->id])
+            ->all();
+        $items = ArrayHelper::map($model, 'id', 'name');
+        return $items;
+    }
 
-    private function getSidebarItemSub($parent)
+    //Array for dropdown parent of menu
+
+    private static function getSidebarItemSub($parent)
     {
         $model = SysMenu::find()
             ->where(['parent' => $parent, 'active' => 1])
@@ -142,21 +153,10 @@ class SysMenu extends \yii\db\ActiveRecord
                 $items[] = [
                     'label' => $m->name,
                     'url' => [$m->route],
-                   // 'icon' => ($m->icon) ? $m->icon : 'fa fa-dot-circle-o'
+                    // 'icon' => ($m->icon) ? $m->icon : 'fa fa-dot-circle-o'
                 ];
             }
         }
-        return $items;
-    }
-
-    //Array for dropdown parent of menu
-    public function getArrayParent()
-    {
-        $model = SysMenu::find()
-            ->where(['parent' => 0, 'module_id' => $this->module_id])
-            // ->andWhere(['<>', 'id', $this->id])
-            ->all();
-        $items = ArrayHelper::map($model, 'id', 'name');
         return $items;
     }
 }

@@ -6,6 +6,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+
 /**
  * This is the model class for table "general_address".
  *
@@ -45,24 +46,47 @@ class GeneralAddress extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return GeneralAddressQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new GeneralAddressQuery(get_called_class());
+    }
+
+    /**
+     * ประเภทที่อยู่
+     * @return array
+     */
+    public static function getTypeItems()
+    {
+        $items = [
+            self::TYPE_CONTACT => 'ที่อยู่ปัจจุบัน',
+            self::TYPE_OFFICE => 'ที่ทำงาน',
+            //self::TYPE_HOME => 'บ้าน',
+            // self::TYPE_HOUSE => 'ห้องเช่า/หอพัก',
+        ];
+
+        return $items;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
             [['type'], 'required'],
             [['type'], 'string'],
-            [['province_id', 'tambon_id', 'amphur_id', 'table_key', 'created_at', 'created_by','active'], 'integer'],
+            [['province_id', 'tambon_id', 'amphur_id', 'table_key', 'created_at', 'created_by', 'active'], 'integer'],
             [['name', 'company'], 'string', 'max' => 60],
             [['no', 'moo'], 'string', 'max' => 20],
             [['soi', 'village'], 'string', 'max' => 50],
             [['road'], 'string', 'max' => 100],
             [['zipcode'], 'string', 'max' => 10],
             [['table_name'], 'string', 'max' => 255],
-            [['is_default'],'boolean'],
+            [['is_default'], 'boolean'],
         ];
     }
-
-
 
     /**
      * @inheritdoc
@@ -88,11 +112,10 @@ class GeneralAddress extends \yii\db\ActiveRecord
             'created_at' => 'สร้างเมื่อ',
             'created_by' => 'สร้างโดย',
             'active' => 'Active',
-            'typeName'  => 'ประเภทที่อยู่',
+            'typeName' => 'ประเภทที่อยู่',
             'is_default' => 'ตั้งเป็นที่อยู่เริ่มต้น (Default)',
         ];
     }
-
 
     /**
      * @return array
@@ -105,71 +128,50 @@ class GeneralAddress extends \yii\db\ActiveRecord
 
         ];
     }
-    
-
-    /**
-     * @inheritdoc
-     * @return GeneralAddressQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new GeneralAddressQuery(get_called_class());
-    }
-
-
-    /**
-     * ประเภทที่อยู่
-     * @return array
-     */
-    public static function getTypeItems()
-    {
-        $items = [
-            self::TYPE_CONTACT => 'ที่อยู่ปัจจุบัน',
-            self::TYPE_OFFICE => 'ที่ทำงาน',
-            //self::TYPE_HOME => 'บ้าน',
-           // self::TYPE_HOUSE => 'ห้องเช่า/หอพัก',
-        ];
-
-        return $items;
-    }
 
     /**
      * ชื่อประเภทที่อยู่
      * @return mixed
      */
-    public  function getTypeName(){
-        return ArrayHelper::getValue($this->typeItems,$this->type);
+    public function getTypeName()
+    {
+        return ArrayHelper::getValue($this->typeItems, $this->type);
     }
 
     /**
      * ค่าอำเภอเริ่มต้น
      * @return array
      */
-    public function getAmphurValue(){
-        return ArrayHelper::map(SysAmphur::findAll(['id'=>$this->amphur_id]),'id','name_th');
+    public function getAmphurValue()
+    {
+        return ArrayHelper::map(SysAmphur::findAll(['id' => $this->amphur_id]), 'id', 'name_th');
     }
 
     /**
      * ค่าตำแบลเริ่มต้น
      * @return array
      */
-    public function getTambonValue(){
-        return ArrayHelper::map(SysTambon::findAll(['id'=>$this->tambon_id]),'id','name_th');
+    public function getTambonValue()
+    {
+        return ArrayHelper::map(SysTambon::findAll(['id' => $this->tambon_id]), 'id', 'name_th');
     }
 
     /**
      * ข้อมูลจังหวัดทั้งหมด
      * @return \yii\db\ActiveQuery
      */
-    public function getProvince(){
-        return @$this->hasOne(SysProvince::className(),['id'=>'province_id']);
+    public function getProvince()
+    {
+        return @$this->hasOne(SysProvince::className(), ['id' => 'province_id']);
     }
 
-    public function getAmphur(){
-        return @$this->hasOne(SysAmphur::className(),['id'=>'amphur_id']);
+    public function getAmphur()
+    {
+        return @$this->hasOne(SysAmphur::className(), ['id' => 'amphur_id']);
     }
 
-    public function getTambon(){
-        return @$this->hasOne(SysTambon::className(),['id'=>'tambon_id']);
+    public function getTambon()
+    {
+        return @$this->hasOne(SysTambon::className(), ['id' => 'tambon_id']);
     }
 }

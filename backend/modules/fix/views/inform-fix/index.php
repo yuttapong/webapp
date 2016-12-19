@@ -104,13 +104,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => 'raw',
             'value' => function ($model) {
             $text='';
-            if(count($model->informJobs)>0){
+            $ModelJob=$model->informJobs;
+            if($model->work_status!='3'&&count($ModelJob)>0){
             	$i=1;
-            	foreach ($model->informJobs as $val){
-            		$text.=$i.' '.BaseStringHelper::truncate($val->list, 50).'<br>';
-            		
+            	foreach ($ModelJob as $val){
+            		$text.=$i.' '.BaseStringHelper::truncate($val->list, 50);
+            		if($i/count($ModelJob)!=1){ 
+            			$text .='<br>';
+            		}
             		
             		$i++;
+            	}
+            }else{
+            	$old_option=unserialize($model->option);
+            	if(!empty($old_option['inforJob'])){
+            		$text=$old_option['inforJob'];
             	}
             }
             	return $text;
@@ -246,7 +254,7 @@ $this->params['breadcrumbs'][] = $this->title;
             					return ( $model->work_status == 3 || $model->is_delete==1 )? false : true;
             				}
             		]
-            		
+            		
              ],
         ],
     ]); 

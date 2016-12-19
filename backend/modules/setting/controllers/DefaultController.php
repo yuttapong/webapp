@@ -3,17 +3,51 @@
 namespace backend\modules\setting\controllers;
 
 use backend\modules\org\models\OrgPersonnel;
-use backend\modules\org\Org;
 use backend\modules\recruitment\models\RcmAppForm;
 use backend\modules\setting\models\User;
 use yii\web\Controller;
 use yii\helpers\Url;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use Yii;
 
 /**
  * Default controller for the `setting` module
  */
 class DefaultController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    ['allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            $module = Yii::$app->controller->module->id;
+                            $action = Yii::$app->controller->action->id;
+                            $controller = Yii::$app->controller->id;
+                            $route = "/$module/$controller/$action";
+                            if (Yii::$app->user->can($route)) {
+                                return true;
+                            }
+                        }
+                    ]
+                ]
+            ]
+        ];
+    }
+
     /**
      * Renders the index view for the module
      * @return string

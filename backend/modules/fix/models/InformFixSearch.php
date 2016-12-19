@@ -51,6 +51,7 @@ class InformFixSearch extends InformFix
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         	 'sort' => ['defaultOrder'=>[
+        	 		'work_status'=>SORT_ASC,
            			 'id' => SORT_DESC,
        			 ]
         	 ]

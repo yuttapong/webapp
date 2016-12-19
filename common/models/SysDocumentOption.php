@@ -39,7 +39,8 @@ class SysDocumentOption extends \yii\db\ActiveRecord
     public $level;
     public $user_code;
 
-   public $users;
+    public $users;
+
     /**
      * @inheritdoc
      */
@@ -107,13 +108,15 @@ class SysDocumentOption extends \yii\db\ActiveRecord
         $model = OrgPosition::find()->orderBy('name_th')->all();
         return ArrayHelper::map($model, 'id', 'name_th');
     }
+
     public function getPersonnelItems()
     {
-        $model = OrgPersonnel::find()->where(['not',['code'=>'']])->orderBy('firstname_th')->all();
+        $model = OrgPersonnel::find()->where(['not', ['code' => '']])->orderBy('firstname_th')->all();
         return ArrayHelper::map($model, 'id', 'fullnameWithCode');
     }
 
-    public function getDocument(){
-        return $this->hasOne(SysDocument::className(),['document_id'=>'document_id']);
+    public function getDocument()
+    {
+        return $this->hasOne(SysDocument::className(), ['document_id' => 'document_id']);
     }
 }

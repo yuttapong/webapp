@@ -30,12 +30,21 @@ class SysAmphur extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return SysAmphurQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SysAmphurQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
             [['id'], 'required'],
-            [['id', 'geography_id','province_id', 'active', 'create_at', 'create_by'], 'integer'],
+            [['id', 'geography_id', 'province_id', 'active', 'create_at', 'create_by'], 'integer'],
             [['code', 'province_code', 'master_id'], 'string', 'max' => 20],
             [['name_th'], 'string', 'max' => 150],
         ];
@@ -57,26 +66,19 @@ class SysAmphur extends \yii\db\ActiveRecord
             'master_id' => 'Master ID',
             'create_at' => 'Create At',
             'create_by' => 'Create By',
-            'geography.name_th'=>'ภาค',
-            'province.name_th'=>'จังหวัด',
+            'geography.name_th' => 'ภาค',
+            'province.name_th' => 'จังหวัด',
 
         ];
     }
 
-    /**
-     * @inheritdoc
-     * @return SysAmphurQuery the active query used by this AR class.
-     */
-    public static function find()
+    public function getGeography()
     {
-        return new SysAmphurQuery(get_called_class());
+        return $this->hasOne(SysGeography::className(), ['id' => 'geography_id']);
     }
 
-    public function getGeography(){
-        return $this->hasOne(SysGeography::className(),['id'=>'geography_id']);
-    }
-
-    public function getProvince(){
-        return $this->hasOne(SysProvince::className(),['id'=>'province_id']);
+    public function getProvince()
+    {
+        return $this->hasOne(SysProvince::className(), ['id' => 'province_id']);
     }
 }

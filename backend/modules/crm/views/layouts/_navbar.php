@@ -30,10 +30,6 @@ echo Nav::widget([
                 'url'=>['customer/create']
             ],
             [
-                'label' => '<i class="fa fa-user-circle"></i> ลูกค้าที่ฉันรับผิดชอบอยู่ - My Lead',
-                'url'=>['customer/mylead']
-            ],
-            [
                 'label' => '<i class="fa fa-group"></i> ลูกค้าทั้งหมด - All Customer',
                 'url'=>['customer/all']
             ],

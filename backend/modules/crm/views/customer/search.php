@@ -6,7 +6,7 @@
  */
 
 
-$this->title = '';
+$this->title = 'ค้นหาลูกค้า';
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -16,18 +16,17 @@ $this->params['breadcrumbs'][] = $this->title;
 echo $this->render('toolbar/customer');
 ?>
 
-<div class="div">
-    <div class="col-xs-12 col-sm-6 col-md-5 col-md-offset-3">
-     <div class="wells">
+<br>
+<div class="row">
+    <div class="col-md-4 col-lg-4">
 
          <?php echo $this->render('_search-index', [
              'model' => $searchModel,
              'action' => ['index']
          ]); ?>
 
-     </div>
-    </div>
 </div>
+    </div>
 
 
 

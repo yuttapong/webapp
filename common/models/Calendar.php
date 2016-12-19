@@ -20,30 +20,33 @@ use yii\helpers\ArrayHelper;
  */
 class Calendar extends \yii\db\ActiveRecord
 {
-    /**
+const  TYPE_OTHER = 'other';
+const  TYPE_FIX_APPOINTMENTS = 'tb_fix_appointments'; //อื่น ๆ
+        /**
      * @inheritdoc
      */
-	public $date_range;
-	
-	const  TYPE_OTHER = 'other'; //อื่น ๆ
-	const  TYPE_FIX_APPOINTMENTS = 'tb_fix_appointments'; // ต่ารงแจ้งซ่อม 
-	
+    public $date_range; // ต่ารงแจ้งซ่อม 
+
     public static function tableName()
     {
         return 'sys_calendar';
     }
+
     public static function getTypeItems()
     {
-    	return [
-    			
-    			self::TYPE_FIX_APPOINTMENTS => 'ตารางนัดแจ้งซ่อม',
-    			self::TYPE_OTHER => 'อื่น ๆ',
+        return [
 
-    	];
+            self::TYPE_FIX_APPOINTMENTS => 'ตารางนัดแจ้งซ่อม',
+            self::TYPE_OTHER => 'อื่น ๆ',
+
+        ];
     }
-    public function getTypeName(){
-    	return ArrayHelper::getValue(self::getTypeItems(), $this->slug);
+
+    public function getTypeName()
+    {
+        return ArrayHelper::getValue(self::getTypeItems(), $this->slug);
     }
+
     /**
      * @inheritdoc
      */
@@ -51,12 +54,12 @@ class Calendar extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'description', 'start_date'], 'required'],
-            [['created_at', 'created_by', 'is_delete', 'status','table_key'], 'integer'],
-        	[['description'], 'string'],
-        	[['slug'], 'string', 'max' => 200],
-        	[['title'], 'string', 'max' => 50],
+            [['created_at', 'created_by', 'deleted_at', 'status', 'table_key','is_delete'], 'integer'],
+            [['description'], 'string'],
+            [['slug'], 'string', 'max' => 200],
+            [['title'], 'string', 'max' => 50],
             [['table_name'], 'string', 'max' => 500],
-        	[['start_date','end_date'], 'safe'],
+            [['start_date', 'end_date'], 'safe'],
         ];
     }
 
@@ -73,31 +76,34 @@ class Calendar extends \yii\db\ActiveRecord
             'end_date' => 'วันสิ้นสุด',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
-            'is_delete' => 'Is Delete',
+            'deleted_at' => 'Deleted At',
             'status' => 'Status',
-        	'table_name'=>'table_name',
-        	'table_key'=>'table_key',
-        	'user_responsible'=>'ผู้รับผิดชอบ',
-        	'slug'=>'slug'
+            'table_name' => 'table_name',
+            'table_key' => 'table_key',
+            'user_responsible' => 'ผู้รับผิดชอบ',
+            'slug' => 'slug',
+            'is_delete' => 'ลบแล้ว',
         ];
     }
-    public function beforeSave($insert){
-    	if (parent::beforeSave($insert)) {
-    
-    		$this->start_date = strtotime($this->start_date);
-    		if($this->end_date!=''){
-    			$this->end_date = strtotime($this->end_date);
-    		}
-    		if ($this->isNewRecord) {
-    			$this->created_at=time();
-    			$this->created_by=Yii::$app->user->id;
-    		}else{
-    
-    		}
-    		return true;
-    	} else {
-    		 
-    		return false;
-    	}
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+
+            $this->start_date = strtotime($this->start_date);
+            if ($this->end_date != '') {
+                $this->end_date = strtotime($this->end_date);
+            }
+            if ($this->isNewRecord) {
+                $this->created_at = time();
+                $this->created_by = Yii::$app->user->id;
+            } else {
+
+            }
+            return true;
+        } else {
+
+            return false;
+        }
     }
 }

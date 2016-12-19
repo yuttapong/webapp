@@ -26,6 +26,7 @@ class SysBasicData extends \yii\db\ActiveRecord
 {
     const  STATUS_ACTIVE = 1;
     const  STATUS_INACTIVE = 0;
+
     /**
      * @inheritdoc
      */
@@ -36,12 +37,40 @@ class SysBasicData extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return SysBasicDataQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SysBasicDataQuery(get_called_class());
+    }
+
+    /**
+     * get data by table_id
+     * @return Array
+     */
+    public static function getArrayGroup($table_id)
+    {
+        if ($table_id) {
+            $models = SysBasicData::find()
+                ->where(['table_id' => $table_id, 'status' => SysBasicData::STATUS_ACTIVE])
+                ->orderBy(['sorter' => SORT_ASC])
+                ->all();
+            return ArrayHelper::map($models, 'id', 'name');
+        } else {
+
+        }
+        return [];
+
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
             [['table_id', 'status', 'created_at', 'created_by', 'is_deleted', 'sorter'], 'integer'],
-            [['code','name','status'], 'required'],
+            [['code', 'name', 'status'], 'required'],
             [['code'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 255],
             [['table_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysTable::className(), 'targetAttribute' => ['table_id' => 'id']],
@@ -75,7 +104,6 @@ class SysBasicData extends \yii\db\ActiveRecord
         ];
     }
 
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -90,34 +118,6 @@ class SysBasicData extends \yii\db\ActiveRecord
     public function getSysModules()
     {
         return $this->hasMany(SysModule::className(), ['bd_id' => 'id']);
-    }
-
-    /**
-     * @inheritdoc
-     * @return SysBasicDataQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new SysBasicDataQuery(get_called_class());
-    }
-
-    /**
-     * get data by table_id
-     * @return Array
-     */
-    public static function getArrayGroup($table_id)
-    {
-        if ($table_id) {
-            $models = SysBasicData::find()
-                ->where(['table_id' => $table_id, 'status' =>SysBasicData::STATUS_ACTIVE])
-                ->orderBy(['sorter' => SORT_ASC])
-                ->all();
-            return ArrayHelper::map($models, 'id', 'name');
-        } else {
-
-        }
-        return [];
-
     }
 
 }

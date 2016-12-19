@@ -33,6 +33,15 @@ class SysTambon extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return SysTambonQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SysTambonQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
@@ -66,15 +75,6 @@ class SysTambon extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'created_by' => 'Created By',
         ];
-    }
-
-    /**
-     * @inheritdoc
-     * @return SysTambonQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new SysTambonQuery(get_called_class());
     }
 
     public function getGeo()

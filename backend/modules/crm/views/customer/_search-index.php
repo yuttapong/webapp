@@ -5,7 +5,7 @@ use yii\helpers\Html;
 ?>
 
     <!-- start  -->
-    <div class="box box-solid box-primary">
+    <div class="box box-solids">
     <div class="box-header with-border">
         <h3 class="box-title">ค้นหาข้อมูลลูกค้า</h3>
         <div class="box-tools pull-right">
@@ -38,3 +38,4 @@ use yii\helpers\Html;
     </div><!-- /.box -->
 
 <!-- end -->
+<br class="clearfix">

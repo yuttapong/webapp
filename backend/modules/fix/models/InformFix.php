@@ -90,7 +90,7 @@ customer
         return [
         	[['project_id','prefixname', 'home_id', 'customer_name','date_inform'], 'required'],
             [['id', 'project_id','is_send','is_delete', 'home_id', 'seq', 'customer_id', 'job_status', 'job_sub_status', 'work_status', 'created_at', 'created_by','is_calendar', 'type'], 'integer'],
-            [['description'], 'string'],
+            [['description','option'], 'string'],
             [[ 'customer_name','telephone'], 'string', 'max' => 255],
         	[['code'], 'string', 'max' => 20],
         	[['date_modify'], 'safe'],
@@ -123,7 +123,8 @@ customer
         	'is_send'=> 'ส่ง',
         	'is_delete'=> 'ลบข้อมูล',
         	'date_modify'=>'วันที่แก้ไข',
-        	'is_calendar'=>'is_calendar'
+        	'is_calendar'=>'is_calendar',
+        	'option' => 'Option',
         ];
     }
 
@@ -209,7 +210,7 @@ customer
 	    				'path'=>$file->real_filename,//self::getUploadPath().'/'.$ref.'/'.$file->real_filename,
 	    				'name'=>$file->file_name,
 	    				'href'=>self::getUploadUrl(true).'/'.$ref.'/'.$file->real_filename,
-	    				'upload_id'=>$file->upload_id,
+	    				'upload_id'=>$file->upload_id,
 	    		];
 	    	}
     	}

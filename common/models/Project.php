@@ -46,7 +46,7 @@ class Project extends \yii\db\ActiveRecord
         return [
             [['name', 'site_id', 'company_id', 'status'], 'required'],
             [['site_id', 'company_id', 'created_at', 'created_by'], 'integer'],
-            [['type','status'], 'string'],
+            [['type', 'status'], 'string'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -68,10 +68,18 @@ class Project extends \yii\db\ActiveRecord
         ];
     }
 
+    // get the homes in this project
     public function getHomes()
     {
         return $this->hasMany(Home::className(), ['project_id' => 'id']);
     }
+
+    // this method is the same above method getHomes(), but he name getHome() 
+    public function getHome()
+    {
+        return $this->hasMany(Home::className(), ['project_id' => 'id']);
+    }
+
 
     public function beforeSave($insert)
     {

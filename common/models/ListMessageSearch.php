@@ -47,11 +47,11 @@ class ListMessageSearch extends ListMessage
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-        		'sort' => ['defaultOrder'=>[
-        				'app_status'=> SORT_ASC,
-        				'id' => SORT_DESC,
-        		]
-        		]
+            'sort' => ['defaultOrder' => [
+                'app_status' => SORT_ASC,
+                'id' => SORT_DESC,
+            ]
+            ]
         ]);
 
         $this->load($params);

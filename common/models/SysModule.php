@@ -39,91 +39,6 @@ class SysModule extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['description','slug'], 'string'],
-            [['slug'], 'unique'],
-            [['created_at', 'created_by', 'table_id', 'bd_id', 'active'], 'integer'],
-            [['active', 'bd_id', 'name_th'], 'required'],
-            [['name_en', 'name_th', 'img', 'url', 'icon'], 'string', 'max' => 255],
-            [['bd_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysBasicData::className(), 'targetAttribute' => ['bd_id' => 'id']],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'Id',
-            'slug' => 'Slug',
-            'name_en' => 'Name',
-            'name_th' => 'ชื่อ',
-            'description' => 'รายละเอียด',
-            'created_at' => 'สร้างเมื่อ',
-            'created_by' => 'สร้างโดย',
-            'img' => 'รูปภาพ',
-            'url' => 'ลิ้งค์',
-            'table_id' => 'ชุดข้อมูล',
-            'bd_id' => 'หมวดหมู่',
-            'active' => 'Active',
-            'sysTable.name' => 'หมวดหมู่',
-            'sysBd.name' => 'หมวดหมู่',
-            'icon' => 'Icon',
-            'updated_at' => 'แก้ไขล่าสุด',
-            'updated_by' => 'แก้ไขโดย',
-        ];
-    }
-    public  function attributeHints(){
-        return [
-          'Slug' => 'Module ID อ้างอิงโมดูล ซึ่งได้จาก Gii',
-        ];
-    }
-
-    public function behaviors()
-    {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthRights()
-    {
-        return $this->hasMany(AuthRight::className(), ['model_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSysBd()
-    {
-        return $this->hasOne(SysBasicData::className(), ['id' => 'bd_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSysTable()
-    {
-        return $this->hasOne(SysTable::className(), ['id' => 'table_id']);
-    }
-
-    public function getSysMenus()
-    {
-        return $this->hasMany(SysMenu::className(), ['module_id' => 'id'])
-            ->orderBy(['order' => SORT_ASC]);
-    }
-
-
-    /**
-     * @inheritdoc
      * @return SysModuleQuery the active query used by this AR class.
      */
     public static function find()
@@ -158,7 +73,7 @@ class SysModule extends \yii\db\ActiveRecord
             $groups[$m['group_id']]['label'] = $m['group_name'];
             $groups[$m['group_id']]['visible'] = true;
             $groups[$m['group_id']]['items'][] = [
-                'label' => $m['module_name_th'].'<br>'.$m['module_name_en'],
+                'label' => $m['module_name_th'] . '<br>' . $m['module_name_en'],
                 'url' => Url::to([$m['url']]),
                 'icon' => $m['img'],
                 'visible' => true,
@@ -169,22 +84,12 @@ class SysModule extends \yii\db\ActiveRecord
         return $groups;
     }
 
-
-    //for dropdown list
-    public  function getAModuleList()
-    {
-        $model = SysModule::find()->orderBy('name_th')->all();
-        return ArrayHelper::map($model, 'id', 'name_th');
-    }
-
-
-
     /**
      * หาเมนู
      * @param $module_id
      * @return array
      */
-    public static function  getMenuForNav($module_id)
+    public static function getMenuForNav($module_id)
     {
         $models = SysMenu::find(['parent' => 0])
             ->where(['module_id' => $module_id])
@@ -202,11 +107,36 @@ class SysModule extends \yii\db\ActiveRecord
     }
 
     /**
+     *  get menu  of app for navbar
+     * @return array
+     */
+    public static function getItemModuleForButtonApp()
+    {
+        $models = SysModule::find()
+            ->where(['active' => 1])
+            ->all();
+        $items = [];
+        if ($models) {
+            foreach ($models as $m) {
+                $items[$m->id] = [
+                    'icon' => $m->img,
+                    'label' => $m->name_en,
+                    'name_th' => $m->name_th,
+                    'name_en' => $m->name_en,
+                    'url' => $m->url,
+                    'visible' => true,
+                ];
+            }
+        }
+        return $items;
+    }
+
+    /**
      * หาเมนูย่อย sub ของ
      * @param $id
      * @return array
      */
-    private static function  getMenuChild($id)
+    private static function getMenuChild($id)
     {
         $model = SysMenu::find()
             ->where(['parent' => $id])
@@ -224,29 +154,99 @@ class SysModule extends \yii\db\ActiveRecord
         return $items;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['description', 'slug'], 'string'],
+            [['slug'], 'unique'],
+            [['created_at', 'created_by', 'table_id', 'bd_id', 'active'], 'integer'],
+            [['active', 'bd_id', 'name_th'], 'required'],
+            [['name_en', 'name_th', 'img', 'url', 'icon'], 'string', 'max' => 255],
+            [['bd_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysBasicData::className(), 'targetAttribute' => ['bd_id' => 'id']],
+        ];
+    }
 
     /**
-     *  get menu  of app for navbar
-     * @return array
+     * @inheritdoc
      */
-    public static  function getItemModuleForButtonApp(){
-        $models = SysModule::find()
-            ->where(['active' => 1])
-            ->all();
-        $items = [];
-        if ($models) {
-            foreach ($models as $m) {
-                $items[$m->id]= [
-                    'icon' => $m->img,
-                    'label' => $m->name_en,
-                    'name_th' => $m->name_th,
-                    'name_en' => $m->name_en,
-                    'url' => $m->url,
-                    'visible' => true,
-                ];
-            }
-        }
-        return $items;
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'Id',
+            'slug' => 'Slug',
+            'name_en' => 'Name',
+            'name_th' => 'ชื่อ',
+            'description' => 'รายละเอียด',
+            'created_at' => 'สร้างเมื่อ',
+            'created_by' => 'สร้างโดย',
+            'img' => 'รูปภาพ',
+            'url' => 'ลิ้งค์',
+            'table_id' => 'ชุดข้อมูล',
+            'bd_id' => 'หมวดหมู่',
+            'active' => 'Active',
+            'sysTable.name' => 'หมวดหมู่',
+            'sysBd.name' => 'หมวดหมู่',
+            'icon' => 'Icon',
+            'updated_at' => 'แก้ไขล่าสุด',
+            'updated_by' => 'แก้ไขโดย',
+        ];
+    }
+
+    public function attributeHints()
+    {
+        return [
+            'Slug' => 'Module ID อ้างอิงโมดูล ซึ่งได้จาก Gii',
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            BlameableBehavior::className(),
+            TimestampBehavior::className(),
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthRights()
+    {
+        return $this->hasMany(AuthRight::className(), ['model_id' => 'id']);
+    }
+
+
+    //for dropdown list
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSysBd()
+    {
+        return $this->hasOne(SysBasicData::className(), ['id' => 'bd_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSysTable()
+    {
+        return $this->hasOne(SysTable::className(), ['id' => 'table_id']);
+    }
+
+    public function getSysMenus()
+    {
+        return $this->hasMany(SysMenu::className(), ['module_id' => 'id'])
+            ->orderBy(['order' => SORT_ASC]);
+    }
+
+    public function getAModuleList()
+    {
+        $model = SysModule::find()->orderBy('name_th')->all();
+        return ArrayHelper::map($model, 'id', 'name_th');
     }
 
 }

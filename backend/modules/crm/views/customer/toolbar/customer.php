@@ -1,5 +1,7 @@
 <?php
 use yii\bootstrap\Nav;
+
+
 echo Nav::widget([
     'options' => ['class' => 'nav-pills'],
     'encodeLabels' => false,

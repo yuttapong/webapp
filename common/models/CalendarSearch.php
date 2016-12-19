@@ -49,7 +49,7 @@ class CalendarSearch extends Calendar
             'query' => $query,
         ]);
         $query->andFilterWhere([
-        		'is_delete' =>0,
+            'is_delete' => 0,
         ]);
         $this->load($params);
 

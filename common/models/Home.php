@@ -30,29 +30,29 @@ use yii\helpers\ArrayHelper;
 class Home extends \yii\db\ActiveRecord
 {
     // Status Active - สถานะเปิดใช้งาน/ไม่ใช้งาน
-    const  STATUS_INACTIVE = 0;
-    const   STATUS_ACTIVE = 1;
-    const  STATUS_DELETED = -1;
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETED = -1;
 
     // ฺBooking status - สถานะการจอง
-    const  STATUS_HOME_READY = 1;
-    const  STATUS_HOME_RESERVED = 2;
+    const STATUS_HOME_READY = 1;
+    const STATUS_HOME_RESERVED = 2;
 
 
     // constract status - สถานะการทำสัญญาซื้อขาย
-    const  STATUS_CONTRACT_READY = 1;
-    const  STATUS_CONTRACT_SUCCESS = 2;
+    const STATUS_CONTRACT_READY = 1;
+    const STATUS_CONTRACT_SUCCESS = 2;
 
 
     // transfer status - สถานะการทำเรื่องโอน
-    const  STATUS_TRANSFER_READY = 1;
-    const  STATUS_TRANSFER_SUCCESS = 2;
+    const STATUS_TRANSFER_READY = 1;
+    const STATUS_TRANSFER_SUCCESS = 2;
 
 
     // ประเภทสิ่งก่อสร้าง
-    const  TYPE_HOME_SINGLE = 1;
-    const  TYPE_TOWNHOME =  2;
-    const  TYPE_TOWNHOUSE= 3;
+    const TYPE_HOME_SINGLE = 1;
+    const TYPE_TOWNHOME = 2;
+    const TYPE_TOWNHOUSE = 3;
     const TYPE_HOME_CONDO = 4;
 
     /**
@@ -68,8 +68,8 @@ class Home extends \yii\db\ActiveRecord
     {
         return [
             self::STATUS_ACTIVE => 'Active',
-            self::STATUS_INACTIVE  => 'Inactive',
-            self::STATUS_DELETED  => 'Deleted',
+            self::STATUS_INACTIVE => 'Inactive',
+            self::STATUS_DELETED => 'Deleted',
         ];
     }
 
@@ -77,7 +77,7 @@ class Home extends \yii\db\ActiveRecord
     {
         return [
             self::STATUS_HOME_READY => 'ว่าง',
-            self::STATUS_HOME_RESERVED  => 'จองแล้ว',
+            self::STATUS_HOME_RESERVED => 'จองแล้ว',
         ];
     }
 
@@ -85,7 +85,7 @@ class Home extends \yii\db\ActiveRecord
     {
         return [
             self::STATUS_CONTRACT_READY => 'รอทำสัญญา',
-            self::STATUS_CONTRACT_SUCCESS  => 'ทำสัญญาแล้ว',
+            self::STATUS_CONTRACT_SUCCESS => 'ทำสัญญาแล้ว',
         ];
     }
 
@@ -93,7 +93,7 @@ class Home extends \yii\db\ActiveRecord
     {
         return [
             self::STATUS_TRANSFER_READY => 'รอโอน',
-            self::STATUS_TRANSFER_SUCCESS  => 'โอนแล้ว',
+            self::STATUS_TRANSFER_SUCCESS => 'โอนแล้ว',
         ];
     }
 
@@ -101,24 +101,27 @@ class Home extends \yii\db\ActiveRecord
      * Booking status name
      * @return mixed
      */
-    public function getStatusBooking() {
-        return ArrayHelper::getValue(self::getBookingStatusItems(),$this->home_status);
+    public function getStatusBooking()
+    {
+        return ArrayHelper::getValue(self::getBookingStatusItems(), $this->home_status);
     }
 
     /**
      * Contract status name
      * @return mixed
      */
-    public function getStatusContract() {
-        return ArrayHelper::getValue(self::getContractStatusItems(),$this->compact_status);
+    public function getStatusContract()
+    {
+        return ArrayHelper::getValue(self::getContractStatusItems(), $this->compact_status);
     }
 
     /**
      * Transfer status name
      * @return mixed
      */
-    public function getStatusTransfer() {
-        return ArrayHelper::getValue(self::getTransferStatusItems(),$this->transfer_status);
+    public function getStatusTransfer()
+    {
+        return ArrayHelper::getValue(self::getTransferStatusItems(), $this->transfer_status);
     }
 
 
@@ -126,8 +129,9 @@ class Home extends \yii\db\ActiveRecord
      *  status name
      * @return mixed
      */
-    public function getStatusName() {
-        return ArrayHelper::getValue(self::getStatusItems(),$this->status);
+    public function getStatusName()
+    {
+        return ArrayHelper::getValue(self::getStatusItems(), $this->status);
     }
 
 

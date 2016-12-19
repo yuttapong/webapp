@@ -29,11 +29,38 @@ class SysProvince extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return SysProvinceQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SysProvinceQuery(get_called_class());
+    }
+
+    public  function getCountAmphur()
+    {
+        return count($this->amphurs);
+    }
+
+    public  function getCountTambon()
+    {
+        return count($this->tambons);
+    }
+
+    public static function getArrayProvince()
+    {
+        $model = SysProvince::find()
+            ->orderBy(['name_th' => SORT_ASC])
+            ->all();
+        return ArrayHelper::map($model, 'id', 'name_th');
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id','name_th','code','active'], 'required'],
+            [['id', 'name_th', 'code', 'active'], 'required'],
             [['id', 'active', 'geography_id', 'created_at', 'created_by'], 'integer'],
             [['code'], 'string', 'max' => 20],
             [['name_th', 'name_en'], 'string', 'max' => 150],
@@ -58,17 +85,9 @@ class SysProvince extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     * @return SysProvinceQuery the active query used by this AR class.
-     */
-    public static function find()
+    public function getGeography()
     {
-        return new SysProvinceQuery(get_called_class());
-    }
-
-    public function getGeography(){
-        return $this->hasOne(SysGeography::className(),['id'=>'geography_id']);
+        return $this->hasOne(SysGeography::className(), ['id' => 'geography_id']);
     }
 
     public function getAmphurs()
@@ -76,26 +95,8 @@ class SysProvince extends \yii\db\ActiveRecord
         return $this->hasMany(SysAmphur::className(), ['province_id' => 'id']);
     }
 
-
     public function getTambons()
     {
         return $this->hasMany(SysTambon::className(), ['province_id' => 'id']);
-    }
-
-
-
-    public function getCountAmphur(){
-        return count($this->amphurs);
-    }
-
-    public function getCountTambon(){
-        return count($this->tambons);
-    }
-
-    public function getArrayProvince(){
-        $model = SysProvince::find()
-            ->orderBy(['name_th'=>SORT_ASC])
-            ->all();
-        return ArrayHelper::map($model,'id','name_th');
     }
 }

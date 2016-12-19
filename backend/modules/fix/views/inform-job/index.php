@@ -54,8 +54,14 @@ $this->params['breadcrumbs'][] = $this->title;
             					$url=Url::to(['/fix/inform-job/view','id'=>$model->id]) ;
             					return Html::a('ดู', $url);
             									}
-            											],
-            													'template' => '{edit}{view}'
+            		],
+            		'template' => '{edit}{view}',
+            		'visibleButtons' => [
+            				'edit' => function ($model, $key, $index) {
+            					return $model->informFix->work_status == 3 ? false : true;
+            				},
+            				
+            		]
             ],
           //  ['class' => 'yii\grid\ActionColumn'],
         ],

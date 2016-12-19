@@ -296,6 +296,16 @@ class CustomerController extends Controller
             if ($isValid && $isValidContact && $isValidOffice) {
                 if ($model->save()) {
 
+                    // บันทึกข้อมูลผู้รับผิดชอบ
+                    $modelCustomerResponsible = new CustomerResponsible();
+                    $modelCustomerResponsible->created_at = time();
+                    $modelCustomerResponsible->created_by = $model->created_by;
+                    $modelCustomerResponsible->user_id = $model->created_by;
+                    $modelCustomerResponsible->customer_id = $model->id;
+                    $modelCustomerResponsible->note = 'CE ที่เพิ่มข้อมูลคือผู้รับผิดชอบลูกค้า (ค่าเริ่มต้น)';
+                    $modelCustomerResponsible->save(false);
+
+
                     //address contact
                     $modelAddressContact->table_name = Customer::TABLE_NAME;
                     $modelAddressContact->table_key = $model->id;
