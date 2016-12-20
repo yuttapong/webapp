@@ -58,10 +58,10 @@ if ($type == 'panel'):
                     // echo  Nav::widget(['items'=>$items]);
                     echo '<ul class="notify-approve">';
                     foreach ($items as $item) {
-                       // if ($item['count'] > 0) {
-                            $label = '<i class="fa fa-check"></i> ' . $item['label'];
-                            $label .= '<span class="badge badge-' . $color . ' pull-right">' . ($item['count']) . '</span>';
-                            echo '<li class="item">' . Html::a($label).'</li>';
+                        // if ($item['count'] > 0) {
+                        $label = '<i class="fa fa-check"></i> ' . $item['label'];
+                        $label .= '<span class="badge badge-' . $color . ' pull-right">' . ($item['count']) . '</span>';
+                        echo '<li class="item">' . Html::a($label) . '</li>';
                         //}
                     }
                     echo '</ul>';

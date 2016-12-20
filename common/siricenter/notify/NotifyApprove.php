@@ -31,7 +31,7 @@ class NotifyApprove extends Widget
     {
         parent::init();
         $model = SysModule::find()->all();
-        foreach($model as $m){
+        foreach ($model as $m) {
             $this->list[] = [
                 'label' => $m->name_th,
                 'url' => '',
@@ -69,7 +69,7 @@ class NotifyApprove extends Widget
         */
     }
 
-    public function  run()
+    public function run()
     {
         return $this->render("notify-approve", [
             'heading' => $this->heading ? $this->heading : '',

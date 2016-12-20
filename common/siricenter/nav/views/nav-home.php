@@ -12,7 +12,7 @@ $i = 0;
 foreach ($items as $item):?>
     <?php
 
-    if( $i >= 1) {
+    if ($i >= 1) {
 
     }
     ?>
@@ -21,7 +21,7 @@ foreach ($items as $item):?>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                    <?= $item['label'] ?>
+                <?= $item['label'] ?>
             </h3>
         </div>
         <div class="panel-body">

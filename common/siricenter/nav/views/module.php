@@ -9,6 +9,7 @@ use kartik\icons\Icon;
 use kartik\helpers\Html;
 
 ?>
+    <!--
 <div class="row">
     <div class="col-xs-12">
         <div align="">
@@ -21,10 +22,14 @@ use kartik\helpers\Html;
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                     <?php
-                    foreach ($items as $moduleId => $item):
-                        echo Html::tag('li', Html::a(@$item['label'], [@$item['url']]));
-                        ?>
-                    <?php endforeach; ?>
+    /*
+    foreach ($items as $moduleId => $item):
+        echo Html::tag('li', Html::a(@$item['label'], [@$item['url']]));
+        ?>
+    <?php 
+    endforeach;
+    */
+    ?>
                 </ul>
             </div>
 
@@ -33,21 +38,15 @@ use kartik\helpers\Html;
 </div>
 <br>
 <div class="clearfix"></div>
-
+-->
 <?php
 echo '<div class="row">';
 foreach ($items as $moduleId => $item):
-    echo '<div class="col-xs-12 col-sm-12 col-md-12">';
-    echo '<p align="left">';
-    echo Html::a('<i class="fa fa-2x fa-desktop"></i>' . ' ' . @$item['label'] . ' - '.$item['name_th'], [@$item['url']]);
-    echo '</p>';
+    echo '<div class="col-xs-6 col-sm-4 col-md-3">';
+    echo '<div align="center" style="valign:middle;min-height:120px;">';
+    echo Html::a('<i class="fa-5x ' . ($item['icon'] ? $item['icon'] : 'fa fa-desktop') . '"></i>' . '<br><span>' . @$item['label'] . '</span>', [@$item['url']]);
+    echo '</div>';
     echo '</div>';
 endforeach;
 echo '</div>';
 ?>
-
-<div class="hidden-md hidden-lg">
-
-
-</div>
-

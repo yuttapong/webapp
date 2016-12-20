@@ -16,6 +16,7 @@ use backend\modules\crm\models\Customer;
  */
 class DefaultController extends Controller
 {
+    public $layout = 'dashboard';
     /**
      * Renders the index view for the module
      * @return string
@@ -45,8 +46,8 @@ class DefaultController extends Controller
         $out = [];
         if ($q) {
             $customers = Customer::find()
-                ->filterWhere(['like', 'firstname', $q])
-                ->filterWhere(['like', 'lastname', $q])
+                ->andFilterWhere(['like', 'firstname', $q])
+                ->orFilterWhere(['like', 'lastname', $q])
                 ->all();
             $out = [];
             foreach ($customers as $d) {

@@ -15,60 +15,11 @@ $this->title = null;
 ?>
 <div class="site-index">
     <div class="row">
-        <div class="xs-12 col-sm-6 col-md-4">
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="panel-title">ข่าวประชาสัมพันธ์</div>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-unstyled">
-                        <li class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                    </ul>
-                </div>
-
-            </div>
-
-        </div>
-        <div class="xs-12 col-sm-6 col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="panel-title">ข่าวประชาสัมพันธ์</div>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-unstyled">
-                        <li class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                        <li  class=""><i class="fa fa-bullhorn"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit</li>
-                    </ul>
-                </div>
-
-            </div>
-            </div>
-        <div class="xs-12 col-sm-12 col-md-4">
+        <div class="xs-12 col-sm-12 col-md-12">
             <?php
             echo \common\siricenter\nav\NavHome::widget([
-                'items' => $module_category
+                'items' => $menuItems
             ]); ?>
         </div>
     </div>
@@ -76,7 +27,7 @@ $this->title = null;
 
 <hr>
 
-<div class="body-content">
+<div class="body-content hidden">
     <div class="row">
         <div class="col-lg-4">
             <h2>ขั้นตอนการอนุมัติ</h2>

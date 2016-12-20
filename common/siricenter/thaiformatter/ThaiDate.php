@@ -98,7 +98,7 @@ class ThaiDate extends Widget
 
     public function run()
     {
-        if ( ! empty($this->timestamp) && checkdate($this->_month, $this->_date, $this->_year)) {
+        if (!empty($this->timestamp) && checkdate($this->_month, $this->_date, $this->_year)) {
 
             // short
             if ($this->type == ThaiDate::TYPE_SHORT) {

@@ -806,8 +806,8 @@ class CustomerController extends Controller
     public function actionPersonnelList($q = null)
     {
         $customers = OrgPersonnel::find()
-            ->filterWhere(['like', 'firstname_th', $q])
-            ->orFilterWhere(['like', 'lastname_th', $q])
+            ->andFilterWhere(['like', 'firstname', $q])
+            ->orFilterWhere(['like', 'lastname', $q])
             ->limit(100)
             ->all();
         $out = [];

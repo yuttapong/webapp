@@ -8,6 +8,7 @@
 use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
 
+
 ?>
 
 <?php
@@ -40,11 +41,12 @@ echo Nav::widget([
         ]],
         ['label' => '<i class="fa fa-list"></i> ประเภทแบบสอบถาม', 'url' => ['survey/index']],
         ['label' => '<i class="fa fa-book "></i> แบบสอบถามลูกค้า', 'url' => ['response/index']],
-        ['label' => '<i class="fa fa-file-text-o "></i> Booking', 'items' => [
-            ['label' => '<i class="fa fa-home"></i> แปลงบ้าน', 'url' => ['booking/home']],
-            ['label' => '<i class="fa fa-home"></i> ใบจอง', 'url' => ['booking/home']],
-            ['label' => '<i class="fa fa-home"></i> สัญญา', 'url' => ['booking/home']],
-            ['label' => '<i class="fa fa-home"></i> ยื่นกู้', 'url' => ['booking/home']],
+        ['label' => '<i class="fa fa-file-text-o "></i> เอกสาร - Documents', 'items' => [
+            ['label' => '<i class="fa fa-file-text"></i> แปลงบ้าน', 'url' => ['booking/home']],
+            ['label' => '<i class="fa fa-file-text "></i> ใบเสนอราคา - Quatation', 'url' => ['document/quotation']],
+            ['label' => '<i class="fa fa-file-text"></i> หนังสือจอง', 'url' => ['document/booking']],
+            ['label' => '<i class="fa fa-file-text"></i> สัญญา', 'url' => ['document/contract']],
+            ['label' => '<i class="fa fa-file-text"></i> การโอน', 'url' => ['document/transfer']],
         ]],
         ['label' => '<i class="fa fa-bar-chart "></i> รายงาน', 'items' => [
             ['label' => '<i class="fa fa-file-excel-o"></i> Export to Excel', 'url' => ['report/excel']],
