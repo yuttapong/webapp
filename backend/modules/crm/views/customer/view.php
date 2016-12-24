@@ -4,13 +4,7 @@ use yii\bootstrap\Modal;
 use yii\bootstrap\Tabs;
 \backend\modules\crm\CustomerAsset::register($this);
 
-
-
-/**
- * @var yii\web\View $this
- * @var backend\modules\crm\models\Customer $model
- */
-
+$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/modules/crm/assets');
 
 $this->title = $model->firstname . '  ' . $model->lastname;
 $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
@@ -19,74 +13,107 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 echo $this->render('toolbar/customer');
 ?>
+
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?= $this->title ?> (ID#<?=$model->id?>)</h3>
+        <div class="box-tools pull-right">
+            <?php
+            if (Yii::$app->user->can('/crm/customer/choose-survey')) :
+                echo Html::a('<i class="fa fa-plus"></i> เพิ่มแบบสอบถอบ - New Questionnaire',
+                    ['customer/choose-survey', 'customerId' => $model->id],
+                    [
+                        'class' => 'btn btn-sm btn-success',
+                        'title' => 'เพิ่มกิจกรรม - New Activity',
+                        'data-header' => 'เพิ่ม: ข้อมูลการติดต่อสื่อสารกับลูกค้า',
+                    ]);
+            endif;
+            ?>
+
+            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+
+
 <div class="row">
-    <div class="col-xs-2 col-sm-2 col-md-2">
-        <div align="center"><i class="fa fa-user-circle-o fa-5x" aria-hidden="true"></i></div>
+    <div class="col-xs-12 col-sm-2 col-md-2">
+        <div align="center">
+         <?php
+         if($model->gender == 'F') {
+             echo Html::img($directoryAsset.'/img/user-female.png');
+         }elseif ($model->gender == 'M') {
+             echo Html::img($directoryAsset.'/img/user-male.png');
+         }else{
+             echo Html::img($directoryAsset.'/img/customer.png');
+         }
+         ?>
+        </div>
     </div>
-    <div class="col-xs-10 col-sm-5 col-md-5">
+    <div class="col-xs-12 col-sm-10 col-md-10">
 
         <?php
         if ($model->prefixname) {
-            echo Html::tag('div', Html::activeLabel($model, 'prefixname') . ': ' . Html::tag('span', $model->prefixname));
+            echo Html::tag('p', Html::activeLabel($model, 'prefixname') . ': ' . Html::tag('span', $model->prefixname));
         }
         ?>
         <?php
         if ($model->prefixname_other) {
-            echo Html::tag('div', Html::activeLabel($model, 'prefixname_other') . ': ' . Html::tag('span', $model->prefixname_other));
+            echo Html::tag('p', Html::activeLabel($model, 'prefixname_other') . ': ' . Html::tag('span', $model->prefixname_other));
         }
         ?>
 
         <?php
         if ($model->firstname) {
-            echo Html::tag('div', Html::activeLabel($model, 'firstname') . ': ' . Html::tag('span', $model->firstname . ' ' . $model->lastname));
+            echo Html::tag('p', Html::activeLabel($model, 'firstname') . ': ' . Html::tag('span', $model->firstname . ' ' . $model->lastname));
         }
         ?>
         <?php
         if ($model->gender) {
-            echo Html::tag('div', Html::activeLabel($model, 'gender') . ': ' . Html::tag('span', $model->genderName));
+            echo Html::tag('p', Html::activeLabel($model, 'gender') . ': ' . Html::tag('span', $model->genderName));
         }
         ?>
 
         <?php
         if ($model->birthday) {
-            echo Html::tag('div', Html::activeLabel($model, 'birthday') . ': ' . Html::tag('span', $model->birthday));
+            echo Html::tag('p', Html::activeLabel($model, 'birthday') . ': ' . Html::tag('span', $model->birthday));
         }
         ?>
 
         <?php
         if ($model->mobile) {
-            echo Html::tag('div', Html::activeLabel($model, 'mobile') . ': ' . Html::tag('span', $model->mobile));
+            echo Html::tag('p', Html::activeLabel($model, 'mobile') . ': ' . Html::tag('span', $model->mobile));
         }
         ?>
         <?php
         if ($model->tel) {
-            echo Html::tag('div', Html::activeLabel($model, 'tel') . ': ' . Html::tag('span', $model->tel));
+            echo Html::tag('p', Html::activeLabel($model, 'tel') . ': ' . Html::tag('span', $model->tel));
         }
         ?>
         <?php
         if ($model->age) {
-            echo Html::tag('div', Html::activeLabel($model, 'age') . ': ' . Html::tag('span', $model->age));
+            echo Html::tag('p', Html::activeLabel($model, 'age') . ': ' . Html::tag('span', $model->age));
         }
         ?>
         <?php
         if ($model->email) {
-            echo Html::tag('div', Html::activeLabel($model, 'email') . ': ' . Html::tag('span', $model->email));
+            echo Html::tag('p', Html::activeLabel($model, 'email') . ': ' . Html::tag('span', $model->email));
         }
         ?>
         <?php
         if ($model->is_vip) {
-            echo Html::tag('div', Html::activeLabel($model, 'is_vip') . ': ' . Html::tag('span', $model->is_vip));
+            echo Html::tag('p', Html::activeLabel($model, 'is_vip') . ': ' . Html::tag('span', $model->is_vip));
         }
         ?>
         <?php
         if ($model->source) {
-            echo Html::tag('div', Html::activeLabel($model, 'source') . ': ' . Html::tag('span', $model->sourceName));
+            echo Html::tag('p', Html::activeLabel($model, 'source') . ': ' . Html::tag('span', $model->sourceName));
         }
         ?>
         <?php
-        // if ($model->currentPersonInCharge) {
-        echo Html::tag('div', Html::activeLabel($model, 'currentPersonInCharge') . ': ' . Html::tag('span', $model->currentPersonInChargeFullname));
-        // }
+         if ($model->currentPersonInCharge) {
+          echo Html::tag('p', Html::activeLabel($model, 'currentPersonInCharge') . ': ' . Html::tag('span', $model->currentPersonInChargeFullname));
+         }
         ?>
         <?php
         if ($model->created_by) {
@@ -96,7 +123,7 @@ echo $this->render('toolbar/customer');
                 'showTime' => true,
             ]);
 
-            echo html::tag('div', Html::activeLabel($model, 'created_by') . ': ' . Html::tag('span', $model->createdName . " ({$timeCreated})"));
+            echo html::tag('p', Html::activeLabel($model, 'created_by') . ': ' . Html::tag('span', $model->createdName . " ({$timeCreated})"));
         }
         ?>
 
@@ -107,7 +134,7 @@ echo $this->render('toolbar/customer');
                 'timestamp' => $model->updated_at,
                 'showTime' => true,
             ]));
-            echo Html::tag('div', Html::activeLabel($model, 'updated_by') . ': ' . $model->updatedName . " ({$timeUpdated})");
+            echo Html::tag('p', Html::activeLabel($model, 'updated_by') . ': ' . $model->updatedName . " ({$timeUpdated})");
         }
         ?>
 
@@ -118,44 +145,6 @@ echo $this->render('toolbar/customer');
         </p>
 
     </div>
-
-
-    <div class="col-xs-12 col-sm-5 col-md-5">
-        <div style="text-align:left;">
-            <?php
-            if (Yii::$app->user->can('/crm/customer/add-address')) :
-                echo Html::a('<i class="fa fa-plus"></i>  เพิ่มที่อยู่ - New Address',
-                    ['customer/add-address', 'customerId' => $model->id],
-                    [
-                        'class' => 'btn btn-sm btn-default modal-add-address btn-block',
-                        'title' => 'เพิ่มที่อยู่ - New Address',
-                        'data-header' => 'เพิ่ม: ที่อยู่ใหม่',
-                    ]);
-            endif;
-            ?>
-
-            <?php
-            if (Yii::$app->user->can('/crm/customer/choose-survey')) :
-                echo Html::a('<i class="fa fa-plus"></i> เพิ่มแบบสอบถอบ - New Questionnaire',
-                    ['customer/choose-survey', 'customerId' => $model->id],
-                    [
-                        'class' => 'btn btn-sm btn-default btn-block',
-                        'title' => 'เพิ่มกิจกรรม - New Activity',
-                        'data-header' => 'เพิ่ม: ข้อมูลการติดต่อสื่อสารกับลูกค้า',
-                    ]);
-            endif;
-            ?>
-
-
-
-        </div>
-
-
-
-
-    </div>
-
-
 </div>
 
 
@@ -205,6 +194,14 @@ echo Tabs::widget([
     ],
 ]);
 ?>
+
+
+
+    </div><!-- /.box-body -->
+
+</div><!-- /.box -->
+
+
 
 
 <?php

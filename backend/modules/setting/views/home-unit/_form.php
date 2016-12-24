@@ -95,7 +95,7 @@ Modal::begin([
         'id' => 'modal-customer',
     ],
     'toggleButton' => [
-        'label' => '<i class="fa fa-search"></i>',
+        'label' => '<i class="fa fa-search"></i> ค้นหา',
         'class' => 'btn btn-default'
     ],
     'closeButton' => [

@@ -1,10 +1,9 @@
 <?php
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
-use kartik\builder\Form;
 use yii\bootstrap\Modal;
 use common\siricenter\thaiformatter\ThaiDate;
-use yii\bootstrap\Collapse;
+use yii\bootstrap\Tabs;
 
 /**
  * @var yii\web\View $this
@@ -12,8 +11,9 @@ use yii\bootstrap\Collapse;
  * @var yii\widgets\ActiveForm $form
  */
 
-\backend\modules\crm\CustomerAsset::register($this);
-use yii\bootstrap\Tabs;
+$asset = \backend\modules\crm\CustomerAsset::register($this);
+$assetUrl = $asset->baseUrl;
+
 
 ?>
 
@@ -27,16 +27,24 @@ use yii\bootstrap\Tabs;
 
 <div class="box box-default">
     <div class="box-header with-border">
+        <?php if($model->isNewRecord) { ?>
         <h3 class="box-title"><i class="fa fa-user-circle fa-2x"></i> <?= $this->title ?></h3>
+        <?php } else { ?>
+            <?php
+            if($model->gender == 'F') {
+                echo Html::img($assetUrl.'/img/user-female.png',['width'=>60]);
+            }elseif ($model->gender == 'M') {
+                echo Html::img($assetUrl.'/img/user-male.png',['width'=>60]);
+            }else{
+                echo Html::img($assetUrl.'/img/customer.png',['width'=>60]);
+            }
+            echo $this->title;
+            ?>
+        <?php } ?>
         <div class="box-tools pull-right">
             <!-- Buttons, labels, and many other things can be placed here! -->
             <!-- Here is a label for example -->
-            <?php
-            echo
-            Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'บันทึกข้อมูล'), [
-                'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
-            ]);
-            ?>
+
             <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
         </div><!-- /.box-tools -->
     </div><!-- /.box-header -->
@@ -156,6 +164,14 @@ if (!$model->isNewRecord) {
 }
 
 ?>
+<p align="center">
+    <?php
+    echo
+    Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'บันทึกข้อมูล'), [
+        'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
+    ]);
+    ?>
+</p>
 
 
 

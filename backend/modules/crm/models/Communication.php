@@ -43,7 +43,7 @@ class Communication extends \yii\db\ActiveRecord
         return [
             [['date', 'time', 'detail', 'datetime','title'], 'required'],
             [['detail'], 'string'],
-            [['created_at', 'created_by', 'updated_at', 'updated_by', 'customer_id', 'timestamp'], 'integer'],
+            [['created_at', 'created_by', 'updated_at', 'updated_by', 'customer_id'], 'integer'],
             [['title'], 'string', 'max' => 120],
             [['type'], 'string', 'max' => 60],
             [['datetime'], 'safe'],
@@ -101,13 +101,13 @@ class Communication extends \yii\db\ActiveRecord
 
     public function getCreatedName()
     {
-        $model = OrgPersonnel::findOne(['created_by' => $this->created_by]);
+        $model = OrgPersonnel::findOne(['user_id' => $this->created_by]);
         return @$model->fullnameTH;
     }
 
     public function getUpdatedName()
     {
-        $model = OrgPersonnel::findOne(['updated_by' => $this->updated_by]);
+        $model = OrgPersonnel::findOne(['user_id' => $this->updated_by]);
         return @$model->fullnameTH;
     }
 

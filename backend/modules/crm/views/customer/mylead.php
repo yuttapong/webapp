@@ -21,15 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
 echo $this->render('toolbar/customer');
 ?>
 <br>
-
-<?php
- /*
- $this->render('_search', [
-    'model' => $searchModel,
-    'action' => ['mylead']
-]);
- */
- ?>
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?=$this->title?></h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+        <div class="table-responsive">
 
 <?php
 
@@ -114,6 +114,10 @@ echo GridView::widget([
 
 
 
+
+        </div><!-- /.box-body -->
+
+    </div><!-- /.box -->
 
 
 

@@ -12,6 +12,35 @@ $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $modelCustomer->fullname, 'url' => ['view', 'id' => $modelCustomer->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title">
+
+            <?=Html::a($modelCustomer->fullname. '  (ID#'.$modelCustomer->id.')',['customer/view','id'=>$modelCustomer->id],[
+                'title' => $modelCustomer->fullname,
+
+            ])?>
+        </h3>
+        <div class="box-tools pull-right">
+
+            <?=Html::a('<i class="fa fa-arrow-left"></i> ฺBack',['customer/view','id'=>$modelCustomer->id],[
+                'title' => 'Back to :: ' . $modelCustomer->fullname,
+                'class' => 'btn btn-default'
+            ])?>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+
+         <div class="well well-sm">
+             <strong>คำแนะนำ</strong>
+             <ul>
+                 <li>เลือกโครงการก่อนเลือกแบบสอบถามเสมอ</li>
+                 <li>ถ้าเป็นแบบสอบถามประเภท Q1(ลูกค้าเยี่ยมชมโครงการ)   พนักงานขายควรบันทึกข้อมูลลงระบบภายในวันที่ลูกคามาเยี่ยมชมทันที</li>
+                 <li>หลังบันทึกแบบสอบถาม ควรตรวจทานอีกครั้ง</li>
+             </ul>
+
+         </div>
 <div class="table-responsive">
     <?php
     \yii\widgets\Pjax::begin();
@@ -60,4 +89,9 @@ $this->params['breadcrumbs'][] = $this->title;
     \yii\widgets\Pjax::end();
     ?>
 </div>
+
+
+    </div><!-- /.box-body -->
+</div><!-- /.box -->
+
 

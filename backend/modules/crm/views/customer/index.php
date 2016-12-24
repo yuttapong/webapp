@@ -1,45 +1,45 @@
 <?php
 use yii\helpers\Html;
-use kartik\grid\GridView;
-use yii\helpers\Url;
-use yii\bootstrap\ButtonGroup;
 use yii\bootstrap\ButtonDropdown;
-use yii\bootstrap\Nav;
-
+use yii\grid\GridView;
 /**
  * @var yii\web\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
  * @var backend\modules\crm\models\CustomerSearch $searchModel
  */
 
+
+
 $this->title = 'ข้อมูลลูกค้า';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+
+
+
+
 <?php
  echo $this->render('toolbar/customer');
 ?>
 <br>
-
-
-
+<div class="well well-sm">
 
     <?php echo $this->render('_search', [
         'model' => $searchModel,
         'action' => ['index']
-        ]); ?>
+    ]); ?>
+</div>
+<div class="box box-default">
+    <div class="box-header with-border">
+        <div class="box-title">
+        </div>
+        <div class="box-tools pull-right">
+            <?=Html::a('<i class="fa fa-plus"></i>', ['create'], ['class' => 'btn btn-success','title' => 'เพิ่มข้อมูลลูกค้าใหม่'])?>
+        </div><!-- /.box-tools -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
 
 <br>
-    <?php
-    echo ButtonDropdown::widget([
-        'label' => 'เพิ่ม',
-        'dropdown' => [
-            'items' => [
-                ['label' => '+ ลูกค้า', 'url' => 'create']
-            ],
-        ],
-    ]);
-
-    ?>
 <div class="table-responsive">
     <?php
 
@@ -65,6 +65,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($model->id, ['customer/view', 'id' => $model->id], ['title' => $model->fullname]);
                 },
                 'format' => 'raw',
+            ],
+            [
+                'header' => '',
+                'format' => 'html',
+                'value' => function($model) {
+                    $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/modules/crm/assets');
+                    if($model->gender == 'F') {
+                        return Html::img($directoryAsset.'/img/user-female.png',['width'=>60]);
+                    }elseif ($model->gender == 'M') {
+                        return Html::img($directoryAsset.'/img/user-male.png',['width'=>60]);
+                    }else{
+                        return Html::img($directoryAsset.'/img/customer.png',['width'=>60]);
+                    }
+                }
             ],
             'prefixname',
             [
@@ -93,7 +107,14 @@ $this->params['breadcrumbs'][] = $this->title;
             */
             [
                 'header' => 'แบบสอบถาม',
-                'value' => 'countQuestionnaire',
+                'value' => function($model) {
+                   if($model->countQuestionnaire > 0) {
+                       return '<div align="center" class="badge">'. $model->countQuestionnaire . '</div>';
+                   }else{
+                       return '';
+                   }
+                },
+                'format' => 'html'
             ],
             'mobile',
             'tel',
@@ -164,3 +185,9 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 
+
+
+
+</div><!-- /.box-body -->
+
+</div><!-- /.box -->

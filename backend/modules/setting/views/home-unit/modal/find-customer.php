@@ -5,7 +5,6 @@ use yii\widgets\ActiveForm;
 use kartik\widgets\Typeahead;
 use yii\helpers\Url;
 use yii\grid\GridView;
-
 /* @var $this yii\web\View */
 /* @var $model common\models\home */
 /* @var $form yii\widgets\ActiveForm */
@@ -15,7 +14,7 @@ use yii\grid\GridView;
         <div class="row">
             <div class="col-xs-12">
                 <div class="well">
-                    <?php Typeahead::widget ([
+                    <?php echo Typeahead::widget ([
                         'name'=> 'searchCustomer',
                         'options' => [
                             'placeholder' => 'ค้นหาลูกค้า:: ชื่อ, นามสกุล',
@@ -42,7 +41,7 @@ use yii\grid\GridView;
                     ]) ?>
                 </div>
 
-                <?= GridView::widget([
+                <?php GridView::widget([
                     'dataProvider' => $dataProviderCustomer,
                     'filterModel' => $searchModelCustomer,
                     'columns' => [

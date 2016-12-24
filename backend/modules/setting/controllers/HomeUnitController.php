@@ -171,7 +171,8 @@ class HomeUnitController extends Controller
      */
     public function actionCustomerList($q = null) {
         $customers = Customer::find()
-            ->filterWhere(['like', 'firstname', $q])
+            ->andFilterWhere(['like', 'firstname', $q])
+            ->orFilterWhere(['like', 'lastname', $q])
             ->all();
         $out = [];
         foreach ($customers as $d) {

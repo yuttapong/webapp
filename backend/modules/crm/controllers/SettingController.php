@@ -30,7 +30,7 @@ class SettingController extends \yii\web\Controller
 
     public function actionCe()
     {
-        $team = $this->fincUserTeamAll();
+        $team = $this->findUserTeamAll();
         $userItems = [];
         if($team) {
             foreach ($team as $u) {
@@ -75,7 +75,7 @@ class SettingController extends \yii\web\Controller
             $users = \Yii::$app->request->post('users');
             UserTeam::deleteAll();
             if(count($users) > 0) {
-
+                $users = array_unique($users);
                 foreach ($users as $user_id) {
 
                     $u = OrgPersonnel::find()->where(['user_id'=>$user_id])->one();
@@ -92,7 +92,7 @@ class SettingController extends \yii\web\Controller
                 if($user) {
                     $rs['result'] = 1;
                     $rs['message'] = 'บันทึกข้อมูลเรียบร้อยแล้ว';
-                    $rs['rows'] = $this->fincUserTeamAll();
+                    $rs['rows'] = $this->findUserTeamAll();
                 }
             }
             echo Json::encode($rs);
@@ -101,7 +101,7 @@ class SettingController extends \yii\web\Controller
     }
 
 
-    private function fincUserTeamAll() {
+    private function findUserTeamAll() {
         return UserTeam::find()->orderBy(['created_at'=> SORT_ASC])->all();
     }
 

@@ -43,6 +43,11 @@ class DefaultController extends Controller
 
     public function actionFindCustomer($q)
     {
+        $name = 'Hello World';
+        echo $name . ' <br> : <strong> Beam </strong> ';
+        $leng = strlen($name);
+
+
         $out = [];
         if ($q) {
             $customers = Customer::find()
