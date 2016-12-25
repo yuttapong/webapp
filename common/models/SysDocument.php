@@ -39,7 +39,8 @@ class SysDocument extends \yii\db\ActiveRecord
         $query->select('d.name as document,m.document_id, count(m.document_id) as countNew, d.url_message')
             ->from('sys_list_message m')
             ->leftJoin('sys_document d', 'd.document_id = m.document_id')
-            ->where("m.app_status='0' AND user_apprever_id='$userId' ");
+            ->where("m.app_status='0' AND user_apprever_id='$userId' ")
+            ->groupBy('m.document_id');
         $command = $query->createCommand();
         $model = $command->queryAll();
         return $model;

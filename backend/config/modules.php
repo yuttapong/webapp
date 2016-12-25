@@ -92,4 +92,8 @@ return [
         'class' => 'backend\modules\document\Module',
 
     ],
+    'rems' => [
+            'class' => 'backend\modules\rems\Rems',
+    ],
+
 ];

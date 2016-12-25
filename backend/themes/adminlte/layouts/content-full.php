@@ -2,13 +2,9 @@
 use yii\widgets\Breadcrumbs;
 use dmstr\widgets\Alert;
 ?>
+
 <div class="">
 
-    <?php
-    if( isset($this->blocks['navbar'])){
-        echo $this->blocks['navbar'];
-    }
-    ?>
 
     <section class="content-header">
         <?php if (isset($this->blocks['content-header'])) { ?>

@@ -37,6 +37,12 @@ use dmstr\widgets\Alert;
     </section>
 
     <section class="content">
+    
+        <?php
+        if( isset($this->blocks['navbar'])){
+            echo $this->blocks['navbar'];
+        }
+        ?>
         <?php
         if( isset($this->blocks['toolbar'])){
             echo $this->blocks['toolbar'];

@@ -123,6 +123,15 @@ $assetUrl = $asset->baseUrl;
 
 
 ?>
+<p align="center">
+    <?php
+    echo
+    Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'บันทึกข้อมูล'), [
+        'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
+    ]);
+    ?>
+</p>
+
 <?php
 ActiveForm::end();
 
@@ -164,14 +173,6 @@ if (!$model->isNewRecord) {
 }
 
 ?>
-<p align="center">
-    <?php
-    echo
-    Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'บันทึกข้อมูล'), [
-        'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
-    ]);
-    ?>
-</p>
 
 
 

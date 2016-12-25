@@ -340,3 +340,8 @@ $appmenu = \common\models\SysModule::getItemModuleForButtonApp();
     </nav>
 </header>
 
+    <?php
+    if( isset($this->blocks['navbar'])){
+        echo $this->blocks['navbar'];
+    }
+    ?>
