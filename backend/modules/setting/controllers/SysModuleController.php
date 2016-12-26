@@ -144,7 +144,7 @@ class SysModuleController extends Controller
 
                         if( ! empty($modelsMenu)){
                             foreach ($modelsMenu as $modelMenu) {
-                                $modelMenu->module_id = $model->_id;
+                                $modelMenu->module_id = $model->id;
                                 if (($flag = $modelMenu->save(false)) === false) {
                                     $transaction->rollBack();
                                     break;
@@ -155,9 +155,10 @@ class SysModuleController extends Controller
 
 
                     }
+
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->_id]);
+                        return $this->redirect(['view', 'id' => $model->id]);
                     }
 
 

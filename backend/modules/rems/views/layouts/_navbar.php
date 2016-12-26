@@ -20,8 +20,8 @@ echo Nav::widget([
     'encodeLabels' => false,
     'activateParents' => true,
     'items' => [
-        ['label' => '<i class="fa fa-dashboard"></i> Home', 'url' => ['default/index']],
-        ['label' => '<i class="fa fa-dashboard"></i> Property', 'url' => ['project/index']],
+        ['label' => '<i class="fa fa-dashboard"></i> Dashboard', 'url' => ['default/index']],
+        ['label' => '<i class="fa fa-home"></i> Property', 'url' => ['project/index']],
         [
             'label' => '<i class="fa fa-list"></i> Promotions',
             'url' => ['promotion/index'],
@@ -38,8 +38,8 @@ echo Nav::widget([
                 ['label' => '<i class="fa fa-file-text"></i> จองบ้าน', 'url' => ['booking/new']],
                 ['label' => '<i class="fa fa-file-text "></i> สร้างสัญญา', 'url' => ['contract/new']],
                 ['label' => '<i class="fa fa-file-text"></i> สร้างเอกสารยื่นกู้', 'url' => ['loan/new']],
-                ['label' => '<i class="fa fa-file-text"></i> รับชำระเงิน', 'url' => ['payment/new']],
                 ['label' => '<i class="fa fa-file-text"></i> สร้างหนังสือการโอน', 'url' => ['transfer/new']],
+                ['label' => '<i class="fa fa-money"></i> รับชำระเงิน', 'url' => ['payment/new']],
             ],
             'visible' => true
         ],

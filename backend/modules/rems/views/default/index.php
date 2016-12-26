@@ -1,86 +1,124 @@
+<?php
+use yii\bootstrap\Html;
 
-<style>
-.update-nag{
-  display: inline-block;
-  font-size: 14px;
-  text-align: left;
-  background-color: #fff;
-  height: 40px;
-  -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.2);
-  box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-  margin-bottom: 10px;
-}
-
-.update-nag:hover{
-    cursor: pointer;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.4);
-  box-shadow: 0 1px 1px 0 rgba(0,0,0,.3);
-}
-
-.update-nag > .update-split{
-  background: #337ab7;
-  width: 33px;
-  float: left;
-  color: #fff!important;
-  height: 100%;
-  text-align: center;
-}
-
-.update-nag > .update-split > .glyphicon{
-  position:relative;
-  top: calc(50% - 9px)!important; /* 50% - 3/4 of icon height */
-}
-.update-nag > .update-split.update-success{
-  background: #5cb85c!important;
-}
-
-.update-nag > .update-split.update-danger{
-  background: #d9534f!important;
-}
-
-.update-nag > .update-split.update-info{
-  background: #5bc0de!important;
-}
-
-
-
-.update-nag > .update-text{
-  line-height: 19px;
-  padding-top: 11px;
-  padding-left: 45px;
-  padding-right: 20px;
-}
-</style>
+?>
 <div class="row">
-    
-		<div class="col-md-12">
-          <div class="update-nag">
-            <div class="update-split"><i class="glyphicon glyphicon-refresh"></i></div>
-            <div class="update-text">Cms v0.2.5 is available! <a href="#">Update Now</a> </div>
-          </div>
-        </div>
-    
-        <div class="col-md-12">
-          <div class="update-nag">
-            <div class="update-split update-info"><i class="glyphicon glyphicon-folder-open"></i></div>
-            <div class="update-text">Plugin <a href="#">Donatirino</a> v0.2 is available! <a href="#">Update Now</a> </div>
-          </div>
-        </div>
+    <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="box box-solid box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-book"></i> โปรโมชั่นล่าสุด
+                <div class="box-tools pull-right">
+                    <?php
+                    echo Html::a('<i class="fa fa-list"></i> ดูทั้งหมด...', ['promotion/index'], [
+                        'class' => 'btn btn-default',
+                    ])
+                    ?>
+                </div><!-- /.box-tools -->
+            </div><!-- /.box-header -->
+            <div class="box-body">
 
-        <div class="col-md-12">
-          <div class="update-nag">
-            <div class="update-split update-success"><i class="glyphicon glyphicon-leaf"></i></div>
-            <div class="update-text">Theme <a href="#">WooStyliz</a> v1.4 is available! <a href="#">Update Now</a> </div>
-          </div>
+                <div class="table-responsive">
+                    <table id="table-promotion" class="table table-bordred table-striped">
+                        <thead>
+                        <th>Image</th>
+                        <th>Title</th>
+                        </thead>
+                        <tbody>
+
+                        <tr>
+                            <td><img src="https://placeimg.com/100/80/any1" class="img img-thumbnail"></td>
+                            <td>แอร์ Sumsung 22,000 BTU จำนวน 1 ตัว</td>
+                            <td>22,900฿</td>
+                        </tr>
+
+                        <tr>
+                            <td><img src="https://placeimg.com/100/80/any2" class="img img-thumbnail"></td>
+                            <td>เงินคืน จอง+สัญญา</td>
+                            <td>50,000฿</td>
+                        </tr>
+
+
+                        <tr>
+                            <td><img src="https://placeimg.com/100/80/any3" class="img img-thumbnail"></td>
+                            <td>ชุดครัว Built-In</td>
+                            <td>300,000฿</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div> <!-- end box -->
+
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="row">
+
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="info-box">
+                    <!-- Apply any bg-* class to to the icon to color it -->
+                    <span class="info-box-icon bg-green"><i class="fa fa-file-text-o"></i></span>
+                    <div class="info-box-content">
+                        <span
+                            class="info-box-text"><?= Html::a('ใบจอง', ['booking/index'], ['title' => 'ใบจองใหม่']); ?></span>
+                        <span class="info-box-number">2</span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div>
+
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="info-box">
+                    <!-- Apply any bg-* class to to the icon to color it -->
+                    <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
+                    <div class="info-box-content">
+                        <span
+                            class="info-box-text"><?= Html::a('สัญญาจะซื้อจะขาย', ['contract/index'], ['title' => 'ใบสัญญาใหม่']); ?></span>
+                        <span class="info-box-number">12</span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div>
+
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="info-box">
+                    <!-- Apply any bg-* class to to the icon to color it -->
+                    <span class="info-box-icon bg-red"><i class="fa fa-file-text-o"></i></span>
+                    <div class="info-box-content">
+                        <span
+                            class="info-box-text"><?= Html::a('เอกสารยื่นกู้', ['loan/index'], ['title' => 'เอกสารยื่นกู้ใหม่']); ?></span>
+                        <span class="info-box-number">2</span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div>
+
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="info-box">
+                    <!-- Apply any bg-* class to to the icon to color it -->
+                    <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
+                    <div class="info-box-content">
+                        <span
+                            class="info-box-text"> <?= Html::a('หนังสือโอน', ['transfer/index'], ['title' => 'หนังสือโอนใหม่']); ?></span>
+                        <span class="info-box-number">2</span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div>
+
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="info-box">
+                    <!-- Apply any bg-* class to to the icon to color it -->
+                    <span class="info-box-icon bg-aqua"><i class="fa fa-money"></i></span>
+                    <div class="info-box-content">
+                        <span
+                            class="info-box-text"> <?= Html::a('ใกล้ครบกำหนดชำระเงิน', ['payment/index'], ['title' => 'ลูกหนี้ใกล้ครบกำหนดชำระเงิน']); ?></span>
+                        <span class="info-box-number">2</span>
+                    </div><!-- /.info-box-content -->
+                </div><!-- /.info-box -->
+            </div>
+
         </div>
-        
-        <div class="col-md-12">
-          <div class="update-nag">
-            <div class="update-split update-danger"><i class="glyphicon glyphicon-warning-sign"></i></div>
-            <div class="update-text"> <strong>Warning</strong> Some type of problem, fix it! </div>
-          </div>
-        </div>
-        
-	</div>
+    </div>
+</div>
+
 </div>
 

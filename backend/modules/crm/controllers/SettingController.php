@@ -1,18 +1,23 @@
 <?php
 
 namespace backend\modules\crm\controllers;
-
-
 use Yii;
 use backend\modules\crm\models\Customer;
 use backend\modules\org\models\OrgPersonnel;
-use backend\modules\crm\models\UserTeam;
+use  backend\modules\crm\models\UserTeam;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yii\web\Response;
 
 class SettingController extends \yii\web\Controller
 {
+
+    public function actions()
+    {
+        return [
+        ];
+    }
+
     public function actionIndex()
     {
         return $this->render('index');

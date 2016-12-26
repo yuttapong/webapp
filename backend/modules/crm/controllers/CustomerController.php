@@ -31,7 +31,6 @@ use backend\modules\crm\models\CommunicationSearch;
 /**
  * CustomerController implements the CRUD actions for Customer model.
  */
- 
 class CustomerController extends Controller
 {
 

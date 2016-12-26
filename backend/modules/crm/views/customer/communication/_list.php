@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
+
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/modules/crm/assets');
 ?>
 
@@ -15,6 +16,10 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/modules/crm
         <h4 class="media-heading"><?= Html::encode($model->title) ?></h4>
         <p>
             <i class="fa fa-clock-o"></i> <?= Yii::$app->formatter->asRelativeTime($model->created_at) ?>
+            | <i class="fa fa-user"></i> <?= Html::a($model->customer->fullname, ['customer/view', 'id' => $model->customer_id],[
+                'target' => '_blank',
+                'title' => 'ลูกค้า'
+            ]) ?>
         </p>
         <?= nl2br(HtmlPurifier::process($model->detail)) ?>
     </div>
