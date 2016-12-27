@@ -5,6 +5,7 @@ namespace backend\modules\crm\controllers;
 
 use backend\models\Model;
 use backend\modules\crm\models\Customer;
+use backend\modules\crm\models\QuestionChoice;
 use backend\modules\org\models\OrgPersonnel;
 use backend\modules\crm\models\Question;
 use backend\modules\crm\models\Survey;
@@ -53,6 +54,49 @@ class SurveyController extends \yii\web\Controller
         ];
     }
 
+
+    public function actionSaveSortQuestion()
+    {
+        $items = Yii::$app->request->post('item');
+        if(Yii::$app->request->isAjax) {
+
+            if ($items) {
+                $seq = 1;
+                foreach ($items as $id) {
+                    $model = Question::findOne($id);
+                    $model->seq = $seq;
+                    $model->save(false);
+                    $seq++;
+                }
+                echo json_encode(['result' => 1,'message' => 'Successfully Update','error' => $model->errors]);
+            }else{
+                echo json_encode(['result' => 0,'message' => 'item is empty','item'=>$items]);
+            }
+        }
+
+    }
+
+
+    public function actionSaveSortChoice()
+    {
+        $items = Yii::$app->request->post('item');
+        if(Yii::$app->request->isAjax) {
+
+            if ($items) {
+                $seq = 1;
+                foreach ($items as $id) {
+                    $model = QuestionChoice::findOne($id);
+                    $model->seq = $seq;
+                    $model->save(false);
+                    $seq++;
+                }
+                echo json_encode(['result' => 1,'message' => 'Successfully Update','error' => $model->errors]);
+            }else{
+               echo json_encode(['result' => 0,'message' => 'item is empty']);
+            }
+        }
+
+    }
 
     /**
      * @return string
@@ -237,12 +281,13 @@ class SurveyController extends \yii\web\Controller
 
         if (Yii::$app->request->post()) {
             Model::loadMultiple($questions, Yii::$app->request->post());
-            $seq = 0;
             foreach ($questions as $question) {
-                $question->seq = $seq;
-                echo '<br>' . $seq . ' - ' . $question->name;
-                //   $question->save(false);
-                $seq++;
+                 $saved =   $question->save();
+                echo'<br>' . $question->public . '/' . $question->name;
+            }
+            if($saved){
+                Yii::$app->session->setFlash('success','Successfullly Update.');
+                 return $this->redirect(['survey/update','id'=>$model->id]);
             }
 
         }
@@ -269,17 +314,16 @@ class SurveyController extends \yii\web\Controller
         if (Yii::$app->request->post() && $topic->load(Yii::$app->request->post())) {
             if ($topic->save()) {
                 if (Model::loadMultiple($choices, Yii::$app->request->post())) {
-                    $seq = 0;
                     foreach ($choices as $choice) {
-                        // $choice->seq = $seq;
-                        $choice->save(false);
-                        $seq++;
+                         $choice->save(false);
                     }
+
                     Yii::$app->session->setFlash('success', 'บันทึกข้อมูลเรียบร้อย');
-                    $this->redirect(['edit-topic', 'id' => $id]);
+                    return $this->redirect(['edit-topic', 'id' => $id]);
                 }
             }
         } else {
+
             return $this->render('topic', ['topic' => $topic]);
         }
 

@@ -36,8 +36,8 @@ class QuestionChoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['question_id', 'content'], 'required'],
-            [['question_id', 'question_message_id', 'seq', 'created_at', 'created_by'], 'integer'],
+            [['question_id', 'content','active'], 'required'],
+            [['question_id', 'question_message_id', 'seq', 'created_at', 'created_by','active'], 'integer'],
             [['content', 'type'], 'string'],
             [['score'], 'number'],
             [['question_message_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuestionMessage::className(), 'targetAttribute' => ['question_message_id' => 'id']],
@@ -60,6 +60,7 @@ class QuestionChoice extends \yii\db\ActiveRecord
             'created_at' => Yii::t('crm.question', 'Created At'),
             'created_by' => Yii::t('crm.question', 'Created By'),
             'type' => Yii::t('crm.question', 'Type'),
+            'active' => 'Active'
         ];
     }
 
