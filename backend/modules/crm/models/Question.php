@@ -154,7 +154,7 @@ class Question extends \yii\db\ActiveRecord
         $questions = [];
         $models = Question::find()
             ->innerJoinWith('surveyTab', 'qtn_question.survey_tab_id = surveyTab.id')
-            ->where(['qtn_question.survey_id' => $survey_id])
+            ->where(['qtn_question.survey_id' => $survey_id,'qtn_question.public'=>'Y'])
             ->orderBy(
                 [
                     'qtn_survey_tab.seq' => SORT_ASC,
