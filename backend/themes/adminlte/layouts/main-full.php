@@ -29,7 +29,7 @@ if (Yii::$app->controller->action->id === 'login') {
     */
 
     \backend\themes\adminlte\AdminLteAsset::register($this);
-    $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/themes/adminlte/assets');
+     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/themes/adminlte/assets/dist');
     ?>
 
     <?php $this->beginPage() ?>

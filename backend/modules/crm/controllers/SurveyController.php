@@ -58,19 +58,30 @@ class SurveyController extends \yii\web\Controller
     public function actionSaveSortQuestion()
     {
         $items = Yii::$app->request->post('item');
+        $surveyId = Yii::$app->request->get('survey_id');
         if(Yii::$app->request->isAjax) {
 
             if ($items) {
                 $seq = 1;
                 foreach ($items as $id) {
-                    $model = Question::findOne($id);
+                    $model = Question::find()
+                    ->where(['id'=> $id,'survey_id'=> $surveyId])
+                    ->one();
                     $model->seq = $seq;
                     $model->save(false);
                     $seq++;
                 }
-                echo json_encode(['result' => 1,'message' => 'Successfully Update','error' => $model->errors]);
+            echo json_encode([
+                    'result' => 1,
+                    'message' => 'Successfully Update',
+                    'error' => $model->errors,
+                    'survey_id' => $surveyId
+                    ]);
             }else{
-                echo json_encode(['result' => 0,'message' => 'item is empty','item'=>$items]);
+               echo json_encode([
+                   'result' => 0,
+                   'message' => 'item is empty'
+                   ]);
             }
         }
 
@@ -80,19 +91,29 @@ class SurveyController extends \yii\web\Controller
     public function actionSaveSortChoice()
     {
         $items = Yii::$app->request->post('item');
+        $qid = Yii::$app->request->get('qid');
+ 
         if(Yii::$app->request->isAjax) {
 
             if ($items) {
                 $seq = 1;
                 foreach ($items as $id) {
-                    $model = QuestionChoice::findOne($id);
+                    $model = QuestionChoice::find()->where(['id'=>$id,'question_id'=>$qid])->one();
                     $model->seq = $seq;
                     $model->save(false);
                     $seq++;
                 }
-                echo json_encode(['result' => 1,'message' => 'Successfully Update','error' => $model->errors]);
+                echo json_encode([
+                    'result' => 1,
+                    'message' => 'Successfully Update',
+                    'error' => $model->errors,
+                    'qid' => $qid
+                    ]);
             }else{
-               echo json_encode(['result' => 0,'message' => 'item is empty']);
+               echo json_encode([
+                   'result' => 0,
+                   'message' => 'item is empty'
+                   ]);
             }
         }
 

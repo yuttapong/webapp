@@ -30,7 +30,7 @@ return [
         ],
         'urlManagerBackend' => [
             'class' => 'yii\web\urlManager',
-            'baseUrl' => '/yii/webapp/backend/web',
+            'baseUrl' => 'http://webapp.local/backend/web',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],

@@ -39,6 +39,7 @@ if (Yii::$app->controller->action->id === 'login') {
     <!--<body class="hold-transition skin-red sidebar-mini">-->
     <body class="sidebar-mini <?= \dmstr\helpers\AdminLteHelper::skinClass() ?>">
     <?php $this->beginBody() ?>
+
     <div class="wrapper">
 
         <?= $this->render(

@@ -36,14 +36,14 @@ class Question extends \yii\db\ActiveRecord
 {
 
     const TYPE_BOOLEAN = 1;
-    const  TYPE_TEXT = 2;
-    const  TYPE_TEXTAREA = 3;
-    const  TYPE_RADIO = 4;
-    const  TYPE_CHECKBOX = 5;
-    const  TYPE_NUMBER = 10;
-    const  TYPE_DATE = 9;
-    const  TYPE_DROPDOWN = 6;
-    const  TYPE_TABLE_RADIO = 11;
+    const TYPE_TEXT = 2;
+    const TYPE_TEXTAREA = 3;
+    const TYPE_RADIO = 4;
+    const TYPE_CHECKBOX = 5;
+    const TYPE_NUMBER = 10;
+    const TYPE_DATE = 9;
+    const TYPE_DROPDOWN = 6;
+    const TYPE_TABLE_RADIO = 11;
 
 
     /**

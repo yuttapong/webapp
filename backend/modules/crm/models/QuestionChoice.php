@@ -60,6 +60,7 @@ class QuestionChoice extends \yii\db\ActiveRecord
             'created_at' => Yii::t('crm.question', 'Created At'),
             'created_by' => Yii::t('crm.question', 'Created By'),
             'type' => Yii::t('crm.question', 'Type'),
+            'suervey_id' => 'Survey ID',
             'active' => 'Active'
         ];
     }
@@ -87,5 +88,33 @@ class QuestionChoice extends \yii\db\ActiveRecord
     public static function find()
     {
         return new QuestionChoiceQuery(get_called_class());
+    }
+
+    public function getCountAnswer() {
+        switch($this->question->type_id) {
+            case Question::TYPE_TEXT : 
+                return ResponseText::find()
+                    ->where([
+                        'question_id'=>$this->question_id
+                        ])
+                    ->count();
+                break;  
+            case Question::TYPE_RADIO : 
+                return ResponseSingle::find()
+                    ->where([
+                        'choice_id'=>$this->id,
+                        'question_id'=>$this->question_id
+                        ])
+                    ->count();
+                break;
+            case Question::TYPE_CHECKBOX : 
+                return ResponseMultiple::find()
+                    ->where([
+                        'choice_id'=>$this->id,
+                        'question_id'=>$this->question_id
+                        ])
+                    ->count();
+                break;           
+        }
     }
 }

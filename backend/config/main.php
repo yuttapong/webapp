@@ -33,7 +33,7 @@ return [
         'urlManager' => require('url-manager.php'),
         'urlManagerFrontend' => [
             'class' => 'yii\web\urlManager',
-            'baseUrl' => '/yii/webapp/frontend/web',
+            'baseUrl' => 'http://webapp.local',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],

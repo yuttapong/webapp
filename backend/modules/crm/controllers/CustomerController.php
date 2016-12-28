@@ -135,7 +135,7 @@ class CustomerController extends Controller
 
     {
         $searchModel = new CommunicationSearch;
-        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+        $dataProvider = $searchModel->searchMyCommunication(Yii::$app->request->getQueryParams());
 
         return $this->render('mycommunication', [
             'dataProvider' => $dataProvider,
