@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
+
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\purchase\Models\InventorySearch */
@@ -13,11 +14,19 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => [
+            'class' => 'form'
+        ]
     ]); ?>
-
     <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'categories_id') ?>
+    <?= $form->field($model, 'categories_id')->widget(\kartik\select2\Select2::className(),[
+        'data' => \backend\modules\purchase\models\Categories::getCategoryItems(),
+        'language' => 'th',
+        'options' => ['placeholder' => 'เลือกหมวดหมู่ ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ]
+    ]) ?>
 
     <?= $form->field($model, 'code') ?>
 

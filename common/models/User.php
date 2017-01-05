@@ -209,7 +209,7 @@ class User extends ActiveRecord implements IdentityInterface
         return array_key_exists($this->status, $items) ? $items[$this->status] : '';
     }
 
-    public function getItemStatus()
+    public static function getItemStatus()
     {
         return [
             self::STATUS_ACTIVE => 'Active',

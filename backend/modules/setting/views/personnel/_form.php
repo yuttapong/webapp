@@ -90,10 +90,10 @@ $items = [
         <?=$form->field($model,'code')->textInput()?>
     </div>
     <div class="col-xs-6 col-sm-6 col-md-3">
-        <?=$form->field($model,'work_type')->dropDownList($model->workTypeItems)?>
+        <?=$form->field($model,'work_type')->dropDownList($model->workTypeItems,['prompt' => '---Select---'])?>
     </div>
     <div class="col-xs-6 col-sm-6 col-md-3">
-        <?=$form->field($model,'work_status')->dropDownList($model->workStatusItems)?>
+        <?=$form->field($model,'work_status')->dropDownList($model->workStatusItems, ['prompt' => '---Select---'])?>
     </div>
     <div class="col-xs-6 col-sm-6 col-md-3">
         <?=$form->field($model,'active')->widget(\kartik\widgets\SwitchInput::className())?>

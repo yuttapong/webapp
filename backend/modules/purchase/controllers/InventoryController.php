@@ -2,6 +2,8 @@
 
 namespace backend\modules\purchase\controllers;
 
+use backend\modules\purchase\models\InventoryPrice;
+use Dompdf\Exception;
 use Yii;
 use backend\modules\purchase\models\Inventory;
 use backend\modules\purchase\models\InventorySearch;
@@ -88,7 +90,21 @@ class InventoryController extends Controller
     {
         $model = new Inventory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $model->save();
+                $prices = Yii::$app->request->post();
+                foreach ($prices['Inventory']['prices'] as $key => $val) {
+
+                }
+
+            } catch (Exception $e ) {
+
+            }
+
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -106,7 +122,7 @@ class InventoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $model->prices = InventoryPrice::find()->where(['inventory_id' => $model->id])->all();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

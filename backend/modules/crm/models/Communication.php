@@ -58,6 +58,12 @@ class Communication extends \yii\db\ActiveRecord
         ];
     }
 
+    public function scenarios()
+    {
+        return array_merge(parent::scenarios(),[
+            'updateAjax' => ['detail','updated_at','updated_by']
+        ]);
+    }
 
     /**
      * @inheritdoc

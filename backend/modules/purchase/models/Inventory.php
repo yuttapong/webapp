@@ -23,6 +23,7 @@ use Yii;
  */
 class Inventory extends \yii\db\ActiveRecord
 {
+    public  $prices;
     /**
      * @inheritdoc
      */
@@ -53,12 +54,12 @@ class Inventory extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'categories_id' => 'Categories ID',
+            'categories_id' => 'หมวดหมู่',
             'code' => 'Code',
-            'type' => 'Type',
-            'name' => 'Name',
+            'type' => 'ประเภท',
+            'name' => 'ชื่อสินค้า',
             'unit_id' => 'Basic Unit ID',
-            'unit_name' => 'Unit',
+            'unit_name' => 'หน่วยนับ',
             'comment' => 'Comment',
             'status' => 'Status',
             'create_at' => 'Create At',
@@ -71,5 +72,9 @@ class Inventory extends \yii\db\ActiveRecord
     public function getInventory()
     {
     	return $this->hasOne(Inventory::className(), ['id' => 'master_id']);
+    }
+
+    public function getCategoriesOfInventory() {
+
     }
 }

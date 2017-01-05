@@ -639,8 +639,8 @@ class CustomerController extends Controller
     {
         $model = Communication::findOne($id);
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
-            $datetime = date('Y-m-d H:i:s', strtotime($model->date . ' ' . $model->time));
-            $model->datetime = strtotime($datetime);
+            // $datetime = date('Y-m-d H:i:s', strtotime($model->date . ' ' . $model->time));
+            // $model->datetime = strtotime($datetime);
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
                 //return $this->renderAjax(['customer/communication/view', 'model' => $model]);
@@ -655,6 +655,33 @@ class CustomerController extends Controller
                 'model' => $model,
                 'customer' => Customer::findOne($model->customer_id),
             ]);
+        }
+    }
+
+    public function actionUpdateCommunicationAjax($id)
+    {
+        $model = Communication::findOne($id);
+        $model->setScenario('updateAjax');
+        if (Yii::$app->request->post() && Yii::$app->request->post('detail')) {
+            $model->detail = nl2br(Yii::$app->request->post('detail'));
+            $model->updated_at = time();
+            $model->updated_by = Yii::$app->user->id;
+            if ($model->save()) {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return [
+                    'success' => 1,
+                    'message' => 'แก้ไขข้อมูลเรียบร้อยแล้ว',
+                    'row' => [
+                        'id' => $model->id,
+                        'title' => $model->title,
+                        'detail' => $model->detail,
+                        'updated_at' => Yii::$app->formatter->asRelativeTime($model->updated_at)
+                    ]
+                ];
+            } else {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ['success' => 0,'errors' => $model->errors];
+            }
         }
     }
 

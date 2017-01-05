@@ -40,7 +40,7 @@ class User extends \common\models\User
     {
         return [
            [[ 'modules'],'safe'],
-            [[ 'modules','username','email','status','roles'],'required']
+            [[ 'username','email','status','roles'],'required']
         ];
     }
 

@@ -20,6 +20,7 @@ use yii\bootstrap\ActiveForm;
     <?php echo $form->field($model, 'lastname_th')->textInput(['placeholder' => 'นามสกุล']) ?>
     <?= $form->field($model, 'work_status')->dropDownList($model->workStatusItems, ['prompt' => '--สถานะ--']) ?>
     <?= $form->field($model, 'work_type')->dropDownList($model->workTypeItems, ['prompt' => '--ประเภท--']) ?>
+    <?= $form->field($model, 'active')->dropDownList($model->activeItems, ['prompt' => '----']) ?>
     <?php // $form->field($model, 'prefix_name_en') ?>
 
 

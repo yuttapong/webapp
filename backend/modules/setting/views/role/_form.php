@@ -20,7 +20,7 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
     <div class="col-xs-12 col-sm-6 col-md-6">
     <?= $form->field($model, 'username')->textInput() ?>
     <?= $form->field($model, 'email')->textInput() ?>
-    <?= $form->field($model, 'status')->dropDownList(\common\models\User::getitemStatus(),['prompt'=>'-Select-']) ?>
+    <?= $form->field($model, 'status')->dropDownList(\common\models\User::getitemStatus(),['prompt'=>'--Select--']) ?>
     <?= $form->field($model, 'banned_reason')->textarea()?>
     <?= $form->field($model, 'roles')->checkboxList($itemsAllRole,['prompt' => '--Select--'])?>
 
