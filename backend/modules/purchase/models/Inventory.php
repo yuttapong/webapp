@@ -23,7 +23,25 @@ use Yii;
  */
 class Inventory extends \yii\db\ActiveRecord
 {
-    public  $prices;
+    public $prices;
+
+
+    public function init()
+    {
+        parent::init();
+
+        $this->prices = [
+            [
+                'price' => '27.0200',
+                'vendor_id' => 1,
+            ],
+            [
+                'price' => '27.0200',
+                'vendor_id' => 1,
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -38,9 +56,10 @@ class Inventory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['categories_id', 'unit_id','master_id', 'status', 'create_at', 'create_by', 'update_at', 'update_by'], 'integer'],
+            [['categories_id', 'unit_id', 'master_id', 'status', 'create_at', 'create_by', 'update_at', 'update_by'], 'integer'],
             [['type', 'comment'], 'string'],
-            [['update_at'], 'required'],
+            [['update_at', 'name', 'code', 'unit_id', 'type', 'categories_id'], 'required'],
+            [['code', 'id'], 'unique'],
             [['code'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 255],
             [['unit_name'], 'string', 'max' => 50],
@@ -66,15 +85,29 @@ class Inventory extends \yii\db\ActiveRecord
             'create_by' => 'Create By',
             'update_at' => 'Update At',
             'update_by' => 'Update By',
-        		'master_id'=> 'master id',
+            'master_id' => 'master id',
         ];
     }
+
     public function getInventory()
     {
-    	return $this->hasOne(Inventory::className(), ['id' => 'master_id']);
+        return $this->hasOne(Inventory::className(), ['id' => 'master_id']);
     }
 
-    public function getCategoriesOfInventory() {
+    public function getCategoriesOfInventory()
+    {
 
+    }
+
+    public function getAllPrices()
+    {
+        $prices = InventoryPrice::find()->where(['inventory_id' => $this->id])->orderBy(['price' => SORT_ASC])->all();
+        return $prices;
+    }
+
+    public function getAllPricesOnlyActive()
+    {
+        $prices = InventoryPrice::find()->where(['inventory_id' => $this->id, 'status' => InventoryPrice::STATUS_ACTIVE])->orderBy(['price' => SORT_ASC])->all();
+        return $prices;
     }
 }

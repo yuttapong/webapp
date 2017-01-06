@@ -21,6 +21,13 @@ use Yii;
  */
 class InventoryPrice extends \yii\db\ActiveRecord
 {
+
+    public $vendor_name;
+
+    const  STATUS_ACTIVE = 1;
+    const  STATUS_INACTIVE = 0;
+
+
     /**
      * @inheritdoc
      */
@@ -38,6 +45,8 @@ class InventoryPrice extends \yii\db\ActiveRecord
             [['inventory_id', 'vendor_id', 'due_date', 'type_cost', 'status', 'create_at', 'create_by', 'type_buy'], 'integer'],
             [['price'], 'number'],
             [['date_approve'], 'safe'],
+            ['status', 'in', [self::STATUS_INACTIVE, self::STATUS_ACTIVE]],
+            ['status', 'default', 'value' => self::STATUS_INACTIVE],
         ];
     }
 
@@ -58,14 +67,17 @@ class InventoryPrice extends \yii\db\ActiveRecord
             'create_at' => 'Create At',
             'create_by' => 'Create By',
             'type_buy' => 'Type Buy',
+            'vendor_name' => 'Vendor Name'
         ];
     }
-   public function getVendor()
+
+    public function getVendor()
     {
-    	return $this->hasOne(Vendor::className(), ['id' => 'vendor_id']);
+        return $this->hasOne(Vendor::className(), ['id' => 'vendor_id']);
     }
+
     public function getInventory()
     {
-    	return $this->hasOne(Inventory::className(), ['id' => 'inventory_id']);
+        return $this->hasOne(Inventory::className(), ['id' => 'inventory_id']);
     }
 }

@@ -3,6 +3,7 @@
 namespace backend\modules\purchase\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "psm_vendor".
@@ -34,6 +35,10 @@ class Vendor extends \yii\db\ActiveRecord
      */
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 0;
+
+
+
+
     public static function tableName()
     {
         return 'psm_vendor';
@@ -81,6 +86,7 @@ class Vendor extends \yii\db\ActiveRecord
             'log_del' => 'Log Del',
         	'master_id'=>'maping',
         	'status'=>'status',
+
         ];
     }
     public function getVendor()
@@ -93,5 +99,9 @@ class Vendor extends \yii\db\ActiveRecord
     			self::STATUS_ENABLED => 'ใช้งาน',
     			self::STATUS_DISABLED => 'ไม่ใช่งาน',
     	];
+    }
+
+    public static function getVendorItems() {
+        return ArrayHelper::map( \backend\modules\purchase\models\Vendor::find()->all(),'id','company');
     }
 }
