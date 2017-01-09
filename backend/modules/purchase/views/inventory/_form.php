@@ -92,19 +92,25 @@ use yii\helpers\Url;
                 ],
                 [
                     'name' => 'vendor_id',
-                    'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_DROPDOWN,
+                    'type' => Select2::className(),
                     'value' => function ($data) {
                         return $data['vendor_id'];
                     },
                     'title' => 'ร้านค้า',
                     'defaultValue' => null,
-                    'items' => \backend\modules\purchase\models\Vendor::getVendorItems(),
+
                     'enableError' => true,
                     'options' => [
                         'class' => 'new',
-                        'prompt' => '--เลือกร้านค้า--',
-                        'onchange' => '$(this).init_change();'
-                    ]
+                      //  'prompt' => '--เลือกร้านค้า--',
+                     //   'onchange' => '$(this).init_change();'
+                        'data' => \backend\modules\purchase\models\Vendor::getVendorItems(),
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'id' => uniqid(),
+                        ],
+
+                    ],
 
                 ],
                 [
@@ -148,6 +154,8 @@ use yii\helpers\Url;
                 ],
             ]
         ]);
+
+        file_exists()
         ?>
 
         <?php
