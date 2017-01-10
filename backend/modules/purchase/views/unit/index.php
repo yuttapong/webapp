@@ -23,10 +23,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'filter' => [
+                    0 => 'Inactive',
+                    1 => 'Active'
+                ],
+                'value' => function($model) {
+                    return ($model->status == 1) ? Html::tag('span', 'Active', ['class' => 'label label-success']) : Html::tag('span', 'Inactive', ['class' => 'label label-danger']);
+                }
+            ],
             'id',
             'name',
-            'status',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

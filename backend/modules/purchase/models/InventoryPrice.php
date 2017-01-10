@@ -10,6 +10,7 @@ use Yii;
  * @property string $id
  * @property string $inventory_id
  * @property string $vendor_id
+ * @property string $vendor_name
  * @property integer $due_date
  * @property string $price
  * @property integer $type_cost
@@ -21,12 +22,8 @@ use Yii;
  */
 class InventoryPrice extends \yii\db\ActiveRecord
 {
-
-    public $vendor_name;
-
     const  STATUS_ACTIVE = 1;
     const  STATUS_INACTIVE = 0;
-
 
     /**
      * @inheritdoc
@@ -42,9 +39,11 @@ class InventoryPrice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['inventory_id', 'vendor_id','price'], 'required'],
             [['inventory_id', 'vendor_id', 'due_date', 'type_cost', 'status', 'create_at', 'create_by', 'type_buy'], 'integer'],
             [['price'], 'number'],
             [['date_approve'], 'safe'],
+            [['vendor_name'], 'string', 'max' => 60],
             ['status', 'in', [self::STATUS_INACTIVE, self::STATUS_ACTIVE]],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
         ];
@@ -59,15 +58,15 @@ class InventoryPrice extends \yii\db\ActiveRecord
             'id' => 'ID',
             'inventory_id' => 'Inventory ID',
             'vendor_id' => 'Vendor ID',
+            'vendor_name' => 'Vendor Name',
             'due_date' => 'Due Date',
             'price' => 'Price',
-            'type_cost' => 'Type Cost',
-            'date_approve' => 'Date Approve',
-            'status' => 'Status',
+            'type_cost' => ' 0 material วัสดุ 1wage ค่าแรง',
+            'date_approve' => 'วันที่อนุมัติ',
+            'status' => '0 ไม่ใช่งาน 1 ใช้งาน',
             'create_at' => 'Create At',
             'create_by' => 'Create By',
-            'type_buy' => 'Type Buy',
-            'vendor_name' => 'Vendor Name'
+            'type_buy' => '1 ซื้อตามราน 2 ซื่อ ตาม site งาน',
         ];
     }
 

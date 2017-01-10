@@ -9,6 +9,7 @@ use unclead\multipleinput\TabularInput;
 use unclead\multipleinput\TabularColumn;
 use unclead\multipleinput\examples\models\ExampleModel;
 use yii\helpers\Url;
+use mdm\upload\UploadBehaviorl;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\purchase\Models\Inventory */
@@ -21,12 +22,18 @@ use yii\helpers\Url;
 
 
 <?php $form = ActiveForm::begin([
-
+    'options' => [
+        'enctype' => 'multipart/form-data',
+    ],
 ]); ?>
-
-
 <div class="row">
     <div class="col-sm-12 col-sm-6 col-md-6">
+        <?php
+        if( ! $model->isNewRecord) {
+            echo  Html::img(Url::to(['/file','id'=>$model->file_id]),['width'=> 120]);
+        }
+        ?>
+        <?=$form->field($model,'photo')->fileInput()?>
         <?= $form->field($model, 'categories_id')->widget(\kartik\select2\Select2::className(), [
             'data' => \backend\modules\purchase\models\Categories::getCategoryItems(),
             'language' => 'th',
@@ -97,29 +104,16 @@ use yii\helpers\Url;
                         return $data['vendor_id'];
                     },
                     'title' => 'ร้านค้า',
-                    'defaultValue' => null,
-
                     'enableError' => true,
                     'options' => [
+                        'id' => uniqid(),
                         'class' => 'new',
-                      //  'prompt' => '--เลือกร้านค้า--',
-                     //   'onchange' => '$(this).init_change();'
                         'data' => \backend\modules\purchase\models\Vendor::getVendorItems(),
                         'pluginOptions' => [
+                            'tags' => true,
                             'allowClear' => true,
-                            'id' => uniqid(),
-                        ],
-
                     ],
-
-                ],
-                [
-                    'name' => 'vendor_name',
-                    'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_TEXT_INPUT,
-                    'title' => 'ชื่อร้าน',
-                    'value' => function ($data) {
-                        return $data['vendor_name'];
-                    }
+                    ],
                 ],
                 [
                     'name' => 'price',
@@ -155,7 +149,6 @@ use yii\helpers\Url;
             ]
         ]);
 
-        file_exists()
         ?>
 
         <?php

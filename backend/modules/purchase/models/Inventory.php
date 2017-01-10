@@ -2,6 +2,7 @@
 
 namespace backend\modules\purchase\models;
 
+use mdm\upload\UploadBehavior;
 use Yii;
 
 /**
@@ -24,7 +25,10 @@ use Yii;
 class Inventory extends \yii\db\ActiveRecord
 {
     public $prices;
+    public $imageUpload;
 
+    const  STATUS_ACTIVE = 1;
+    const  STATUS_INACTIVE = 0;
 
     public function init()
     {
@@ -61,8 +65,10 @@ class Inventory extends \yii\db\ActiveRecord
             [['update_at', 'name', 'code', 'unit_id', 'type', 'categories_id'], 'required'],
             [['code', 'id'], 'unique'],
             [['code'], 'string', 'max' => 20],
-            [['name'], 'string', 'max' => 255],
+            [['name', 'file_id'], 'string', 'max' => 255],
             [['unit_name'], 'string', 'max' => 50],
+            ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['imageUpload', 'file', 'extensions' => 'jpeg, gif, png'],
         ];
     }
 
@@ -86,6 +92,35 @@ class Inventory extends \yii\db\ActiveRecord
             'update_at' => 'Update At',
             'update_by' => 'Update By',
             'master_id' => 'master id',
+            'file_id' => 'File ID'
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => UploadBehavior::className(),
+                'attribute' => 'photo', // required, use to receive input file
+                'savedAttribute' => 'file_id', // optional, use to link model with saved file.
+                'uploadPath' => '@common/upload/inventory', // saved directory. default to '@runtime/upload'
+                'autoSave' => true, // when true then uploaded file will be save before ActiveRecord::save()
+                'autoDelete' => true, // when true then uploaded file will deleted before ActiveRecord::delete()
+                'deleteOldFile' => true,
+                'directoryLevel' => 0,
+            ],
+
+/*            [
+                'class' => '\yiidreamteam\upload\ImageUploadBehavior',
+                'attribute' => 'fileUpload',
+               'thumbs' => [
+                    'thumb' => ['width' => 150, 'height' => 150],
+                ],
+             'filePath' => '@comment/uploads/purchase/inventory/[[pk]].[[extension]]',
+             'fileUrl' => '/uploads/purchase/inventory/[[pk]].[[extension]]',
+             'thumbPath' => '@uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
+             'thumbUrl' => '/uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
+            ],*/
         ];
     }
 
@@ -109,5 +144,17 @@ class Inventory extends \yii\db\ActiveRecord
     {
         $prices = InventoryPrice::find()->where(['inventory_id' => $this->id, 'status' => InventoryPrice::STATUS_ACTIVE])->orderBy(['price' => SORT_ASC])->all();
         return $prices;
+    }
+
+    /**
+     * @param $vendorId
+     * @return string
+     */
+    public static function getVendorName($vendorId)
+    {
+        $vendor = Vendor::findOne($vendorId);
+        if ($vendor->company)
+            return $vendor->company;
+
     }
 }

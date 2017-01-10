@@ -34,7 +34,7 @@ use yii\bootstrap\ActiveForm;
 
     <?= $form->field($model, 'name') ?>
 
-    <?php // echo $form->field($model, 'basic_unit_id') ?>
+    <?php echo $form->field($model, 'status')->dropDownList([0=>'Inactive',1=>'Active'],['prompt'=>'--Status--']) ?>
 
     <?php // echo $form->field($model, 'unit') ?>
 

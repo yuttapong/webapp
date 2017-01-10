@@ -5,26 +5,85 @@ use kartik\grid\GridView;
 use backend\modules\purchase\models\Inventory;
 use yii\web\JsExpression;
 use kartik\editable\Editable;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\purchase\Models\InventorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Inventories';
+$this->title = 'Inventory List';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div class="inventory-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+    <div class="pull-right">
+        <div class="btn-group">
+            <?php
+            \yii\bootstrap\Modal::begin([
+                'options' => [
+                    'id' => 'modal-customer',
+                ],
+                'toggleButton' => [
+                    'label' => '<i class="fa fa-search"></i> ค้นหา',
+                    'class' => 'btn btn-default'
+                ],
+                'closeButton' => [
+                    'label' => 'Close',
+                    'class' => 'btn btn-danger btn-sm pull-right',
+                ],
+                'size' => 'modal-lg',
+                'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
 
-    <p>
-        <?= Html::a('Create Inventory', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+            ]);
+            ?>
+            <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?php
+            \yii\bootstrap\Modal::end();
+            ?>
+
+            <?= Html::a('<i class="fa fa-plus"></i> เพิ่มสินค้าใหม่', ['create'], ['class' => 'btn btn-default']) ?>
+        </div>
+    </div>
+    <div class="clearfix"></div>
     <?php
     $gridColumns = [
         // ['class' => 'kartik\grid\SerialColumn'],
+        [
+            'header' => 'Photo',
+            'format' => 'raw',
+            'value' => function ($model) {
+                //return Html::img('https://placeimg.com/150/150/any',['class' => 'img img-thumbnail']);
+                return Html::img(Url::to(['/file','id'=>$model->file_id]),['width'=> 120]);
+            },
+            'options' => [
+                'style' => 'width:150px;'
+            ]
+        ],
+        [
+            'attribute' => 'status',
+            'format' => 'raw',
+            'filter' => [
+                0 => 'Inactive',
+                1 => 'Active'
+            ],
+            'value' => function ($model) {
+                return ($model->status == 1) ? Html::tag('span', 'Active', ['class' => 'label label-success']) : Html::tag('span', 'Inactive', ['class' => 'label label-danger']);
+            }
+        ],
+        [
+            'attribute' => 'code',
+            'value' => function ($model) {
+                return !empty($model->code) ? Html::tag('button', $model->code, [
+                    'class' => 'btn btn-default btn-block',
+                    'style' => 'font-size:14px;font-weight:bold'
+                ]) : '';
+            },
+            'format' => 'raw',
+            'options' => [
+
+            ]
+        ],
         'id',
         'name',
         [
@@ -69,15 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
 
         ],
-
         'unit_name',
-
-
-        [
-            'class' => 'kartik\grid\BooleanColumn',
-            'attribute' => 'status',
-            'vAlign' => 'middle',
-        ],
         ['class' => 'yii\grid\ActionColumn'],
 
 
@@ -86,9 +137,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+       // 'filterModel' => $searchModel,
         'columns' => $gridColumns,
-        // 'pjax'=>true,
+         'pjax'=>true,
 
 
     ]);

@@ -8,6 +8,7 @@ use Dompdf\Exception;
 use Yii;
 use backend\modules\purchase\models\Inventory;
 use backend\modules\purchase\models\InventorySearch;
+use yii\helpers\ArrayHelper;
 use yii\validators\RequiredValidator;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -110,17 +111,20 @@ class InventoryController extends Controller
                     foreach ($prices['Inventory']['prices'] as $key => $item) {
                         if (empty($item['id'])) {
                             $modelPrice = new InventoryPrice();
+                            $modelPrice->create_at = time();
+                            $modelPrice->create_by = Yii::$app->user->id;
                         } else {
                             $modelPrice = InventoryPrice::findOne($item['id']);
                         }
                         $modelPrice->inventory_id = $model->id;
                         $modelPrice->vendor_id = $item['vendor_id'];
+                        $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                         $modelPrice->price = $item['price'];
                         $modelPrice->due_date = $item['due_date'];
                         $modelPrice->status = isset($item['status'])?$item['status']:InventoryPrice::STATUS_INACTIVE;
-                        $modelPrice->create_at = time();
-                        $modelPrice->create_by = Yii::$app->user->id;
-                        $modelPrice->save(false);
+                        if($modelPrice->price && $modelPrice->vendor_id) {
+                            $modelPrice->save(false);
+                        }
                     }
                 }
 
@@ -150,27 +154,46 @@ class InventoryController extends Controller
         $model = $this->findModel($id);
         $model->prices =  $model->getAllPrices();
 
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            $prices = Yii::$app->request->post();
+            $oldPrices = ArrayHelper::map($model->prices,'id','id');
+            $currentPrices = ArrayHelper::map($prices['Inventory']['prices'],'id','id');
+            $deletedPrices = array_diff($oldPrices, array_filter($currentPrices));
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $model->save();
-                $prices = Yii::$app->request->post();
+
+                // detete price
+                if(!empty($deletedPrices)) {
+                    InventoryPrice::deleteAll(['id' => $deletedPrices]);
+                }
+
                 foreach ($prices['Inventory']['prices'] as $key => $item) {
                     if (empty($item['id'])) {
                         $modelPrice = new InventoryPrice();
+                        $modelPrice->create_at = time();
+                        $modelPrice->create_by = Yii::$app->user->id;
                     } else {
-                        $modelPrice = InventoryPrice::findOne($item['id']);
+                        $modelPrice = InventoryPrice::find()->where(['id' => $item['id']])->one();
                     }
                     $modelPrice->inventory_id = $model->id;
                     $modelPrice->vendor_id = $item['vendor_id'];
+                    $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                     $modelPrice->price = $item['price'];
                     $modelPrice->due_date = $item['due_date'];
                     $modelPrice->status = isset($item['status'])?$item['status']:InventoryPrice::STATUS_INACTIVE;
-                    $modelPrice->create_at = time();
-                    $modelPrice->create_by = Yii::$app->user->id;
-                    $modelPrice->save(false);
+
+
+
+                    if($modelPrice->price && $modelPrice->vendor_id) {
+                         $modelPrice->save(false);
+                     }
                 }
+
+
                 $transaction->commit();
                 Yii::$app->session->setFlash('success', 'เพิ่มสินค้าใหม่เรียบร้อย');
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -196,7 +219,9 @@ class InventoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->status = Inventory::STATUS_INACTIVE;
+        $model->save();
 
         return $this->redirect(['index']);
     }
