@@ -2,8 +2,10 @@
 
 namespace backend\modules\purchase\models;
 
-use mdm\upload\UploadBehavior;
+use backend\modules\purchase\InventoryAsset;
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "psm_inventory".
@@ -26,14 +28,16 @@ class Inventory extends \yii\db\ActiveRecord
 {
     public $prices;
     public $imageUpload;
+    public $directoryAsset;
 
     const  STATUS_ACTIVE = 1;
     const  STATUS_INACTIVE = 0;
 
     public function init()
     {
-        parent::init();
 
+        parent::init();
+        $this->directoryAsset = $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/modules/purchase/assets');
         $this->prices = [
             [
                 'price' => '27.0200',
@@ -100,27 +104,28 @@ class Inventory extends \yii\db\ActiveRecord
     {
         return [
             [
-                'class' => UploadBehavior::className(),
+                'class' => \backend\modules\purchase\components\uploadfile\UploadBehavior::className(),
                 'attribute' => 'photo', // required, use to receive input file
                 'savedAttribute' => 'file_id', // optional, use to link model with saved file.
                 'uploadPath' => '@common/upload/inventory', // saved directory. default to '@runtime/upload'
+                'uploadThumbnailPath' => '@common/upload/inventory/thumbnail', // saved directory. default to '@runtime/upload/thumbnail'
                 'autoSave' => true, // when true then uploaded file will be save before ActiveRecord::save()
                 'autoDelete' => true, // when true then uploaded file will deleted before ActiveRecord::delete()
                 'deleteOldFile' => true,
                 'directoryLevel' => 0,
             ],
 
-/*            [
-                'class' => '\yiidreamteam\upload\ImageUploadBehavior',
-                'attribute' => 'fileUpload',
-               'thumbs' => [
-                    'thumb' => ['width' => 150, 'height' => 150],
-                ],
-             'filePath' => '@comment/uploads/purchase/inventory/[[pk]].[[extension]]',
-             'fileUrl' => '/uploads/purchase/inventory/[[pk]].[[extension]]',
-             'thumbPath' => '@uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
-             'thumbUrl' => '/uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
-            ],*/
+            /*            [
+                            'class' => '\yiidreamteam\upload\ImageUploadBehavior',
+                            'attribute' => 'fileUpload',
+                           'thumbs' => [
+                                'thumb' => ['width' => 150, 'height' => 150],
+                            ],
+                         'filePath' => '@comment/uploads/purchase/inventory/[[pk]].[[extension]]',
+                         'fileUrl' => '/uploads/purchase/inventory/[[pk]].[[extension]]',
+                         'thumbPath' => '@uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
+                         'thumbUrl' => '/uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
+                        ],*/
         ];
     }
 
@@ -156,5 +161,23 @@ class Inventory extends \yii\db\ActiveRecord
         if ($vendor->company)
             return $vendor->company;
 
+    }
+
+    public function getImageUrl()
+    {
+        if ($this->file_id) {
+            return Url::to(['file/show', 'id' => $this->file_id]);
+        } else {
+            return  $this->directoryAsset  . '/img/product.png';
+        }
+    }
+
+    public function getImageThumbnailUrl()
+    {
+        if ($this->file_id) {
+            return Url::to(['file/thumbnail', 'id' => $this->file_id]);
+        } else {
+            return  $this->directoryAsset  . '/img/product.png';
+        }
     }
 }

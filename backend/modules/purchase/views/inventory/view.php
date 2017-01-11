@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\helpers\Url;
+use backend\modules\purchase\models\InventoryPrice;
 
 /* @var $this yii\web\View */
 /* @var $model backend\modules\purchase\Models\Inventory */
@@ -32,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         if( ! $model->isNewRecord) {
            if($model->file_id)  {
-               echo  Html::img(Url::to(['/file','id'=>$model->file_id]),['class' => 'img img-thumbnail']);
+               echo  Html::img(Url::to(['file/show','id'=>$model->file_id]),['class' => 'img img-thumbnail']);
            }else{
 
            }
@@ -91,12 +92,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <hr>
 
-<table class="table">
+<table class="table table-bordered table-striped">
     <tr>
         <th>#</th>
         <th>Code / ID</th>
         <th>Vendor</th>
         <th><div align="right">ราคา</div></th>
+        <th>หน่วนนับ</th>
         <th><div align="center">จำนวนที่จะส่งของได้</div></th>
         <th>Status</th>
     </tr>
@@ -107,10 +109,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td><?=$key+1?></td>
                 <td><?= $price->vendor->code ?> / <?=$price->vendor_id?></td>
-                <td><?=$price->vendor_name?></td>
+                <td><?=$price->vendor_name?> </td>
                 <td align="right"><?= Yii::$app->formatter->asDecimal($price->price, 2) ?></td>
+                <td> <?=$model->unit_name?></td>
                 <td align="center"><?= $price->due_date ?></td>
-                <td><?= ($price->status == 1) ? Html::tag('span', 'Active', ['class' => 'label label-success']) : Html::tag('span', 'Inactive', ['class' => 'label label-danger']) ?></td>
+                <td><?= ($price->status === InventoryPrice::STATUS_ACTIVE) ? Html::tag('span', 'Active', ['class' => 'label label-success']) : Html::tag('span', 'Inactive', ['class' => 'label label-danger']) ?></td>
             </tr>
             <?php
         }

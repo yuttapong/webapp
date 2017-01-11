@@ -5,7 +5,8 @@ use kartik\grid\GridView;
 use backend\modules\purchase\models\Inventory;
 use yii\web\JsExpression;
 use kartik\editable\Editable;
-use yii\helpers\Url;
+
+\backend\modules\purchase\InventoryAsset::register($this);
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\purchase\Models\InventorySearch */
@@ -13,10 +14,10 @@ use yii\helpers\Url;
 
 $this->title = 'Inventory List';
 $this->params['breadcrumbs'][] = $this->title;
-
+$currentAction = Yii::$app->controller->action->id;
 ?>
 <div class="inventory-index">
-
+    <div class="pull-left"> <?= Html::a('<i class="fa fa-home"></i> แสดงทั้งหมด', ['index'], ['class' => 'btn btn-default'])?></div>
     <div class="pull-right">
         <div class="btn-group">
             <?php
@@ -40,26 +41,17 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php echo $this->render('_search', ['model' => $searchModel]); ?>
             <?php
             \yii\bootstrap\Modal::end();
+
             ?>
 
             <?= Html::a('<i class="fa fa-plus"></i> เพิ่มสินค้าใหม่', ['create'], ['class' => 'btn btn-default']) ?>
+
         </div>
     </div>
     <div class="clearfix"></div>
     <?php
     $gridColumns = [
         // ['class' => 'kartik\grid\SerialColumn'],
-        [
-            'header' => 'Photo',
-            'format' => 'raw',
-            'value' => function ($model) {
-                //return Html::img('https://placeimg.com/150/150/any',['class' => 'img img-thumbnail']);
-                return Html::img(Url::to(['/file','id'=>$model->file_id]),['width'=> 120]);
-            },
-            'options' => [
-                'style' => 'width:150px;'
-            ]
-        ],
         [
             'attribute' => 'status',
             'format' => 'raw',
@@ -70,6 +62,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function ($model) {
                 return ($model->status == 1) ? Html::tag('span', 'Active', ['class' => 'label label-success']) : Html::tag('span', 'Inactive', ['class' => 'label label-danger']);
             }
+        ],
+        [
+            'header' => 'Photo',
+            'format' => 'raw',
+            'value' => function ($model) {
+                return Html::img($model->imageThumbnailUrl,['width'=> 120]);
+            },
+            'options' => [
+                'style' => 'width:150px;'
+            ]
         ],
         [
             'attribute' => 'code',
@@ -105,10 +107,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 $url = \yii\helpers\Url::to(['inventory/inventory-list', 'id' => $model->master_id]);
                 $cityDesc = empty($model->master_id) ? '' : $model->master_id . ':' . Inventory::findOne($model->master_id)->name;
                 return [
-                    'header' => '&nbsp;',
+                    'header' => 'Search for master product',
                     'size' => 'md',
                     'name' => 'master_id',
+                  //   'format' => Editable::FORMAT_BUTTON,
                     'inputType' => Editable::INPUT_SELECT2,
+                    'asPopover' => false,
                     'options' => [
                         'initValueText' => $cityDesc,
                         'pluginOptions' => [

@@ -29,9 +29,7 @@ use mdm\upload\UploadBehaviorl;
 <div class="row">
     <div class="col-sm-12 col-sm-6 col-md-6">
         <?php
-        if( ! $model->isNewRecord) {
-            echo  Html::img(Url::to(['/file','id'=>$model->file_id]),['width'=> 120]);
-        }
+          echo Html::img($model->imageUrl,['class' => 'img img-responsive img-thumbnail','width' =>'250']);
         ?>
         <?=$form->field($model,'photo')->fileInput()?>
         <?= $form->field($model, 'categories_id')->widget(\kartik\select2\Select2::className(), [
@@ -93,9 +91,6 @@ use mdm\upload\UploadBehaviorl;
                     'name' => 'id',
                     'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_HIDDEN_INPUT,
                     'title' => 'Price ID',
-                    'value' => function ($data) {
-                        return $data['id'];
-                    }
                 ],
                 [
                     'name' => 'vendor_id',
@@ -144,12 +139,13 @@ use mdm\upload\UploadBehaviorl;
                     'headerOptions' => [
                         'style' => 'width: 250px;',
                         'class' => 'day-css-class'
-                    ]
+                    ],
                 ],
             ]
         ]);
 
         ?>
+
 
         <?php
 

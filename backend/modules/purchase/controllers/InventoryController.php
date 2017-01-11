@@ -121,7 +121,7 @@ class InventoryController extends Controller
                         $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                         $modelPrice->price = $item['price'];
                         $modelPrice->due_date = $item['due_date'];
-                        $modelPrice->status = isset($item['status'])?$item['status']:InventoryPrice::STATUS_INACTIVE;
+                        $modelPrice->status = !isset($item['status'])?InventoryPrice::STATUS_INACTIVE:$item['status'];
                         if($modelPrice->price && $modelPrice->vendor_id) {
                             $modelPrice->save(false);
                         }
@@ -184,7 +184,7 @@ class InventoryController extends Controller
                     $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                     $modelPrice->price = $item['price'];
                     $modelPrice->due_date = $item['due_date'];
-                    $modelPrice->status = isset($item['status'])?$item['status']:InventoryPrice::STATUS_INACTIVE;
+                    $modelPrice->status = !isset($item['status'])?InventoryPrice::STATUS_INACTIVE:$item['status'];
 
 
 
