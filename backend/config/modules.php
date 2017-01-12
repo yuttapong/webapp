@@ -95,5 +95,8 @@ return [
     'rems' => [
             'class' => 'backend\modules\rems\Rems',
     ],
+    'purchase' => [
+        'class' => 'backend\modules\purchase\Module',
+    ],
 
 ];

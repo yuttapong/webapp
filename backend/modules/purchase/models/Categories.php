@@ -19,6 +19,11 @@ use yii\helpers\ArrayHelper;
  */
 class Categories extends \yii\db\ActiveRecord
 {
+
+    const  STATUS_ACTIVE = 1;
+    const  STATUS_INACTIVE = 0;
+
+
     /**
      * @inheritdoc
      */
@@ -67,7 +72,29 @@ class Categories extends \yii\db\ActiveRecord
     }
 
     public static function getCategoryItems() {
-        $model =  Categories::find()->where(['status'=>'Y'])->all();
+        $model =  Categories::find()->where(['status'=>self::STATUS_ACTIVE])->all();
         return ArrayHelper::map($model,'id','name');
+    }
+
+    public static function getSidebarItem() {
+        $data = [];
+        $product = new InventorySearch();
+        $product->load(Yii::$app->request->get());
+        $models = Categories::find()->orderBy(['name'=>SORT_ASC])
+            ->where(['status' => self::STATUS_ACTIVE ])
+            ->orderBy(['name' => SORT_ASC])
+            ->all();
+        if($models) {
+            foreach ($models as $key => $item) {
+                $countProduct = Inventory::find()->where(['categories_id'=>$item->id])->count();
+                $data[] = [
+                   'label' =>  $item->name . ($countProduct>0?" <span class='badge pull-right'>{$countProduct}</span>":''),
+                    'icon' => '',
+                    'url' => ['/purchase/inventory/index','InventorySearch[categories_id]' =>$item->id],
+                    'active' => ($product->categories_id == $item->id)?true:false,
+                ];
+            }
+        }
+        return $data;
     }
 }

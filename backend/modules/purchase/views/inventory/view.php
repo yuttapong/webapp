@@ -5,6 +5,8 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use backend\modules\purchase\models\InventoryPrice;
 
+\backend\modules\purchase\InventoryAsset::register($this);
+
 /* @var $this yii\web\View */
 /* @var $model backend\modules\purchase\Models\Inventory */
 
@@ -33,7 +35,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         if( ! $model->isNewRecord) {
            if($model->file_id)  {
-               echo  Html::img(Url::to(['file/show','id'=>$model->file_id]),['class' => 'img img-thumbnail']);
+               echo  Html::a(Html::img(Url::to(['file/show','id'=>$model->file_id]),['class' => 'img img-thumbnail']),
+                   Url::to(['file/show','id'=>$model->file_id]),
+                   [
+                       'class' => 'lightbox',
+                       'title' => $model->name,
+                       'alt' => $model->name
+                   ]
+               );
            }else{
 
            }
@@ -121,5 +130,46 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 </table>
 
+<?php
+ \newerton\fancybox\FancyBox::widget([
+    'target' => 'a[rel=fancybox]',
+    'helpers' => true,
+    'mouse' => true,
+    'config' => [
+        'maxWidth' => '90%',
+        'maxHeight' => '90%',
+        'playSpeed' => 7000,
+        'padding' => 0,
+        'fitToView' => false,
+        'width' => '70%',
+        'height' => '70%',
+        'autoSize' => false,
+        'closeClick' => false,
+        'openEffect' => 'elastic',
+        'closeEffect' => 'elastic',
+        'prevEffect' => 'elastic',
+        'nextEffect' => 'elastic',
+        'closeBtn' => false,
+        'openOpacity' => true,
+        'helpers' => [
+            'title' => ['type' => 'float'],
+            'buttons' => [],
+            'thumbs' => ['width' => 68, 'height' => 50],
+            'overlay' => [
+                'css' => [
+                    'background' => 'rgba(0, 0, 0, 0.8)'
+                ]
+            ]
+        ],
+    ]
+]);
+ Html::a(Html::img('http://www.sirivalai.com/images/slide/main1.jpg',['width'=>250]),
+    'http://www.sirivalai.com/images/slide/main1.jpg',
+    ['rel' => 'fancybox']);
 
+?>
+<hr>
+<a href="http://www.sirivalai.com/images/slide/main1.jpg" class="lightbox" title="">
+    <img src="http://www.sirivalai.com/images/slide/main1.jpg" alt="Thumbnail 1"  width="250">
+</a>
 

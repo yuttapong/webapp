@@ -13,7 +13,6 @@ use yii\web\AssetBundle;
 
 
 class InventoryAsset extends AssetBundle
-
 {
 
     /**
@@ -29,12 +28,12 @@ class InventoryAsset extends AssetBundle
     ];
 
     public $js = [
-
+        'js/inventory.js'
     ];
 
     public $depends = [
         'yii\web\JqueryAsset',
-        'yii\jui\JuiAsset',
+        'backend\modules\purchase\components\lightbox\LightboxAsset',
     ];
 
 }

@@ -28,9 +28,10 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'urlManager' =>  require(__DIR__ . '/url-manager.php'),
         'urlManagerBackend' => [
             'class' => 'yii\web\urlManager',
-            'baseUrl' => 'http://webapp.local/backend/web',
+            'baseUrl' => 'http://localhost/webapp/backend/web',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],

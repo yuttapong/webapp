@@ -31,12 +31,7 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => require('url-manager.php'),
-        'urlManagerFrontend' => [
-            'class' => 'yii\web\urlManager',
-            'baseUrl' => 'http://webapp.local',
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-        ],
+        'urlManagerFrontend' => require('../../frontend/config/url-manager.php'),
         'view' => [
             'theme' => [
                 'pathMap' => [

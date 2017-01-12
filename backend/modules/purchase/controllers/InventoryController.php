@@ -2,6 +2,7 @@
 
 namespace backend\modules\purchase\controllers;
 
+use backend\modules\purchase\models\Categories;
 use backend\modules\purchase\models\InventoryPrice;
 use backend\modules\purchase\models\Vendor;
 use Dompdf\Exception;
@@ -66,11 +67,26 @@ class InventoryController extends Controller
                 return ['output' => '', 'message' => ''];
             }
         }
+        $category = Categories::find()->where(['id'=>$searchModel->categories_id])->one();
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'category' => $category,
         ]);
     }
+
+    public function actionCategory()
+    {
+        $cid = Yii::$app->request->get('cid','');
+        $searchModel = new InventorySearch(['categories_id' => $cid]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'categoryName' => Categories::findOne($searchModel->categories_id)->name
+        ]);
+    }
+
 
     /**
      * Displays a single Inventory model.
@@ -81,11 +97,11 @@ class InventoryController extends Controller
     {
         $model = $this->findModel($id);
         $model->prices = $model->getAllPrices();
-        if(Yii::$app->request->isAjax) {
+        if (Yii::$app->request->isAjax) {
             return $this->renderPartial('view', [
                 'model' => $model,
             ]);
-        }else{
+        } else {
             return $this->render('view', [
                 'model' => $model,
             ]);
@@ -107,7 +123,7 @@ class InventoryController extends Controller
             try {
                 $model->save();
                 $prices = Yii::$app->request->post();
-                if(isset($prices['Inventory']['prices'])) {
+                if (isset($prices['Inventory']['prices'])) {
                     foreach ($prices['Inventory']['prices'] as $key => $item) {
                         if (empty($item['id'])) {
                             $modelPrice = new InventoryPrice();
@@ -121,8 +137,8 @@ class InventoryController extends Controller
                         $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                         $modelPrice->price = $item['price'];
                         $modelPrice->due_date = $item['due_date'];
-                        $modelPrice->status = !isset($item['status'])?InventoryPrice::STATUS_INACTIVE:$item['status'];
-                        if($modelPrice->price && $modelPrice->vendor_id) {
+                        $modelPrice->status = !isset($item['status']) ? InventoryPrice::STATUS_INACTIVE : $item['status'];
+                        if ($modelPrice->price && $modelPrice->vendor_id) {
                             $modelPrice->save(false);
                         }
                     }
@@ -152,14 +168,14 @@ class InventoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->prices =  $model->getAllPrices();
+        $model->prices = $model->getAllPrices();
 
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
             $prices = Yii::$app->request->post();
-            $oldPrices = ArrayHelper::map($model->prices,'id','id');
-            $currentPrices = ArrayHelper::map($prices['Inventory']['prices'],'id','id');
+            $oldPrices = ArrayHelper::map($model->prices, 'id', 'id');
+            $currentPrices = ArrayHelper::map($prices['Inventory']['prices'], 'id', 'id');
             $deletedPrices = array_diff($oldPrices, array_filter($currentPrices));
 
             $transaction = Yii::$app->db->beginTransaction();
@@ -167,7 +183,7 @@ class InventoryController extends Controller
                 $model->save();
 
                 // detete price
-                if(!empty($deletedPrices)) {
+                if (!empty($deletedPrices)) {
                     InventoryPrice::deleteAll(['id' => $deletedPrices]);
                 }
 
@@ -184,13 +200,12 @@ class InventoryController extends Controller
                     $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                     $modelPrice->price = $item['price'];
                     $modelPrice->due_date = $item['due_date'];
-                    $modelPrice->status = !isset($item['status'])?InventoryPrice::STATUS_INACTIVE:$item['status'];
+                    $modelPrice->status = !isset($item['status']) ? InventoryPrice::STATUS_INACTIVE : $item['status'];
 
 
-
-                    if($modelPrice->price && $modelPrice->vendor_id) {
-                         $modelPrice->save(false);
-                     }
+                    if ($modelPrice->price && $modelPrice->vendor_id) {
+                        $modelPrice->save(false);
+                    }
                 }
 
 
@@ -210,6 +225,8 @@ class InventoryController extends Controller
             ]);
         }
     }
+
+
 
     /**
      * Deletes an existing Inventory model.
@@ -292,21 +309,20 @@ class InventoryController extends Controller
         }
     }
 
- /**
+    /**
      * @return Action
      */
     public function actionVendorDetail($id)
     {
-         $vendor = Vendor::find()->where(['id' => $id])->one();
-/*         echo json_encode([
-             'success' => 1,
-             'row' => $vendor
-         ]);*/
+        $vendor = Vendor::find()->where(['id' => $id])->one();
+        /*         echo json_encode([
+                     'success' => 1,
+                     'row' => $vendor
+                 ]);*/
 
-        echo $vendor->id . '-' .$vendor->company;
+        echo $vendor->id . '-' . $vendor->company;
 
     }
-
 
 
 }

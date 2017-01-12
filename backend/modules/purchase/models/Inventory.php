@@ -38,16 +38,7 @@ class Inventory extends \yii\db\ActiveRecord
 
         parent::init();
         $this->directoryAsset = $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@backend/modules/purchase/assets');
-        $this->prices = [
-            [
-                'price' => '27.0200',
-                'vendor_id' => 1,
-            ],
-            [
-                'price' => '27.0200',
-                'vendor_id' => 1,
-            ],
-        ];
+        $this->prices = [];
     }
 
     /**

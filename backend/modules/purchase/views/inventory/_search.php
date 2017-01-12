@@ -15,44 +15,33 @@ use yii\bootstrap\ActiveForm;
         'action' => ['index'],
         'method' => 'get',
         'options' => [
-            'class' => 'form'
+            'class' => 'form-virtical'
         ]
     ]); ?>
-    <?= $form->field($model, 'id') ?>
-    <?= $form->field($model, 'categories_id')->widget(\kartik\select2\Select2::className(),[
-        'data' => \backend\modules\purchase\models\Categories::getCategoryItems(),
-        'language' => 'th',
-        'options' => ['placeholder' => 'เลือกหมวดหมู่ ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ]
-    ]) ?>
+    <?php $form->field($model, 'id') ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?= $form->field($model, 'categories_id')->widget(\kartik\select2\Select2::className(),[
+                'data' => \backend\modules\purchase\models\Categories::getCategoryItems(),
+                'language' => 'th',
+                'options' => ['placeholder' => 'เลือกหมวดหมู่ ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ]
+            ]) ?>
+            <?php $form->field($model, 'code') ?>
+            <?= $form->field($model, 'type') ?>
 
-    <?= $form->field($model, 'code') ?>
+        </div>
+        <div class="col-sm-6">
 
-    <?= $form->field($model, 'type') ?>
+            <?= $form->field($model, 'name') ?>
 
-    <?= $form->field($model, 'name') ?>
-
-    <?php echo $form->field($model, 'status')->dropDownList([0=>'Inactive',1=>'Active'],['prompt'=>'--Status--']) ?>
-
-    <?php // echo $form->field($model, 'unit') ?>
-
-    <?php // echo $form->field($model, 'comment') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'create_at') ?>
-
-    <?php // echo $form->field($model, 'create_by') ?>
-
-    <?php // echo $form->field($model, 'update_at') ?>
-
-    <?php // echo $form->field($model, 'update_by') ?>
-
+            <?php echo $form->field($model, 'status')->widget(\kartik\switchinput\SwitchInput::className()) ?>
+        </div>
+    </div>
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('<i class="fa fa-search"></i>  Search', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

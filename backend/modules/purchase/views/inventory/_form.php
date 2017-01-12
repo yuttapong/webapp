@@ -10,7 +10,7 @@ use unclead\multipleinput\TabularColumn;
 use unclead\multipleinput\examples\models\ExampleModel;
 use yii\helpers\Url;
 use mdm\upload\UploadBehaviorl;
-
+use yii\web\JsExpression;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\purchase\Models\Inventory */
 /* @var $form yii\widgets\ActiveForm */
@@ -94,19 +94,23 @@ use mdm\upload\UploadBehaviorl;
                 ],
                 [
                     'name' => 'vendor_id',
+                  //  'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_DROPDOWN,
                     'type' => Select2::className(),
                     'value' => function ($data) {
-                        return $data['vendor_id'];
+                        return $data['vendor_id']?$data['vendor_id']:null;
                     },
                     'title' => 'ร้านค้า',
                     'enableError' => true,
+                   // 'items' => \backend\modules\purchase\models\Vendor::getVendorItems(),
                     'options' => [
                         'id' => uniqid(),
                         'class' => 'new',
                         'data' => \backend\modules\purchase\models\Vendor::getVendorItems(),
-                        'pluginOptions' => [
-                            'tags' => true,
+
+                      'pluginOptions' => [
+                            'placeholder' => 'Select a state ...',
                             'allowClear' => true,
+                          'escapeMarkup' => new JsExpression("function(m) { return m; }"),
                     ],
                     ],
                 ],
