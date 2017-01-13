@@ -16,6 +16,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\db\Query;
 
+use unclead\multipleinput\examples\models\Item;
+
 
 /**
  * InventoryController implements the CRUD actions for Inventory model.
@@ -88,7 +90,31 @@ class InventoryController extends Controller
     }
 
 
-    /**
+    private function getItems()
+    {
+        $data = [
+            [
+                'id' => 1,
+                'title' => 'Title 1',
+                'description' => 'Description 1'
+            ],
+            [
+                'id' => 2,
+                'title' => 'Title 2',
+                'description' => 'Description 2'
+            ],
+        ];
+
+        $items = [];
+        foreach ($data as $row) {
+            $item = new Item();
+            $item->setAttributes($row);
+            $items[] = $item;
+        }
+
+
+    }
+        /**
      * Displays a single Inventory model.
      * @param string $id
      * @return mixed
@@ -117,18 +143,25 @@ class InventoryController extends Controller
     public function actionCreate()
     {
         $model = new Inventory();
+        $modelPrice =[new InventoryPrice()];
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
+
             try {
-                $model->save();
+                $model->created_by = Yii::$app->user->id;
+                $model->created_at = time();
+                $model->updated_by = Yii::$app->user->id;
+                $model->updated_at = time();
+                $saved =  $model->save();
                 $prices = Yii::$app->request->post();
-                if (isset($prices['Inventory']['prices'])) {
+
+               if (isset($prices['Inventory']['prices'])) {
                     foreach ($prices['Inventory']['prices'] as $key => $item) {
                         if (empty($item['id'])) {
                             $modelPrice = new InventoryPrice();
-                            $modelPrice->create_at = time();
-                            $modelPrice->create_by = Yii::$app->user->id;
+                            $modelPrice->created_at = time();
+                            $modelPrice->created_by = Yii::$app->user->id;
                         } else {
                             $modelPrice = InventoryPrice::findOne($item['id']);
                         }
@@ -144,9 +177,12 @@ class InventoryController extends Controller
                     }
                 }
 
-                $transaction->commit();
-                Yii::$app->session->setFlash('success', 'เพิ่มสินค้าใหม่เรียบร้อย');
-                return $this->redirect(['index']);
+                if($saved) {
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'เพิ่มสินค้าใหม่เรียบร้อย' . $model->id);
+                     return $this->redirect(['update','id' => $model->id]);
+                }
+
             } catch (Exception $e) {
                 $transaction->rollBack();
                 Yii::$app->session->setFlash('error', 'เพิ่มสินค้าใหม่เรียบร้อย');
@@ -155,6 +191,7 @@ class InventoryController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'modelPrice' => $modelPrice,
             ]);
         }
     }
@@ -169,6 +206,7 @@ class InventoryController extends Controller
     {
         $model = $this->findModel($id);
         $model->prices = $model->getAllPrices();
+        $modelPrice = [new InventoryPrice()];
 
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -190,8 +228,8 @@ class InventoryController extends Controller
                 foreach ($prices['Inventory']['prices'] as $key => $item) {
                     if (empty($item['id'])) {
                         $modelPrice = new InventoryPrice();
-                        $modelPrice->create_at = time();
-                        $modelPrice->create_by = Yii::$app->user->id;
+                        $modelPrice->created_at = time();
+                        $modelPrice->created_by = Yii::$app->user->id;
                     } else {
                         $modelPrice = InventoryPrice::find()->where(['id' => $item['id']])->one();
                     }
@@ -222,6 +260,7 @@ class InventoryController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'modelPrice' =>  $modelPrice,
             ]);
         }
     }

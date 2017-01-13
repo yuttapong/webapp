@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="inventory-create">
     <?= $this->render('_form', [
         'model' => $model,
+        'modelPrice' => $modelPrice,
     ]) ?>
 
 </div>

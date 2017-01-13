@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\modules\purchase\Models;
+namespace backend\modules\purchase\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\purchase\Models\Inventory;
+
 
 /**
  * InventorySearch represents the model behind the search form about `backend\modules\purchase\Models\Inventory`.
@@ -18,7 +18,7 @@ class InventorySearch extends Inventory
     public function rules()
     {
         return [
-            [['id', 'categories_id', 'unit_id', 'status', 'create_at', 'create_by', 'update_at', 'update_by'], 'integer'],
+            [['id', 'categories_id', 'unit_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['code', 'type', 'name', 'unit_name', 'comment'], 'safe'],
         ];
     }
@@ -64,10 +64,10 @@ class InventorySearch extends Inventory
             'categories_id' => $this->categories_id,
             'unit_id' => $this->unit_id,
             'status' => $this->status,
-            'create_at' => $this->create_at,
-            'create_by' => $this->create_by,
-            'update_at' => $this->update_at,
-            'update_by' => $this->update_by,
+            'created_at' => $this->created_at,
+            'created_by' => $this->created_by,
+            'updated_at' => $this->updated_at,
+            'updated_by' => $this->updated_by,
         ]);
 
         $query->andFilterWhere(['like', 'code', $this->code])
@@ -104,10 +104,10 @@ class InventorySearch extends Inventory
             'categories_id' => $this->categories_id,
             'unit_id' => $this->unit_id,
             'status' => $this->status,
-            'create_at' => $this->create_at,
-            'create_by' => $this->create_by,
-            'update_at' => $this->update_at,
-            'update_by' => $this->update_by,
+            'created_at' => $this->created_at,
+            'created_by' => $this->created_by,
+            'updated_at' => $this->updated_at,
+            'updated_by' => $this->updated_by,
         ]);
 
         $query->andFilterWhere(['like', 'code', $this->code])

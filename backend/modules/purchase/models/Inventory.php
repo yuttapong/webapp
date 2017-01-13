@@ -4,6 +4,8 @@ namespace backend\modules\purchase\models;
 
 use backend\modules\purchase\InventoryAsset;
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -55,9 +57,9 @@ class Inventory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['categories_id', 'unit_id', 'master_id', 'status', 'create_at', 'create_by', 'update_at', 'update_by'], 'integer'],
+            [['categories_id', 'unit_id', 'master_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['type', 'comment'], 'string'],
-            [['update_at', 'name', 'code', 'unit_id', 'type', 'categories_id'], 'required'],
+            [['updated_at', 'name', 'code', 'unit_id', 'type', 'categories_id'], 'required'],
             [['code', 'id'], 'unique'],
             [['code'], 'string', 'max' => 20],
             [['name', 'file_id'], 'string', 'max' => 255],
@@ -82,10 +84,10 @@ class Inventory extends \yii\db\ActiveRecord
             'unit_name' => 'หน่วยนับ',
             'comment' => 'Comment',
             'status' => 'Status',
-            'create_at' => 'Create At',
-            'create_by' => 'Create By',
-            'update_at' => 'Update At',
-            'update_by' => 'Update By',
+            'created_at' => 'Create At',
+            'created_by' => 'Create By',
+            'updated_at' => 'Update At',
+            'updated_by' => 'Update By',
             'master_id' => 'master id',
             'file_id' => 'File ID'
         ];

@@ -4,36 +4,34 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
 use backend\modules\purchase\models\Unit;
-use common\siricenter\multipleinput\src\TabularColumn;
-use common\siricenter\multipleinput\src\TabularInput;
-use common\siricenter\multipleinput\src\MultipleInput;
+use unclead\multipleinput\MultipleInput;
+use unclead\multipleinput\TabularInput;
+use unclead\multipleinput\TabularColumn;
+use unclead\multipleinput\examples\models\ExampleModel;
+use yii\helpers\Url;
+use mdm\upload\UploadBehaviorl;
 use yii\web\JsExpression;
-
 /* @var $this yii\web\View */
 /* @var $model backend\modules\purchase\Models\Inventory */
 /* @var $form yii\widgets\ActiveForm */
-
+//echo '<pre>';
+//print_r(Unit::dataList());
+//echo '</pre>';
 ?>
 
 
 
 <?php $form = ActiveForm::begin([
-    'id' => 'tabular-form',
-    'enableAjaxValidation' => false,
-    'enableClientValidation' => true,
-    'validateOnChange' => false,
-    'validateOnSubmit' => true,
-    'validateOnBlur' => false,
     'options' => [
-        'enctype' => 'multipart/form-data'
-    ]
+        'enctype' => 'multipart/form-data',
+    ],
 ]); ?>
 <div class="row">
     <div class="col-sm-12 col-sm-6 col-md-6">
         <?php
-        echo Html::img($model->imageUrl, ['class' => 'img img-responsive img-thumbnail', 'width' => '250']);
+          echo Html::img($model->imageUrl,['class' => 'img img-responsive img-thumbnail','width' =>'250']);
         ?>
-        <?= $form->field($model, 'photo')->fileInput() ?>
+        <?=$form->field($model,'photo')->fileInput()?>
         <?= $form->field($model, 'categories_id')->widget(\kartik\select2\Select2::className(), [
             'data' => \backend\modules\purchase\models\Categories::getCategoryItems(),
             'language' => 'th',
@@ -60,17 +58,29 @@ use yii\web\JsExpression;
         <?= $form->field($model, 'status')->widget(\kartik\switchinput\SwitchInput::className()) ?>
     </div>
     <div class="col-sm-12 col-sm-6 col-md-6">
+
+
         <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+
+
+
         <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
+
+
+
         <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
+
+
+
     </div>
 </div>
+
 
 <!-- ตารางเพิ่มข้อมูลราคาสินค้า-->
 <div class="row">
     <div class="col-md-12">
         <?php
-
         echo $form->field($model, 'prices')->widget(MultipleInput::className(), [
             'id' => 'multiple-input',
             'allowEmptyList' => false,
@@ -84,18 +94,24 @@ use yii\web\JsExpression;
                 ],
                 [
                     'name' => 'vendor_id',
-                    // 'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_DROPDOWN,
+                  //  'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_DROPDOWN,
                     'type' => Select2::className(),
+                    'value' => function ($data) {
+                        return $data['vendor_id']?$data['vendor_id']:null;
+                    },
                     'title' => 'ร้านค้า',
                     'enableError' => true,
-                    //  'items' => \backend\modules\purchase\models\Vendor::getVendorItems(),
+                   // 'items' => \backend\modules\purchase\models\Vendor::getVendorItems(),
                     'options' => [
+                        'id' => uniqid(),
+                        'class' => 'new',
                         'data' => \backend\modules\purchase\models\Vendor::getVendorItems(),
-                        'pluginOptions' => [
+
+                      'pluginOptions' => [
                             'placeholder' => 'Select a state ...',
                             'allowClear' => true,
-                             'escapeMarkup' => new JsExpression("function(m) { return m; }"),
-                        ],
+                          'escapeMarkup' => new JsExpression("function(m) { return m; }"),
+                    ],
                     ],
                 ],
                 [
@@ -108,7 +124,7 @@ use yii\web\JsExpression;
                     ]
                 ],
                 [
-                    'name' => 'due_date',
+                    'name'  => 'due_date',
                     'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_TEXT_INPUT,
                     'title' => 'จำนวนวันที่จัดส่ง',
                     'headerOptions' => [
@@ -121,7 +137,7 @@ use yii\web\JsExpression;
                     ]
                 ],
                 [
-                    'name' => 'status',
+                    'name'  => 'status',
                     'type' => \kartik\switchinput\SwitchInput::className(),
                     'title' => 'Status',
                     'headerOptions' => [
@@ -132,9 +148,45 @@ use yii\web\JsExpression;
             ]
         ]);
 
-
         ?>
 
+
+        <?php
+
+        /*
+        TabularInput::widget([
+            'models' => $modelPrice,
+            'form' => $form,
+            'attributeOptions' => [
+                'enableAjaxValidation' => true,
+                'enableClientValidation' => false,
+                'validateOnChange' => false,
+                'validateOnSubmit' => true,
+                'validateOnBlur' => false,
+            ],
+            'columns' => [
+                [
+                    'name' => 'id',
+                    'type' => TabularColumn::TYPE_HIDDEN_INPUT
+                ],
+                [
+                    'name' => 'vendorid',
+                    'title' => 'ร้านค้า',
+                    'type' => TabularColumn::TYPE_TEXT_INPUT,
+                    'attributeOptions' => [
+                        'enableClientValidation' => true,
+                        'validateOnChange' => true,
+                    ],
+                    'enableError' => true
+                ],
+                [
+                    'name' => 'price',
+                    'title' => 'ราคา',
+                ],
+            ],
+        ])
+        */
+        ?>
 
     </div>
 </div>
@@ -144,7 +196,9 @@ use yii\web\JsExpression;
 
 <?php ActiveForm::end(); ?>
 
+
 <?php
+
 /*$this->registerJs(' $("#inventory-prices").on("afterAddRow", function(e){
        console.log("test:", e.timeStamp); 
     }); 
