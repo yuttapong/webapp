@@ -72,14 +72,17 @@ use yii\web\JsExpression;
         <?php
 
         echo $form->field($model, 'prices')->widget(MultipleInput::className(), [
-            'id' => 'multiple-input',
+            'id' => 'inventory-prices',
             'allowEmptyList' => false,
             'max' => 10,
             'addButtonPosition' => MultipleInput::POS_FOOTER,
+            'rowOptions' => [
+                'id' => 'row-{multiple_index_inventory-prices}',
+            ],
             'columns' => [
                 [
                     'name' => 'id',
-                    'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_HIDDEN_INPUT,
+                    'type' => \unclead\multipleinput\MultipleInputColumn::TYPE_TEXT_INPUT,
                     'title' => 'Price ID',
                 ],
                 [
@@ -161,14 +164,15 @@ jQuery('#inventory-prices').on('afterInit', function(){
     console.log('calls on after initialization event');
 }).on('beforeAddRow', function(e) {
     console.log('calls on before add row event');
-}).on('afterAddRow', function(e) {
+}).on('afterAddRow', function(e ) {
     console.log('calls on after add row event');
 }).on('beforeDeleteRow', function(e, row){
     // row - HTML container of the current row for removal.
     // For TableRenderer it is tr.multiple-input-list__item
     console.log('calls on before remove row event.');
+      //console.log(row);
       console.log(row);
-    return confirm('Are you sure you want to delete row?')
+    //return confirm('Are you sure you want to delete row?' + row.html);
 }).on('afterDeleteRow', function(e, row){
     console.log('calls on after remove row event');
     console.log(row);

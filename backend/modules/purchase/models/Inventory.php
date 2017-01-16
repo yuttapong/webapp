@@ -108,17 +108,6 @@ class Inventory extends \yii\db\ActiveRecord
                 'directoryLevel' => 0,
             ],
 
-            /*            [
-                            'class' => '\yiidreamteam\upload\ImageUploadBehavior',
-                            'attribute' => 'fileUpload',
-                           'thumbs' => [
-                                'thumb' => ['width' => 150, 'height' => 150],
-                            ],
-                         'filePath' => '@comment/uploads/purchase/inventory/[[pk]].[[extension]]',
-                         'fileUrl' => '/uploads/purchase/inventory/[[pk]].[[extension]]',
-                         'thumbPath' => '@uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
-                         'thumbUrl' => '/uploads/purchase/inventory/[[profile]]_[[pk]].[[extension]]',
-                        ],*/
         ];
     }
 
@@ -161,7 +150,7 @@ class Inventory extends \yii\db\ActiveRecord
         if ($this->file_id) {
             return Url::to(['file/show', 'id' => $this->file_id]);
         } else {
-            return  $this->directoryAsset  . '/img/product.png';
+            return $this->directoryAsset . '/img/product.png';
         }
     }
 
@@ -170,7 +159,7 @@ class Inventory extends \yii\db\ActiveRecord
         if ($this->file_id) {
             return Url::to(['file/thumbnail', 'id' => $this->file_id]);
         } else {
-            return  $this->directoryAsset  . '/img/product.png';
+            return $this->directoryAsset . '/img/product.png';
         }
     }
 }
