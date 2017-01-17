@@ -69,7 +69,7 @@ class InventoryController extends Controller
                 return ['output' => '', 'message' => ''];
             }
         }
-        $category = Categories::find()->where(['id'=>$searchModel->categories_id])->one();
+        $category = Categories::find()->where(['id' => $searchModel->categories_id])->one();
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -79,7 +79,7 @@ class InventoryController extends Controller
 
     public function actionCategory()
     {
-        $cid = Yii::$app->request->get('cid','');
+        $cid = Yii::$app->request->get('cid', '');
         $searchModel = new InventorySearch(['categories_id' => $cid]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
@@ -114,7 +114,8 @@ class InventoryController extends Controller
 
 
     }
-        /**
+
+    /**
      * Displays a single Inventory model.
      * @param string $id
      * @return mixed
@@ -143,7 +144,7 @@ class InventoryController extends Controller
     public function actionCreate()
     {
         $model = new Inventory();
-        $modelPrice =[new InventoryPrice()];
+        $modelPrice = [new InventoryPrice()];
 
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
@@ -153,10 +154,10 @@ class InventoryController extends Controller
                 $model->created_at = time();
                 $model->updated_by = Yii::$app->user->id;
                 $model->updated_at = time();
-                $saved =  $model->save();
+                $saved = $model->save();
                 $prices = Yii::$app->request->post();
 
-               if (isset($prices['Inventory']['prices'])) {
+                if (isset($prices['Inventory']['prices'])) {
                     foreach ($prices['Inventory']['prices'] as $key => $item) {
                         if (empty($item['id'])) {
                             $modelPrice = new InventoryPrice();
@@ -170,17 +171,17 @@ class InventoryController extends Controller
                         $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                         $modelPrice->price = $item['price'];
                         $modelPrice->due_date = $item['due_date'];
-                        $modelPrice->status = !isset($item['status']) ? InventoryPrice::STATUS_INACTIVE : $item['status'];
+                        $modelPrice->active = !isset($item['active']) ? InventoryPrice::STATUS_INACTIVE : $item['active'];
                         if ($modelPrice->price && $modelPrice->vendor_id) {
                             $modelPrice->save(false);
                         }
                     }
                 }
 
-                if($saved) {
+                if ($saved) {
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', 'เพิ่มสินค้าใหม่เรียบร้อย' . $model->id);
-                     return $this->redirect(['update','id' => $model->id]);
+                    return $this->redirect(['update', 'id' => $model->id]);
                 }
 
             } catch (Exception $e) {
@@ -238,7 +239,7 @@ class InventoryController extends Controller
                     $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
                     $modelPrice->price = $item['price'];
                     $modelPrice->due_date = $item['due_date'];
-                    $modelPrice->status = !isset($item['status']) ? InventoryPrice::STATUS_INACTIVE : $item['status'];
+                    $modelPrice->active = !isset($item['active']) ? InventoryPrice::STATUS_INACTIVE : $item['active'];
 
 
                     if ($modelPrice->price && $modelPrice->vendor_id) {
@@ -260,11 +261,10 @@ class InventoryController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'modelPrice' =>  $modelPrice,
+                'modelPrice' => $modelPrice,
             ]);
         }
     }
-
 
 
     /**
@@ -281,6 +281,72 @@ class InventoryController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    public function actionDeletePrice()
+    {
+        $id = Yii::$app->request->post('id', null);
+        if ($id) {
+            $model = InventoryPrice::findOne($id);
+            $model->active = InventoryPrice::STATUS_INACTIVE;
+
+            if (Yii::$app->request->isAjax) {
+                if ($model->save()) {
+                    $result = [
+                        'success' => 1,
+                        'msg' => 'Success : delete id : ' . $id,
+                    ];
+                    echo json_encode($result);
+                } else {
+                    $result = [
+                        'success' => 0,
+                        'msg' => 'Error : delete id : ' . $id,
+                    ];
+                    echo json_encode($result);
+                }
+            } else {
+                $model->save();
+                return $this->redirect(['index']);
+            }
+        }
+    }
+
+    public function actionChangePriceStatus()
+    {
+        $id = Yii::$app->request->post('id', null);
+        $status = Yii::$app->request->post('status',null);
+        if ( ! empty($id) ) {
+            $model = InventoryPrice::findOne($id);
+
+            if($status == InventoryPrice::STATUS_ACTIVE)
+                    $model->active = InventoryPrice::STATUS_INACTIVE;
+            if($status == InventoryPrice::STATUS_INACTIVE)
+                    $model->active = InventoryPrice::STATUS_ACTIVE;
+
+            if (Yii::$app->request->isAjax) {
+
+                if ($model->save()) {
+                    $result = [
+                        'success' => 1,
+                        'active' => $model->active,
+                        'msg' => 'Success  : ' . $id,
+                    ];
+                    echo json_encode($result);
+                } else {
+                    $result = [
+                        'success' => 0,
+                        'active' => $model->active,
+                        'msg' => 'Error  : ' . $id,
+                    ];
+                    echo json_encode($result);
+                }
+            } else {
+                $model->save();
+                return $this->redirect(['index']);
+            }
+        }
+    }
+
+
 
     /**
      * Finds the Inventory model based on its primary key value.

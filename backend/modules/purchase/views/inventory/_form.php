@@ -97,7 +97,7 @@ use yii\web\JsExpression;
                         'pluginOptions' => [
                             'placeholder' => 'Select a state ...',
                             'allowClear' => true,
-                             'escapeMarkup' => new JsExpression("function(m) { return m; }"),
+                            'escapeMarkup' => new JsExpression("function(m) { return m; }"),
                         ],
                     ],
                 ],
@@ -124,9 +124,9 @@ use yii\web\JsExpression;
                     ]
                 ],
                 [
-                    'name' => 'status',
+                    'name' => 'active',
                     'type' => \kartik\switchinput\SwitchInput::className(),
-                    'title' => 'Status',
+                    'title' => 'Active',
                     'headerOptions' => [
                         'style' => 'width: 250px;',
                         'class' => 'day-css-class'
@@ -146,19 +146,7 @@ use yii\web\JsExpression;
 </div>
 
 <?php ActiveForm::end(); ?>
-
 <?php
-/*$this->registerJs(' $("#inventory-prices").on("afterAddRow", function(e){
-       console.log("test:", e.timeStamp); 
-    }); 
-    $.fn.init_change = function(){ 
-    var product_id = $(this).val(); 
-    $.get( "' . Url::toRoute('vendor-detail') . '", { id: product_id }, 
-    function (data) { var result = data.split("-"); 
-     $(".field-order-items-"+sid[2]+"-product_name").text(result[0]); 
-     $(".field-order-items-"+sid[2]+"-price").text(result[1]); } ); };
-    ');*/
-
 $js = <<<JS
 jQuery('#inventory-prices').on('afterInit', function(){
     console.log('calls on after initialization event');
@@ -170,12 +158,35 @@ jQuery('#inventory-prices').on('afterInit', function(){
     // row - HTML container of the current row for removal.
     // For TableRenderer it is tr.multiple-input-list__item
     console.log('calls on before remove row event.');
-      //console.log(row);
-      console.log(row);
-    //return confirm('Are you sure you want to delete row?' + row.html);
+      var index = row.index();
+      var  id = $('#inventory-prices-'+ index + '-id').val();
+      var price = $('#inventory-prices-'+ index + '-price').val();
+      if (id ) {
+           if( confirm('Are you sure you want to delete ร้าน :  ' + id  + '/ ราคา: '+ price +'  ใช่หรือไม่')) {
+                console.log(id);
+                $.ajax({
+                  url: 'delete-price',
+                  type:'post',
+                  dataType:'json',
+                  data:{id:id},
+                  success: function(rs) {
+                    if(rs.success===1) {
+                        console.log(rs.msg);
+                    }else{
+                        console.log(rs.msg);
+                    }
+                  }
+                })
+                return true;
+           } else {
+             return false;
+           }
+      }else{
+       return true;
+      }
+
 }).on('afterDeleteRow', function(e, row){
-    console.log('calls on after remove row event');
-    console.log(row);
+      console.log('calls on after remove row event');
 });
 JS;
 $this->registerJs($js);

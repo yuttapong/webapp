@@ -40,12 +40,11 @@ class InventoryPrice extends \yii\db\ActiveRecord
     {
         return [
             [['inventory_id', 'vendor_id','price'], 'required'],
-            [['inventory_id', 'vendor_id', 'due_date', 'type_cost', 'status', 'created_at', 'created_by', 'type_buy'], 'integer'],
+            [['inventory_id', 'vendor_id', 'due_date', 'type_cost', 'active', 'created_at', 'created_by', 'type_buy'], 'integer'],
             [['price'], 'number'],
             [['date_approve'], 'safe'],
             [['vendor_name'], 'string', 'max' => 60],
-            ['status', 'in', [self::STATUS_INACTIVE, self::STATUS_ACTIVE]],
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['active', 'default', 'value' => self::STATUS_INACTIVE],
         ];
     }
 
@@ -63,7 +62,7 @@ class InventoryPrice extends \yii\db\ActiveRecord
             'price' => 'Price',
             'type_cost' => ' 0 material วัสดุ 1wage ค่าแรง',
             'date_approve' => 'วันที่อนุมัติ',
-            'status' => '0 ไม่ใช่งาน 1 ใช้งาน',
+            'active' => '0 ไม่ใช่งาน 1 ใช้งาน',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'type_buy' => '1 ซื้อตามราน 2 ซื่อ ตาม site งาน',

@@ -118,7 +118,49 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td align="right"><?= Yii::$app->formatter->asDecimal($price->price, 2) ?></td>
                 <td> <?=$model->unit_name?></td>
                 <td align="center"><?= $price->due_date ?></td>
-                <td><?= ($price->status === InventoryPrice::STATUS_ACTIVE) ? Html::tag('span', 'Active', ['class' => 'label label-success']) : Html::tag('span', 'Inactive', ['class' => 'label label-danger']) ?></td>
+                <td><?php
+                     if ($price->active === InventoryPrice::STATUS_ACTIVE)
+                         $t = [
+                            'name' => 'Active',
+                             'class' => 'label label-success',
+                         ];
+                    else
+                        $t = [
+                            'name' => 'Inactive',
+                            'class' => 'label label-danger',
+                        ];
+
+                     Html::a($t['name'],"javascript:void(0);",[
+                        'id' => 'noomy_toggle_'. $price['id'],
+                        'data-status' => $price['active'],
+                        'data-id' => $price['id'],
+                        'onclick' => new \yii\web\JsExpression('
+                          var id =  $(this).data("id");
+                          var status = $(this).data("status");
+                          var target = $(this).attr("id");
+                          if(status==0){ 
+                                $(this).removeClass("label-danger").addClass("label-success"); 
+                                $(this).text("Active");
+                                $(this).data("status",1);
+                          }
+                          if(status==1){ 
+                                $(this).removeClass("label-success").addClass("label-danger"); 
+                                 $(this).text("Inactive");
+                                 $(this).data("status",0);
+                          }
+                        '),
+                        'class' => $t['class']
+                    ]);
+
+                    echo \backend\modules\purchase\widgets\buttontoggle\ButtonToggleStatus::widget([
+                        'dataKey' => $price['id'],
+                        'dataStatus' => $price['active'],
+                        'url' => 'change-price-status',
+                        'options' => [
+                            'title' => $price['vendor_name']
+                        ]
+                    ]);
+                    ?></td>
             </tr>
             <?php
         }
