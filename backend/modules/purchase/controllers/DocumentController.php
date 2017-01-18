@@ -54,6 +54,7 @@ class DocumentController extends \yii\web\Controller
 
     public function actionView($t, $id)
     {
+        $model = $this->loadModel($id);
         switch ($t) {
             case 'general_pr' :
                 $model = new ListApproval();
@@ -93,6 +94,10 @@ class DocumentController extends \yii\web\Controller
 
     }
 
+    private function loadModel($id) {
+        $model = ListApproval::findOne($id);
+        return $model;
+    }
     public function sampleListApprover()
     {
         return [

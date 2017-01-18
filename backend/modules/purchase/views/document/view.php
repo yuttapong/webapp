@@ -28,7 +28,7 @@ $form = ActiveForm::begin([]);
         <div class="row form-group">
             <div class="col-xs-2 col-sm-2"><?= Html::activeLabel($model, 'subject') ?></div>
             <div class="col-xs-10 col-sm-10 col-md-10">
-                <?= $form->field($model, 'subject')->textInput()->label(false) ?>
+                <?=  $model->subject?>
             </div>
         </div>
 
@@ -36,19 +36,7 @@ $form = ActiveForm::begin([]);
         <div class="row form-group">
             <div class="col-xs-2 col-sm-2"><?= Html::activeLabel($model, 'job_list_id') ?></div>
             <div class="col-xs-10 col-sm-10 col-md-10">
-                <?php
-
-                /*                echo Select2::widget([
-                                    'model' => $model,
-                                    'attribute' => 'job_list_id',
-                                    'data' => $joblistItem,
-                                    'options' => ['placeholder' => 'Select a state ...'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true
-                                    ],
-                                ]);*/
-                echo $form->field($model, 'job_list_id')->dropDownList($joblistItem, ['prompt' => '-----------']);
-                ?>
+                <?=  $model->job_list_id?>
             </div>
         </div>
 
