@@ -13,7 +13,6 @@ $this->title = 'PR ทั่วไป';
 
     <style>
         #pr {
-            background-color: #d4d0c8;
             padding: 10px;
             color: #000;
             border-radius: 7px;
@@ -58,10 +57,7 @@ $form = ActiveForm::begin([]);
             <div class="col-xs-12 col-sm-2 col-md-2"><?= Html::activeLabel($model, 'description') ?></div>
 
             <div class="col-xs-12 col-sm-10 col-md-10">
-                <?= $form->field($model, 'description')->widget(CKEditor::className(), [
-                    'options' => ['rows' => 6],
-                    'preset' => 'normal'
-                ])->label(false) ?>
+                <?=  $model->description?>
             </div>
         </div>
 
@@ -87,7 +83,8 @@ $form = ActiveForm::begin([]);
 <?php
  echo \backend\modules\purchase\widgets\documentapprove\DocumentApprove::widget([
      'users' => $listApprover,
-     'url' => ['approve'],
+     'type' =>2,
+     'currentLogin' => Yii::$app->user->id,
      'options' => [
          'class' => ''
      ]

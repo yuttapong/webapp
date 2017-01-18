@@ -1,0 +1,31 @@
+.list-approve {
+    list-style: none;
+    display: block;
+    clear: both;
+}
+
+.list-approve li {
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 3px;
+    border: solid  1px #fff;
+    list-style: none;
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    min-height: 350px;
+}
+
+.list-approve .line-dashed {
+    border-bottom: solid 1px #ccc;
+    height: 3px;
+
+}
+
+.list-approve .text-status-pending {
+    color: #00a157;
+}
+.list-approve .text-status-success {
+    color:#0a0a0a;
+}

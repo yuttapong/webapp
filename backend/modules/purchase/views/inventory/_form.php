@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
@@ -14,9 +13,6 @@ use yii\web\JsExpression;
 /* @var $form yii\widgets\ActiveForm */
 
 ?>
-
-
-
 <?php $form = ActiveForm::begin([
     'id' => 'tabular-form',
     'enableAjaxValidation' => false,
@@ -55,7 +51,6 @@ use yii\web\JsExpression;
             ],
         ]);
         ?>
-
         <?= $form->field($model, 'unit_name')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'status')->widget(\kartik\switchinput\SwitchInput::className()) ?>
     </div>
@@ -65,7 +60,6 @@ use yii\web\JsExpression;
         <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
     </div>
 </div>
-
 <!-- ตารางเพิ่มข้อมูลราคาสินค้า-->
 <div class="row">
     <div class="col-md-12">
@@ -134,17 +128,12 @@ use yii\web\JsExpression;
                 ],
             ]
         ]);
-
-
         ?>
-
-
     </div>
 </div>
 <div class="form-group">
     <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 </div>
-
 <?php ActiveForm::end(); ?>
 <?php
 $js = <<<JS
@@ -184,7 +173,6 @@ jQuery('#inventory-prices').on('afterInit', function(){
       }else{
        return true;
       }
-
 }).on('afterDeleteRow', function(e, row){
       console.log('calls on after remove row event');
 });

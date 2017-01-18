@@ -23,7 +23,14 @@ use Yii;
  */
 class ListApproval extends \yii\db\ActiveRecord
 {
-    public  $approver_user_name;
+
+    const   STATUS_PENDING = 1;
+    const   STATUS_PROCESSING = 2;
+    const   STATUS_SUCCESS = 3;
+    const   STATUS_CANCEL = -1;
+
+
+    public $approver_user_name;
 
     /**
      * @inheritdoc
@@ -42,7 +49,7 @@ class ListApproval extends \yii\db\ActiveRecord
             [['job_list_id', 'created_at', 'created_by', 'updated_at', 'updated_by', 'status', 'approver_user_id', 'approver_seq', 'user_next_id', 'approval_status'], 'integer'],
             [['description'], 'string'],
             [['subject'], 'string', 'max' => 255],
-            [['subject','description','job_list_id'], 'required'],
+            [['subject', 'description', 'job_list_id'], 'required'],
 
         ];
     }
