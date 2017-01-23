@@ -4,21 +4,21 @@
     clear: both;
 }
 
-.list-approve li {
-    margin: 10px;
+.list-approve .item {
+    margin: 3px 3px;
     background-color: #fff;
     border-radius: 5px;
-    padding: 3px;
-    border: solid  1px #fff;
+    border: solid  1px #ccc;
     list-style: none;
     display: inline-block;
     text-align: center;
     vertical-align: top;
-    min-height: 350px;
+    padding:10px 3px 10px 3px;
+    width: 98%;
 }
 
 .list-approve .line-dashed {
-    border-bottom: solid 1px #ccc;
+    border-bottom: dashed 1px #ccc;
     height: 3px;
 
 }
@@ -28,4 +28,28 @@
 }
 .list-approve .text-status-success {
     color:#0a0a0a;
+}
+
+.list-approve .name {
+    font-size: 13px;
+}
+
+.list-approve .date {
+    font-size: 11px;
+}
+
+.list-approve .position {
+    font-size: 11px;
+}
+
+.list-approve .seq {
+
+}
+
+.list-approve .text-rejected {
+    color: #ff1d3f;
+}
+
+.list-approve .text-approved {
+    color: #0b93d5;
 }

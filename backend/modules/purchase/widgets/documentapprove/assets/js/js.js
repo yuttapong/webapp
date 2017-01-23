@@ -30,39 +30,39 @@ $(".noomy-link-approve").on('click', function (e) {
 
 $(".noomy-btn-approve").on('click', function (e) {
     var key = $(this).data("key");
-    var user = $("input[name='approver[" + key + "][id]']").val();
+    /*
+    var approve_id = $("input[name='approver[" + key + "][approve_id]']")
+    var document = $("input[name='approver[" + key + "][document]']")
+    var user = $("input[name='approver[" + key + "][id]']");
+    var remark = $("input[name='approver[" + key + "][remark]']");
+    var position = $("input[name='approver[" + key + "][position]']");
+    */
+
     var status = $("input[name='approver[" + key + "][status]']:checked");
-    var remark = $("input[name='approver[" + key + "][remark]']").val();
-    console.log('ap : ', user + '/' + status);
-    if(! status.val()) {
+    var url = $("input[name='approver[" + key + "][url]']");
+    var data = $("#form-approve-"+ key ).serialize();
+    console.log(status);
+
+
+    if (!status.val()) {
         alert('โปรดเลือกสถานะ');
         status.focus();
-        status.attr('required',true);
+        status.attr('required', true);
         return false;
-    }else{
-        if(confirm('คุณต้องการบันทึกข้อมูลใช่หรือไม่ ?')) {
-            console.log('save success');
+    } else {
+        if (confirm('คุณต้องการบันทึกข้อมูลใช่หรือไม่ ?')) {
+            $.ajax({
+                type: 'post',
+                url: url.val(),
+                dataType: 'json',
+                data: data,
+                success: function (rs) {
+                    console.log(rs);
+                }
+            })
+
         }
     }
-    /*
-     $.ajax({
-     type:'post',
-     url: '$this->url',
-     dataType:'json',
-     data:{id:id, status:status},
-     success: function(rs) {
-     console.log('status : ' , rs.active);
-     if(rs.active == 1){
-     el.removeClass("label-danger").addClass("label-success");
-     el.html("$active");
-     el.data("status",rs.active);
-     } else {
-     el.removeClass("label-success").addClass("label-danger");
-     el.html("$inactive");
-     el.data("status",rs.active);
-     }
-     }
-     })
-     */
+
 
 });

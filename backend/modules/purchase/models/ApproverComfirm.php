@@ -21,6 +21,21 @@ use Yii;
  */
 class ApproverComfirm extends \yii\db\ActiveRecord
 {
+
+    // status approve
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+    const  STATUS_PENDING  = 'pending';
+
+
+
+    // active or inactive
+    const ACTIVE_YES = 1;
+    const ACTIVE_NO = 0;
+
+    const DOCUMENT_GENERAL_PR = 'general_pr';
+
+
     /**
      * @inheritdoc
      */
@@ -35,8 +50,9 @@ class ApproverComfirm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pk_key', 'fk_key', 'approver_user_id', 'seq', 'approver_status', 'created_at', 'created_by', 'active'], 'integer'],
-            [['comment'], 'string'],
+            [['pk_key', 'fk_key', 'approve_user_id', 'seq', 'created_at', 'created_by', 'active'], 'integer'],
+            [['comment','position_name'], 'string'],
+            [['approve_status'],'string','max' => 20],
             [['slug'], 'string', 'max' => 255],
         ];
     }
@@ -51,13 +67,20 @@ class ApproverComfirm extends \yii\db\ActiveRecord
             'slug' => 'Slug',
             'pk_key' => 'Pk Key',
             'fk_key' => 'Fk Key',
-            'approver_user_id' => 'Approver User ID',
+            'approve_user_id' => 'Approver User ID',
             'seq' => 'Seq',
             'comment' => 'Comment',
-            'approver_status' => 'Approver Status',
+            'approve_status' => 'Approve Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'active' => 'Active',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApproveFullname() {
+         return  Personnel::findOne(['user_id' => $this->approve_user_id])->getFullnameTH();
     }
 }

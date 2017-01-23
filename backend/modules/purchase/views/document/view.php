@@ -22,7 +22,8 @@ $this->title = 'PR ทั่วไป';
 $form = ActiveForm::begin([]);
 ?>
 <?= $form->errorSummary($model) ?>
-    <div id="pr">
+    <div id="pr" class="row">
+        <div class="col-md-9">
 
 
         <div class="row form-group">
@@ -51,33 +52,31 @@ $form = ActiveForm::begin([]);
 
 
         <div class="row form-group">
-            <div class="col-xs-12 col-sm-2 col-md-2"><?= Html::activeLabel($model, 'approver_user_name') ?></div>
-
+            <div class="col-xs-12 col-sm-2 col-md-2"><?= Html::activeLabel($model, 'created_by') ?></div>
             <div class="col-xs-12 col-sm-10 col-md-10">
-                <?= $form->field($model, 'approver_user_name')->textInput(['readonly' => true])->label(false) ?>
-                <?= $form->field($model, 'approver_user_id')->hiddenInput()->label(false) ?>
+                <?= $form->field($model, 'requestBy')->textInput(['readonly' => true])->label(false) ?>
+                <?= $form->field($model, 'created_by')->hiddenInput()->label(false) ?>
             </div>
         </div>
 
     </div>
+    <div class="col-md-3">
 
-    <p class="form-group">
-    <div align="center">
-        <?= Html::submitButton($model->isNewRecord ? 'Save' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
-
-    </p>
-<hr>
 <?php
- echo \backend\modules\purchase\widgets\documentapprove\DocumentApprove::widget([
-     'users' => $listApprover,
-     'type' =>2,
-     'currentLogin' => Yii::$app->user->id,
-     'options' => [
-         'class' => ''
-     ]
- ])
+$listApprover = $model->getActiveApproveConfirmItems();
+echo \backend\modules\purchase\widgets\documentapprove\DocumentApprove::widget([
+    'model' => $model,
+    'attribute' => 'listapprover',
+    'users' => $listApprover,
+    'approved' => $model->getListUserHasApproved(),
+    'url' => ['approve'],
+    'options' => [
+        'class' => ''
+    ]
+])
 ?>
+</div>
+ </div>
 
 
 <?php ActiveForm::end(); ?>

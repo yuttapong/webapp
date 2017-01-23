@@ -87,6 +87,7 @@ $form = ActiveForm::begin([]);
 
          <?php
          echo \backend\modules\purchase\widgets\documentapprove\DocumentApprove::widget([
+             'type' => \backend\modules\purchase\widgets\documentapprove\DocumentApprove::TYPE_VIEW,
              'model' => $model,
              'attribute' => 'listapprover',
              'users' => $listApprover,
