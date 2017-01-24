@@ -58,6 +58,9 @@ $(".noomy-btn-approve").on('click', function (e) {
                 data: data,
                 success: function (rs) {
                     console.log(rs);
+                    if(rs.success==1) {
+                        location.reload();
+                    }
                 }
             })
 

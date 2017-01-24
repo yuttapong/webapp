@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\modules\purchase\models;
+namespace backend\modules\purchase\Models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\purchase\models\Poin;
+use backend\modules\purchase\Models\Prin;
 
 /**
- * PoinSearch represents the model behind the search form about `backend\modules\fix\Models\Poin`.
+ * PrinSearch represents the model behind the search form about `backend\modules\fix\Models\Prin`.
  */
-class PoinSearch extends Poin
+class PrSearch extends Prin
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class PoinSearch extends Poin
     public function rules()
     {
         return [
-            [['id', 'site_id', 'project_id', 'user_order_id', 'created_at', 'created_by'], 'integer'],
-            [['title', 'code'], 'safe'],
+            [['id', 'type', 'user_order_id', 'created_at', 'created_by', 'site_id', 'project_id'], 'integer'],
+            [['code', 'title', 'description'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class PoinSearch extends Poin
      */
     public function search($params)
     {
-        $query = Poin::find();
+        $query = Prin::find();
 
         // add conditions that should always apply here
 
@@ -60,15 +60,17 @@ class PoinSearch extends Poin
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'site_id' => $this->site_id,
-            'project_id' => $this->project_id,
+            'type' => $this->type,
             'user_order_id' => $this->user_order_id,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
+            'site_id' => $this->site_id,
+            'project_id' => $this->project_id,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'code', $this->code]);
+        $query->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
     }

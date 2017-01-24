@@ -5,9 +5,9 @@
 }
 
 .list-approve .item {
-    margin: 3px 3px;
+    margin: 5px 3px;
     background-color: #fff;
-    border-radius: 5px;
+
     border: solid  1px #ccc;
     list-style: none;
     display: inline-block;
@@ -18,7 +18,7 @@
 }
 
 .list-approve .line-dashed {
-    border-bottom: dashed 1px #ccc;
+    border-bottom: solid 1px #ccc;
     height: 3px;
 
 }
@@ -52,4 +52,19 @@
 
 .list-approve .text-approved {
     color: #0b93d5;
+}
+
+.list-approve .bg-approved {
+   background-color: #e6fec5;
+    border: solid 1px #008040;
+}
+.list-approve .bg-rejected {
+    background-color: #fef1f3;
+    border: solid 1px #ff6f6f;
+
+}
+.list-approve .bg-pending {
+    background-color: #ffffff;
+    border: solid 1px #575757;
+
 }

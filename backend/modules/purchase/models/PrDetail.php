@@ -26,7 +26,7 @@ use backend\modules\purchase\models\InventoryPrice;
  * @property string $job_name
  * @property integer $is_deductions
  */
-class PrinDetail extends \yii\db\ActiveRecord
+class PrDetail extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc

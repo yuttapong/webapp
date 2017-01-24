@@ -5,12 +5,11 @@ namespace backend\modules\purchase\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\purchase\models\PoinDetail;
 
 /**
  * PoinDetailSearch represents the model behind the search form about `backend\modules\fix\Models\PoinDetail`.
  */
-class PoinDetailSearch extends PoinDetail
+class PoDetailSearch extends PoDetail
 {
     /**
      * @inheritdoc
@@ -42,7 +41,7 @@ class PoinDetailSearch extends PoinDetail
      */
     public function search($params)
     {
-        $query = PoinDetail::find();
+        $query = PoDetail::find();
 
         // add conditions that should always apply here
 

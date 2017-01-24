@@ -10,6 +10,10 @@ use backend\modules\purchase\models\ApproverComfirm;
 
 $this->title = 'PR ทั่วไป';
 
+$next  = $model->getNextApprover();
+echo'<pre>';
+//print_r($next);
+echo'</pre>';
 ?>
 
     <style>
@@ -22,7 +26,12 @@ $this->title = 'PR ทั่วไป';
 
     <div id="pr" class="row">
         <div class="col-md-9">
-
+            <div class="row form-group">
+                <div class="col-xs-2 col-sm-2"><?= Html::activeLabel($model, 'approve_status') ?></div>
+                <div class="col-xs-10 col-sm-10 col-md-10">
+                    <?= $model->statusName ?>
+                </div>
+            </div>
 
             <div class="row form-group">
                 <div class="col-xs-2 col-sm-2"><?= Html::activeLabel($model, 'subject') ?></div>
@@ -35,7 +44,7 @@ $this->title = 'PR ทั่วไป';
             <div class="row form-group">
                 <div class="col-xs-2 col-sm-2"><?= Html::activeLabel($model, 'job_list_id') ?></div>
                 <div class="col-xs-10 col-sm-10 col-md-10">
-                    <?= $model->job_list_id ?>
+                    <?= $model->jobGroup->name ?>
                 </div>
             </div>
 
@@ -52,7 +61,7 @@ $this->title = 'PR ทั่วไป';
             <div class="row form-group">
                 <div class="col-xs-12 col-sm-2 col-md-2"><?= Html::activeLabel($model, 'created_by') ?></div>
                 <div class="col-xs-12 col-sm-10 col-md-10">
-
+                    <?= $model->createdName ?>
                 </div>
             </div>
 
@@ -60,13 +69,13 @@ $this->title = 'PR ทั่วไป';
         <div class="col-md-3">
 
             <?php
-            $listApprover = $model->getActiveApproveConfirmItems();
+            $listApprover = $model->getActiveApproverItems();
             echo DocumentApprove::widget([
                 'type' => DocumentApprove::TYPE_APPROVE,
                 'model' => $model,
                 'attribute' => 'listapprover',
                 'users' => $listApprover,
-                'approved' => $model->getListUserHasApproved(),
+                'approved' => $model->getUserHasApproved(),
                 'currentLogin' => Yii::$app->user->id,
                 'url' => ['approve'],
                 'dataStatus' => [
@@ -77,7 +86,8 @@ $this->title = 'PR ทั่วไป';
                 'options' => [
                     'class' => ''
                 ]
-            ])
+            ]);
+
             ?>
         </div>
     </div>

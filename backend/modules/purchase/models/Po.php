@@ -17,7 +17,7 @@ use common\models\Project;
  * @property integer $create_at
  * @property integer $create_by
  */
-class Poin extends \yii\db\ActiveRecord
+class Po extends \yii\db\ActiveRecord
 {
 	const  CODE_TABLE_NAME = 'psm_poin'; // table_id จากตาราง sys_table
     /**

@@ -35,6 +35,10 @@ use yii\bootstrap\Html;
             'attribute' => 'created_by',
             'value' => 'userCreated.fullnameTH',
         ],
+        [
+            'attribute' => 'approve_status',
+            'value' => 'statusName',
+        ],
 
 
         ['class' => 'yii\grid\ActionColumn'],

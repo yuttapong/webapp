@@ -6,7 +6,7 @@ use Yii;
 use common\models\SysDocumentPosition;
 use common\models\SysDocumentPersonnel;
 use common\models\ConfirmApprever;
-use backend\modules\org\models\OrgPersonnel;
+use backend\modules\org\models\Personnel;
 use common\models\Project;
 use yii\helpers\ArrayHelper;
 
@@ -25,9 +25,9 @@ use yii\helpers\ArrayHelper;
  * @property integer $site_id
  * @property integer $project_id
  */
-class Prin extends \yii\db\ActiveRecord
+class Pr extends \yii\db\ActiveRecord
 {
-	const  CODE_TABLE_NAME = 'psm_prin'; // table_id จากตาราง sys_table
+	const  CODE_TABLE_NAME = 'psm_pr'; // table_id จากตาราง sys_table
 	/*
 	 * สถานะการทำงาน
 	 */
@@ -92,15 +92,15 @@ class Prin extends \yii\db\ActiveRecord
     }
     public function getPrinMaterials()
     {
-    	return $this->hasMany(PrinDetail::className(), ['prin_id' => 'id']);
+    	return $this->hasMany(PrDetail::className(), ['prin_id' => 'id']);
     }
     public function getPersonnel()
     {
-    	return $this->hasOne(OrgPersonnel::className(), ['user_id' => 'created_by']);
+    	return $this->hasOne(Personnel::className(), ['user_id' => 'created_by']);
     }
     public function getUsePersonnel($user_id)
     {
-    	$st_data=  OrgPersonnel::findOne(['user_id'=>$user_id]) ;
+    	$st_data=  Personnel::findOne(['user_id'=>$user_id]) ;
     	return $st_data;
     }
     public function getProject()
@@ -109,7 +109,7 @@ class Prin extends \yii\db\ActiveRecord
     }
     public function getPersonnels(){
     	$data=[];
-    	foreach (OrgPersonnel::find()->where(['active'=>1])->all() as $val ){
+    	foreach (Personnel::find()->where(['active'=>1])->all() as $val ){
     		$data[$val->id]=$val->prefix_name_th.' '.$val->firstname_th.' '.$val->lastname_th;
     	}
     	return $data;

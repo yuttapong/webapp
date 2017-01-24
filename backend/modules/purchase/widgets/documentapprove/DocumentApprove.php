@@ -17,10 +17,6 @@ class DocumentApprove extends \yii\base\Widget
     const  TYPE_APPROVE = 2;
 
     public $url;
-    public $textStatus = [
-        'active' => '&#10003;',
-        'inactive' => '&#9632;'
-    ];
 
     public $model;
     public $attribute;
@@ -32,7 +28,8 @@ class DocumentApprove extends \yii\base\Widget
     public $dataStatus = [];
     public $currentLogin = null;
 
-    private $_dataStatus = [];
+
+
 
     public $icon = [
         'pending' => '&#128591;',
@@ -40,6 +37,14 @@ class DocumentApprove extends \yii\base\Widget
         'rejected' => '&#128586; ',
     ];
 
+    public $bgColor = [
+        'pending' => '',
+        'approved' => '#b6ffc9',
+        'rejected' => '#ffaab1; ',
+    ];
+
+
+    private $_dataStatus = [];
     private $_statusItem = [];
 
 
@@ -66,14 +71,13 @@ class DocumentApprove extends \yii\base\Widget
     }
 
 
-    private function showApprover()
+    private function formAdd()
     {
         $html = '';
         if (!empty($this->users)) {
-            $li = [];
-            $formApprove = '';
             foreach ($this->users as $key => $user) {
                 $id = isset($user['id']) ? $user['id'] : null;
+                $user_id = isset($user['user_id']) ? $user['user_id'] : null;
                 $approve_status = isset($user['approve_status']) ? $user['approve_status'] : null;
                 $approve_date = isset($user['approve_date']) ? $user['approve_date'] : null;
                 $item = '';
@@ -81,26 +85,17 @@ class DocumentApprove extends \yii\base\Widget
                 $signDate = '';
                 $signSeq = 'อนุมัติ ' . ($key + 1);
 
-                if (in_array($id, $this->approved) && $approve_status == $this->dataStatus['approved']) {
-                    $signText = $this->icon['approved'] . ' Approved';
-                    $signDate = ThaiDate::widget([
-                        'timestamp' => $approve_date,
-                        'showTime' => false,
-                        'type' => ThaiDate::TYPE_MEDIUM
-                    ]);
-                } elseif (in_array($id, $this->approved) && $approve_status == $this->dataStatus['rejected']) {
-                    $signText = $this->icon['rejected'] . ' Rejected';
-                    $signDate = ThaiDate::widget([
-                        'timestamp' => $approve_date,
-                        'showTime' => false,
-                        'type' => ThaiDate::TYPE_MEDIUM
-                    ]);
-                }
-                $item .= Html::beginTag('div',['class' => 'item']);
-                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][seq]", ['value' => $key+1]);
+                // input
+                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][id]", ['value' => $id]);
+                $item .= Html::activeInput('hiddens', $this->model, "{$this->attribute}[$key][seq]", ['value' => $key + 1]);
+                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][user_id]", ['value' => $user_id]);
+                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][name]", ['value' => $user['name']]);
+                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][position]", ['value' => $user['position']]);
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][approve_date]", ['value' => $approve_date]);
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][approve_status]", ['value' => $approve_status]);
 
+                // text
+                $item .= Html::beginTag('div', ['class' => 'item']);
                 $item .= Html::tag('div', $signSeq, ['class' => 'seq']);
                 $item .= Html::tag('div', $signText);
                 $item .= Html::tag('div', null, ['class' => 'line-dashed']);
@@ -108,11 +103,6 @@ class DocumentApprove extends \yii\base\Widget
                 $item .= Html::tag('div', $user['name'], ['class' => 'name']);
                 $item .= Html::tag('div', '(' . $user['position'] . ')', ['class' => 'position']);
                 $item .= Html::tag('div', $signDate, ['class' => 'date']);
-
-                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][id]", ['value' => $id ]);
-                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][user_id]", ['value' => $user['user_id']]);
-                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][name]", ['value' => $user['name']]);
-                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][position]", ['value' => $user['position']]);
                 $item .= Html::endTag('p');
                 $item .= Html::endTag('div');
                 $html .= Html::tag('div', $item, ['class' => 'list-approve', 'align' => 'center']);
@@ -123,7 +113,7 @@ class DocumentApprove extends \yii\base\Widget
     }
 
 
-    private function showFormApprov()
+    private function formApprove()
     {
         $html = '';
         if (!empty($this->users)) {
@@ -138,16 +128,22 @@ class DocumentApprove extends \yii\base\Widget
 
                 $signText = '<span class="text-status-pending">Waiting</span>';
                 $signDate = '';
+                $bgColor = '';
+                $classBg = 'bg-pending';
 
+                // status :: approved
                 if (in_array($user['id'], $this->approved) && $approve_status == $this->dataStatus['approved']) {
-                    $signText = Html::tag('div', $this->icon['rejected'] . $this->_statusItem['approved'], ['class' => 'text-approved']);
+                    $signText = Html::tag('div', $this->icon['approved'] . $this->_statusItem['approved'], ['class' => 'text-approved']);
                     $signDate = ThaiDate::widget([
                         'timestamp' => $approve_date,
                         'showTime' => false,
                         'type' => ThaiDate::TYPE_MEDIUM
                     ]);
+                    $bgColor =  $this->bgColor['approved'];
+                    $classBg = 'bg-approved';
                 }
 
+                // status :: rejected
                 if (in_array($user['id'], $this->approved) && $approve_status == $this->dataStatus['rejected']) {
                     $signText = Html::tag('div', $this->icon['rejected'] . $this->_statusItem['rejected'], ['class' => 'text-rejected']);
                     $signDate = ThaiDate::widget([
@@ -155,17 +151,22 @@ class DocumentApprove extends \yii\base\Widget
                         'showTime' => false,
                         'type' => ThaiDate::TYPE_MEDIUM
                     ]);
+                    $bgColor =  $this->bgColor['rejected'];
+                    $classBg = 'bg-rejected';
                 }
 
 
-                $item .= Html::beginTag('div', ['class' => 'item']);
+                $item .= Html::beginTag('div', [
+                    'class' => 'item '. $classBg,
+                   // 'style'=>'background-color:'.$bgColor
+                ]);
                 $item .= Html::tag('div', $signText);
                 $item .= Html::tag('div', null, ['class' => 'line-dashed']);
                 $item .= Html::beginTag('p');
                 $item .= Html::tag('div', $user['name'], ['class' => 'name']);
                 $item .= Html::tag('div', '(' . $user['position'] . ')', ['class' => 'position']);
                 $item .= Html::tag('div', $signDate, ['class' => 'date']);
-                $item .= Html::tag('div', 'อนุมัติ ' . ($key + 1), ['class' => 'seq']);
+                $item .= Html::tag('div', 'อนุมัติ ' . ($key + 1), ['class' => 'seq badge']);
 
 
                 if ($this->type == self::TYPE_APPROVE && ($user['user_id'] == $this->currentLogin)) {
@@ -209,10 +210,10 @@ class DocumentApprove extends \yii\base\Widget
         $view = $this->getView();
         DocumentApproveAsset::register($view);
         if ($this->type == self::TYPE_VIEW) {
-            return $this->showApprover();
+            return $this->formAdd();
         }
         if ($this->type == self::TYPE_APPROVE) {
-            return $this->showFormApprov();
+            return $this->formApprove();
         }
 
     }

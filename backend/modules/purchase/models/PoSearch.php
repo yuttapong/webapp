@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\modules\purchase\Models;
+namespace backend\modules\purchase\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\purchase\Models\Prin;
+use backend\modules\purchase\models\PO;
 
 /**
- * PrinSearch represents the model behind the search form about `backend\modules\fix\Models\Prin`.
+ * PoinSearch represents the model behind the search form about `backend\modules\fix\Models\Poin`.
  */
-class PrinSearch extends Prin
+class POSearch extends Po
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class PrinSearch extends Prin
     public function rules()
     {
         return [
-            [['id', 'type', 'user_order_id', 'created_at', 'created_by', 'site_id', 'project_id'], 'integer'],
-            [['code', 'title', 'description'], 'safe'],
+            [['id', 'site_id', 'project_id', 'user_order_id', 'created_at', 'created_by'], 'integer'],
+            [['title', 'code'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class PrinSearch extends Prin
      */
     public function search($params)
     {
-        $query = Prin::find();
+        $query = Poin::find();
 
         // add conditions that should always apply here
 
@@ -60,17 +60,15 @@ class PrinSearch extends Prin
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'type' => $this->type,
+            'site_id' => $this->site_id,
+            'project_id' => $this->project_id,
             'user_order_id' => $this->user_order_id,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
-            'site_id' => $this->site_id,
-            'project_id' => $this->project_id,
         ]);
 
-        $query->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'code', $this->code]);
 
         return $dataProvider;
     }

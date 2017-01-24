@@ -25,7 +25,7 @@ use Yii;
  * @property string $job_name
  * @property integer $is_deductions
  */
-class PoinDetail extends \yii\db\ActiveRecord
+class PoDetail extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc

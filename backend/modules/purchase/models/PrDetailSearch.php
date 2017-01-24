@@ -10,7 +10,7 @@ use backend\modules\purchase\models\PrinDetail;
 /**
  * PrinDetailSearch represents the model behind the search form about `backend\modules\fix\Models\PrinDetail`.
  */
-class PrinDetailSearch extends PrinDetail
+class PrDetailSearch extends PrDetail
 {
     /**
      * @inheritdoc
