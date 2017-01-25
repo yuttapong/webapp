@@ -6,12 +6,9 @@ use backend\modules\purchase\models\Inventory;
 use yii\web\JsExpression;
 use kartik\editable\Editable;
 use kartik\sidenav\SideNav;
-use yii\helpers\Url;
-
-
-
 
 \backend\modules\purchase\InventoryAsset::register($this);
+
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\purchase\Models\InventorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */

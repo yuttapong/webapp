@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\modules\purchase\Models;
+namespace backend\modules\purchase\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\purchase\Models\Unit;
+
 
 /**
  * UnitSearch represents the model behind the search form about `backend\modules\purchase\Models\Unit`.
@@ -47,6 +47,9 @@ class UnitSearch extends Unit
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['id' => SORT_DESC]
+            ]
         ]);
 
         $this->load($params);

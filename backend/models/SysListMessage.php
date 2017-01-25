@@ -43,10 +43,10 @@ class SysListMessage extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['module_id', 'document_id', 'table_key', 'table_key2', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id', 'type'], 'integer'],
-            [['titie', 'option', 'link', 'description'], 'string'],
+            [[ 'document_id', 'table_key', 'table_key2', 'user_id', 'user_approver_id', 'app_status', 'status', 'company_id', 'site_id', 'type','created_at'], 'integer'],
+            [['title', 'option', 'link', 'description'], 'string'],
             [['table_name'], 'string', 'max' => 100],
-            [['user_apprever_name'], 'string', 'max' => 255],
+            [['user_approver_name'], 'string', 'max' => 255],
             [['color_code'], 'string', 'max' => 20],
         ];
     }
@@ -58,16 +58,15 @@ class SysListMessage extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'module_id' => 'Module ID',
             'document_id' => 'Document ID',
             'table_name' => 'Table Name',
             'table_key' => 'Table Key',
             'table_key2' => 'Table Key2',
-            'titie' => 'Titie',
+            'title' => 'Title',
             'option' => 'Option',
             'user_id' => 'User ID',
-            'user_apprever_id' => 'User Apprever ID',
-            'user_apprever_name' => 'User Apprever Name',
+            'user_approver_id' => 'User Approver ID',
+            'user_approver_name' => 'User Approver Name',
             'link' => 'Link',
             'description' => 'Description',
             'app_status' => 'App Status',
@@ -76,6 +75,7 @@ class SysListMessage extends \yii\db\ActiveRecord
             'site_id' => 'Site ID',
             'color_code' => 'Color Code',
             'type' => 'Type',
+            'created_at' => 'Created At',
         ];
     }
 }

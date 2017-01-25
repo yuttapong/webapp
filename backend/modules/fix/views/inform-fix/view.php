@@ -33,7 +33,7 @@ $this->registerJsFile('@web/js/fix/inform_fix.js');
 						$('#modal').modal('show')
 						$('#modal .modal-body').html(response);
 					 }
-				  });return false;"
+				  });return false;"
  ]); ?>
   <?php 
   $url=Url::to(['inform-fix/list-pr','inform_fix_id'=>$model->id]);
@@ -48,7 +48,7 @@ $this->registerJsFile('@web/js/fix/inform_fix.js');
         		$('#modal').modal('show')
         		$('#modal .modal-body').html(response);
         		}
-        		});return false;"
+        		});return false;"
          ]);
  
         ?>

@@ -31,16 +31,16 @@ $(".noomy-link-approve").on('click', function (e) {
 $(".noomy-btn-approve").on('click', function (e) {
     var key = $(this).data("key");
     /*
-    var approve_id = $("input[name='approver[" + key + "][approve_id]']")
-    var document = $("input[name='approver[" + key + "][document]']")
-    var user = $("input[name='approver[" + key + "][id]']");
-    var remark = $("input[name='approver[" + key + "][remark]']");
-    var position = $("input[name='approver[" + key + "][position]']");
-    */
+     var approve_id = $("input[name='approver[" + key + "][approve_id]']")
+     var document = $("input[name='approver[" + key + "][document]']")
+     var user = $("input[name='approver[" + key + "][id]']");
+     var remark = $("input[name='approver[" + key + "][remark]']");
+     var position = $("input[name='approver[" + key + "][position]']");
+     */
 
     var status = $("input[name='approver[" + key + "][status]']:checked");
     var url = $("input[name='approver[" + key + "][url]']");
-    var data = $("#form-approve-"+ key ).serialize();
+    var data = $("#form-approve-" + key).serialize();
     console.log(status);
 
 
@@ -58,7 +58,7 @@ $(".noomy-btn-approve").on('click', function (e) {
                 data: data,
                 success: function (rs) {
                     console.log(rs);
-                    if(rs.success==1) {
+                    if (rs.success == 1) {
                         location.reload();
                     }
                 }

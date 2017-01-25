@@ -141,7 +141,7 @@ class Inventory extends \yii\db\ActiveRecord
     {
         $vendor = Vendor::findOne($vendorId);
         if ($vendor->company)
-            return $vendor->company;
+            return @$vendor->company;
 
     }
 

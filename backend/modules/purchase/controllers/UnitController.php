@@ -3,8 +3,8 @@
 namespace backend\modules\purchase\controllers;
 
 use Yii;
-use backend\modules\purchase\Models\Unit;
-use backend\modules\purchase\Models\UnitSearch;
+use backend\modules\purchase\models\Unit;
+use backend\modules\purchase\models\UnitSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

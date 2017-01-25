@@ -74,6 +74,7 @@ class ApproverComfirm extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'active' => 'Active',
+            'position_name' => 'Position'
         ];
     }
 

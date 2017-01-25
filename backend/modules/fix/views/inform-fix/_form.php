@@ -69,7 +69,7 @@ if($model->isNewRecord){
 							}
 						}); 
 			}',
-            		
+            		
        ],
             'data'=> $modelhome,
             'pluginOptions'=>[

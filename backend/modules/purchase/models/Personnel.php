@@ -2,6 +2,7 @@
 
 namespace backend\modules\purchase\models;
 
+use backend\modules\org\models\OrgPersonnel;
 use Yii;
 
 /**
@@ -46,7 +47,7 @@ use Yii;
  * @property double $height
  * @property string $start_working
  */
-class Personnel extends \yii\db\ActiveRecord
+class Personnel extends OrgPersonnel
 {
     /**
      * @inheritdoc
@@ -56,71 +57,7 @@ class Personnel extends \yii\db\ActiveRecord
         return 'org_personnel';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['user_id', 'prefix_id', 'day_probation', 'status', 'idcard_province_id', 'idcard_amphur_id', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active'], 'integer'],
-            [['birthday', 'idcard_date_expiry', 'start_working'], 'safe'],
-            [['blood', 'living_status', 'marriage_status'], 'string'],
-            [['weight', 'height'], 'number'],
-            [['code'], 'string', 'max' => 11],
-            [['prefix_name_th', 'prefix_name_en'], 'string', 'max' => 50],
-            [['firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'middlename_th', 'middlename_en'], 'string', 'max' => 60],
-            [['nickname'], 'string', 'max' => 30],
-            [['work_status', 'work_type', 'military_status', 'nationality', 'race', 'religion', 'idcard'], 'string', 'max' => 20],
-            [['photo'], 'string', 'max' => 100],
-        ];
-    }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'code' => 'รหัสพนักงาน',
-            'prefix_id' => 'คำนำหน้า',
-            'prefix_name_th' => 'คำนำหน้า',
-            'firstname_th' => 'ซื่อ',
-            'lastname_th' => 'นามสกุล',
-            'nickname' => 'ชื่อเล่น',
-            'prefix_name_en' => 'คำนำหน้า',
-            'firstname_en' => 'Firstname',
-            'lastname_en' => 'Lastname',
-            'middlename_th' => 'ชื้อกลางไว้ใส่ชื่อเล่น',
-            'middlename_en' => 'ชื้อกลางไว้ใส่ชื่อเล่น',
-            'birthday' => 'วันเกิด',
-            'day_probation' => 'จำนวนวันที่ทดลองาน',
-            'work_status' => 'พ้นสภาพ,พักงาน,ทำงานอยู่',
-            'work_type' => 'ทดลองงาน,ชั่วคราว,นักศึกษาฝึกงาน,สมัครงาน,พนักงานประจำ',
-            'military_status' => 'สถานะภาพทางทหาร',
-            'status' => 'Status',
-            'nationality' => 'สัญชาติ',
-            'race' => 'เชื้อชาติ',
-            'religion' => 'ศาสนา',
-            'idcard' => 'บัตรประชาชน',
-            'blood' => 'กลุ่มเลือด',
-            'living_status' => 'สถานะความเป็นอยู่',
-            'marriage_status' => 'สถานภาพสมรส',
-            'idcard_province_id' => 'จังวัดที่ออกบัตi',
-            'idcard_amphur_id' => 'ออกให้ ณ เขต/อำเภอ',
-            'idcard_date_expiry' => 'Idcard Date Expiry',
-            'created_at' => 'Created At',
-            'created_by' => 'Created By',
-            'updated_at' => 'Updated At',
-            'updated_by' => 'Updated By',
-            'active' => 'Active',
-            'photo' => 'Photo',
-            'weight' => 'น้ำหนัก',
-            'height' => 'ส่วนสูง',
-            'start_working' => 'Start Working',
-        ];
-    }
 
     public function getFullnameTH()
     {

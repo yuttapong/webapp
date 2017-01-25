@@ -3,14 +3,16 @@
 namespace backend\modules\purchase\controllers;
 
 use backend\modules\purchase\models\ApproverComfirm;
-use backend\modules\purchase\models\Inventory;
+use backend\modules\purchase\models\JobList;
 use backend\modules\purchase\models\ListApproval;
 use backend\modules\purchase\models\Personnel;
+use common\models\ListMessage;
 use common\siricenter\thaiformatter\ThaiDate;
+use kartik\helpers\Html;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
-use backend\modules\purchase\models\JobList;
-use Yii;
+use yii\helpers\Url;
 
 class PrController extends \yii\web\Controller
 {
@@ -67,12 +69,8 @@ class PrController extends \yii\web\Controller
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 if ($model->save()) {
-
-
                     if (count($listapprover) > 0) {
-
                         foreach ($listapprover as $key => $item) {
-
                             if (($item['approve_status']) != '') {
                                 // update
                                 $ap = ApproverComfirm::find()
@@ -99,8 +97,8 @@ class PrController extends \yii\web\Controller
                         }
                     }
                     $transaction->commit();
-
                     //แจ้งเตื่อนที่ระบบแจ้งเตือนข้อความหลัก (table::  sys_list_message)
+                    $this->addNotifyApprove($model);
 
 
                     return $this->redirect(['index']);
@@ -120,6 +118,59 @@ class PrController extends \yii\web\Controller
         ]);
     }
 
+    private function addNotifyApprove($model)
+    {
+        $message = new ListMessage();
+        $message->slug = ApproverComfirm::DOCUMENT_GENERAL_PR;
+        $message->document_id = 4;
+        $message->table_key = $model->id;
+        $message->user_id = $model->created_by;
+        $message->title = Html::a($model->subject, ['purchase/pr/view', 'id' => $model->id]);
+        $message->status = 1; // Active: 1 , Inactive: 0
+        $message->app_status = 0; // ขออนุมัติ
+        $message->link = Url::to(['purchase/pr/view', 'id' => $model->id]);
+        $message->type = 0;
+        $message->created_at = time();
+
+        //ผู้อนุมัติ
+        $modelPerson = new ListApproval();
+        $personnel = $modelPerson->getPersonnel($model->approve_user_id);
+
+        $message->user_approver_id = $model->approve_user_id;
+        $message->user_approver_name = $personnel->fullnameTH;
+        $message->save();
+    }
+
+    public function sampleListApprover()
+    {
+        return [
+            [
+                'user_id' => 1,
+                'name' => 'Admin',
+                'text' => 'ผู้ขอ',
+                'position' => 'หัวหน้าบริการหลังการขาย'
+            ],
+            [
+                'user_id' => 4,
+                'name' => 'ณัฎฐนภนต์ โอฬารธัชนันท์',
+                'text' => 'อนุมัติ 1',
+                'position' => 'ผู้จัดการฝ่ายบริการหลังการขาย'
+            ],
+            [
+                'user_id' => 143,
+                'name' => 'วชิราภรณ์ ฉากครบุรี',
+                'text' => 'อนุมัติ 2',
+                'position' => 'เจ้าหน้าที่บุคคลล'
+            ],
+            [
+                'user_id' => 5,
+                'name' => '	ฐิติระวี โอฬารธัชนันท์',
+                'text' => 'อนุมัติ 3',
+                'position' => 'ผู้จัดการฝ่ายทรัพยากรบุคคล'
+            ]
+
+        ];
+    }
 
     public function actionView($id)
     {
@@ -137,6 +188,12 @@ class PrController extends \yii\web\Controller
             'listApprover' => $model->getActiveApproverItems(),
             'listAproved' => $model->getUserHasApproved(),
         ]);
+    }
+
+    private function loadModel($id)
+    {
+        $model = ListApproval::findOne($id);
+        return $model;
     }
 
     /**
@@ -177,23 +234,31 @@ class PrController extends \yii\web\Controller
                         $listApprovers = $document->getActiveApproverItems();
 
 
-                        // เปลี่ยนสถานะเอกสารเป็นไม่อนุมัติถ้ามีคนใดคนหนึ่งไม่อนุมติ
-                        if ($model->approve_status == ApproverComfirm::STATUS_REJECTED) {
-                            $document->approve_status = ListApproval::STATUS_REJECTED;
-                        }
-
-
                         // เปลี่ยนสถานะเอกสารเป็นอนุมัติถ้ามีการอนุมัติครบทุกคน
                         $countComplete = $document->countApproverByStatus(ApproverComfirm::STATUS_APPROVED);
-                        $countProcess = count($document->getActiveApproverItems());
+                        $countProcess = count($listApprovers);
                         if ($countComplete == $countProcess) {
                             $document->approve_status = ListApproval::STATUS_APPROVED;
+                            $document->approve_user_id = null;
+                            $document->approve_seq = null;
+                            $document->approve_name = null;
                         } else {
-                            $document->approve_user_id = $listApprovers[$key + 1]['user_id'];
-                            $document->approve_seq = $listApprovers[$key + 1]['seq'];
+                            // เปลี่ยนสถานะเอกสารเป็นไม่อนุมัติถ้ามีคนใดคนหนึ่งไม่อนุมติ
+                            if ($model->approve_status == ApproverComfirm::STATUS_REJECTED) {
+                                $document->approve_status = ListApproval::STATUS_REJECTED;
+                            }
+                            // เปลี่ยนสถานะเมื่อกดปุ่มไม่อนุมัติ หรือ อนุมัติ
+                            elseif ($model->approve_status == ApproverComfirm::STATUS_PENDING) {
+                                $document->approve_user_id = $listApprovers[$key + 1]['user_id'];
+                                $document->approve_seq = $listApprovers[$key + 1]['seq'];
+                                $document->approve_status = ListApproval::STATUS_PROCESSING;
+                                $personnel = $document->getPersonnel($document->approve_user_id);
+                                $document->approve_name = $personnel->fullnameTH;
+                            }
                         }
 
                         $document->save();
+                        $this->addNotifyApprove($document);
 
                         $data = [
                             'success' => 1,
@@ -201,6 +266,7 @@ class PrController extends \yii\web\Controller
                                 'document' => $model->pk_key,
                                 'approve_status' => $model->approve_status,
                                 'approve_date' => $approve_date,
+                                'approve_name' => $document->approve_name,
                                 'comment' => $model->comment,
                             ]
                         ];
@@ -211,9 +277,10 @@ class PrController extends \yii\web\Controller
         echo json_encode($data);
     }
 
-    private function addNotifyApprove($model)
+    public function getFirstApprover()
     {
-
+        $arrays = $this->sampleListApprover();
+        return array_shift($arrays);
     }
 
     private function clearNotifyApprove($model)
@@ -221,48 +288,5 @@ class PrController extends \yii\web\Controller
 
     }
 
-    public function sampleListApprover()
-    {
-        return [
-            [
-                'user_id' => 1,
-                'name' => 'Admin',
-                'text' => 'ผู้ขอ',
-                'position' => 'หัวหน้าบริการหลังการขาย'
-            ],
-            [
-                'user_id' => 4,
-                'name' => 'ณัฎฐนภนต์ โอฬารธัชนันท์',
-                'text' => 'อนุมัติ 1',
-                'position' => 'ผู้จัดการฝ่ายบริการหลังการขาย'
-            ],
-            [
-                'user_id' => 143,
-                'name' => 'วชิราภรณ์ ฉากครบุรี',
-                'text' => 'อนุมัติ 2',
-                'position' => 'เจ้าหน้าที่บุคคลล'
-            ],
-            [
-                'user_id' => 5,
-                'name' => '	ฐิติระวี โอฬารธัชนันท์',
-                'text' => 'อนุมัติ 3',
-                'position' => 'ผู้จัดการฝ่ายทรัพยากรบุคคล'
-            ]
-
-        ];
-    }
-
-    public function getFirstApprover()
-    {
-        $arrays = $this->sampleListApprover();
-        return array_shift($arrays);
-
-    }
-
-    private function loadModel($id)
-    {
-        $model = ListApproval::findOne($id);
-        return $model;
-    }
 
 }

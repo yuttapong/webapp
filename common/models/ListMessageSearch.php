@@ -18,8 +18,8 @@ class ListMessageSearch extends ListMessage
     public function rules()
     {
         return [
-            [['id', 'document_id', 'table_key', 'table_key2', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id', 'type'], 'integer'],
-            [['table_name', 'titie', 'option', 'user_apprever_name', 'link', 'description', 'color_code'], 'safe'],
+            [['id', 'document_id', 'table_key', 'table_key2', 'user_id', 'user_approver_id', 'app_status', 'status', 'company_id', 'site_id', 'type'], 'integer'],
+            [['table_name', 'title', 'option', 'user_approver_name', 'link', 'description', 'color_code'], 'safe'],
         ];
     }
 
@@ -69,7 +69,7 @@ class ListMessageSearch extends ListMessage
             'table_key' => $this->table_key,
             'table_key2' => $this->table_key2,
             'user_id' => $this->user_id,
-            'user_apprever_id' => $this->user_apprever_id,
+            'user_approver_id' => $this->user_approver_id,
             'app_status' => $this->app_status,
             'status' => $this->status,
             'company_id' => $this->company_id,
@@ -78,9 +78,9 @@ class ListMessageSearch extends ListMessage
         ]);
 
         $query->andFilterWhere(['like', 'table_name', $this->table_name])
-            ->andFilterWhere(['like', 'titie', $this->titie])
+            ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'option', $this->option])
-            ->andFilterWhere(['like', 'user_apprever_name', $this->user_apprever_name])
+            ->andFilterWhere(['like', 'user_approver_name', $this->user_approver_name])
             ->andFilterWhere(['like', 'link', $this->link])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'color_code', $this->color_code]);

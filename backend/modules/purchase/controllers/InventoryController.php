@@ -16,8 +16,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\db\Query;
 
-use unclead\multipleinput\examples\models\Item;
-
 
 /**
  * InventoryController implements the CRUD actions for Inventory model.
@@ -236,7 +234,7 @@ class InventoryController extends Controller
                     }
                     $modelPrice->inventory_id = $model->id;
                     $modelPrice->vendor_id = $item['vendor_id'];
-                    $modelPrice->vendor_name = Inventory::getVendorName($modelPrice->vendor_id);
+                    $modelPrice->vendor_name = @Inventory::getVendorName($modelPrice->vendor_id);
                     $modelPrice->price = $item['price'];
                     $modelPrice->due_date = $item['due_date'];
                     $modelPrice->active = !isset($item['active']) ? InventoryPrice::STATUS_INACTIVE : $item['active'];

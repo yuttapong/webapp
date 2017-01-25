@@ -33,7 +33,7 @@ class InventoryAsset extends AssetBundle
 
     public $depends = [
         'yii\web\JqueryAsset',
-        'backend\modules\purchase\components\lightbox\LightboxAsset',
+        'backend\modules\purchase\components\lightbox\LightBoxAsset',
     ];
 
 }

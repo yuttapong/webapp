@@ -36,11 +36,14 @@ class SysDocument extends \yii\db\ActiveRecord
     {
         $userId = Yii::$app->user->id;
         $query = new \yii\db\Query;
-        $query->select('d.name as document,m.document_id, count(m.document_id) as countNew, d.url_message')
+        $query->select('
+        d.name as document,
+        m.document_id, count(m.document_id) as countNew, 
+        d.url_message
+        ')
             ->from('sys_list_message m')
             ->leftJoin('sys_document d', 'd.document_id = m.document_id')
-            ->where("m.app_status='0' AND user_apprever_id='$userId' ")
-            ->groupBy('m.document_id');
+            ->where("m.app_status='0' AND user_approver_id='$userId' ");
         $command = $query->createCommand();
         $model = $command->queryAll();
         return $model;

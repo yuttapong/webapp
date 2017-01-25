@@ -254,7 +254,7 @@ $this->params['breadcrumbs'][] = $this->title;
             					return ( $model->work_status == 3 || $model->is_delete==1 )? false : true;
             				}
             		]
-            		
+            		
              ],
         ],
     ]); 

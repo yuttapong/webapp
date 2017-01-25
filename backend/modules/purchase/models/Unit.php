@@ -2,7 +2,6 @@
 
 namespace backend\modules\purchase\models;
 
-use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -22,6 +21,18 @@ class Unit extends \yii\db\ActiveRecord
         return 'psm_unit';
     }
 
+    public static function getDataList()
+    {
+        $dataUnit = Unit::find()
+            ->select('id, name')
+            ->indexBy('id')
+            ->where(['status' => 1])
+            ->orderBy('name')
+            ->all();
+        return ArrayHelper::map($dataUnit, 'id', 'name');
+
+    }
+
     /**
      * @inheritdoc
      */
@@ -29,8 +40,10 @@ class Unit extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'integer'],
-            [['name'], 'string', 'max' => 255],
-        ];
+            [['name'], 'required'],
+            [['name'], 'string', 'max' => 60],
+            [['name'], 'unique']
+            ];
     }
 
     /**
@@ -43,15 +56,5 @@ class Unit extends \yii\db\ActiveRecord
             'name' => 'Name',
             'status' => 'Status',
         ];
-    }
-    public static function getDataList(){
-    	$dataUnit = Unit::find()
-    	->select('id, name')
-    	->indexBy('id')
-    	->where(['status'=>1])
-    	->orderBy('name')
-    	->all();
-    	return ArrayHelper::map($dataUnit, 'id', 'name');
-    
     }
 }

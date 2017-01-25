@@ -31,6 +31,7 @@ class ListApproval extends \yii\db\ActiveRecord
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
     const STATUS_CANCELED = 'canceled';
+    const  STATUS_COMPLETE = 'complete';
 
     // active or inactive
     const ACTIVE_YES = 1;
@@ -54,10 +55,10 @@ class ListApproval extends \yii\db\ActiveRecord
     {
         return [
             [['job_list_id', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active', 'approve_user_id', 'approve_seq'], 'integer'],
-            [['description', 'requestBy'], 'string'],
+            [['description', 'requestBy','approve_name'], 'string'],
             [['subject'], 'string', 'max' => 255],
             [['approve_status'], 'string', 'max' => 20],
-            [['subject', 'description', 'job_list_id'], 'required'],
+            [['subject', 'description', 'job_list_id','approve_status'], 'required'],
 
         ];
     }
@@ -90,9 +91,11 @@ class ListApproval extends \yii\db\ActiveRecord
         return [
             self::STATUS_DRAFT => 'ร่าง',
             self::STATUS_PENDING => 'รออนุมัติ',
+            self::STATUS_PROCESSING => 'กำลังดำเนินการ',
             self::STATUS_REJECTED => 'ไม่อนุมัติ',
             self::STATUS_APPROVED => 'อนุมัติ',
             self::STATUS_CANCELED => 'ยกเลิก',
+            self::STATUS_COMPLETE => 'สมบุรณ์',
         ];
     }
 

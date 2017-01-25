@@ -11,7 +11,7 @@ use Yii;
  * @property integer $document_id
  * @property string $table_name
  * @property integer $table_key
- * @property string $titie
+ * @property string $title
  * @property string $option
  * @property integer $user_id
  * @property integer $user_apprever_id
@@ -40,10 +40,10 @@ class ListMessage extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['document_id', 'table_key', 'user_id', 'user_apprever_id', 'app_status', 'status', 'company_id', 'site_id'], 'integer'],
-            [['titie', 'option', 'link', 'description'], 'string'],
+            [['document_id', 'table_key', 'user_id', 'user_approver_id', 'app_status', 'status', 'company_id', 'site_id'], 'integer'],
+            [['title', 'option', 'link', 'description'], 'string'],
             [['table_name'], 'string', 'max' => 100],
-            [['user_apprever_name'], 'string', 'max' => 255],
+            [['user_approver_name'], 'string', 'max' => 255],
             [['color_code'], 'string', 'max' => 20],
         ];
     }
@@ -59,11 +59,11 @@ class ListMessage extends \yii\db\ActiveRecord
             'table_name' => 'Table Name',
             'table_key' => 'Table Key',
             'table_key2' => 'Table Key2',
-            'titie' => 'Titie',
+            'title' => 'Title',
             'option' => 'Option',
             'user_id' => 'User ID',
-            'user_apprever_id' => 'User Apprever ID',
-            'user_apprever_name' => 'User Apprever Name',
+            'user_approver_id' => 'User Approver ID',
+            'user_approver_name' => 'User Approver Name',
             'link' => 'Link',
             'description' => 'Description',
             'app_status' => 'สถานะ',
@@ -71,7 +71,6 @@ class ListMessage extends \yii\db\ActiveRecord
             'company_id' => 'Company ID',
             'site_id' => 'Site ID',
             'color_code' => 'Color Code',
-            'module_id' => 'module_id Code',
         ];
     }
 

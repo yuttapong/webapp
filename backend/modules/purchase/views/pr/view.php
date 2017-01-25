@@ -9,13 +9,7 @@ use backend\modules\purchase\widgets\documentapprove\DocumentApprove;
 use backend\modules\purchase\models\ApproverComfirm;
 
 $this->title = 'PR ทั่วไป';
-
-$next  = $model->getNextApprover();
-echo'<pre>';
-//print_r($next);
-echo'</pre>';
 ?>
-
     <style>
         #pr {
             padding: 10px;

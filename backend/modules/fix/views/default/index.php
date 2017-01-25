@@ -1,8 +1,8 @@
-
 <?php
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\ListMessageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -19,62 +19,39 @@ $this->params['breadcrumbs'][] = $this->title;
         //'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+                'attribute' => 'document_id',
+                'label' => 'รายการ',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return $data->documents->name;
 
-            //'id',
-           // 'module_id',
-            //'table_name',
-            //'table_key',
-            // 'table_key2',
+                }],
             [
-            'attribute' => 'document_id',
-            'label' => 'รายการ',
-            'format' => 'raw',
-            'value'=> function($data) {
-            	return $data->documents->name;
-            
-            }],
-            [
-            'attribute' => 'titie',
-            'label' => 'รายการ',
-            'format' => 'raw',
-            'value'=> function($data) {
-            	return $data->titie;
-            
-            }],
-            [
-            'attribute' => 'description',
-            'label' => 'รายละเอียด',
-            'format' => 'raw',
-            'value'=> function($data) {
-            	return $data->description;
-            
-            }],
-            [
-            'attribute' => 'link',
-            'label' => 'ดูเอกสาร',
-            'format' => 'raw',
-            'value'=> function($data) {
-           $link= Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $data->link );
-            	return $link;
-            
-            }],
-            // 'option:ntext',
-            // 'user_id',
-            // 'user_apprever_id',
-            // 'user_apprever_name',
-            // 'link:ntext',
+                'attribute' => 'title',
+                'label' => 'รายการ',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return $data->title;
 
-            /* [
-             'class'=>'kartik\grid\BooleanColumn',
-             'attribute'=>'app_status',
-             'vAlign'=>'middle',
-             ],*/
-            // 'status',
-            // 'seq',
-            // 'company_id',
-            // 'site_id',
-            // 'color_code',
-            // 'type',
+                }],
+            [
+                'attribute' => 'description',
+                'label' => 'รายละเอียด',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return $data->description;
+
+                }],
+            [
+                'attribute' => 'link',
+                'label' => 'ดูเอกสาร',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    $link = Html::a('<span class="glyphicon glyphicon-eye-open"></span>', [$data->link]);
+                    return $link;
+
+                }],
         ],
     ]); ?>
 </div>

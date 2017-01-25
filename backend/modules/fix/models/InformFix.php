@@ -30,6 +30,7 @@ use yii\helpers\ArrayHelper;
  */
 class InformFix extends \yii\db\ActiveRecord
 {
+    const DOCUMENT_SLUG = 'fix';
 	
 	const UPLOAD_PATH  = 'upload/fix/inform';
 	const RESUME_PATH  = 'resumes';
@@ -211,6 +212,7 @@ customer
 	    				'name'=>$file->file_name,
 	    				'href'=>self::getUploadUrl(true).'/'.$ref.'/'.$file->real_filename,
 	    				'upload_id'=>$file->upload_id,
+
 	    		];
 	    	}
     	}

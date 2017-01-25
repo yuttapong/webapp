@@ -43,17 +43,15 @@ $form = ActiveForm::begin([]);
              <div class="col-xs-2 col-sm-2"><?= Html::activeLabel($model, 'job_list_id') ?></div>
              <div class="col-xs-10 col-sm-10 col-md-10">
                  <?php
-
-                 /*                echo Select2::widget([
-                                     'model' => $model,
-                                     'attribute' => 'job_list_id',
-                                     'data' => $joblistItem,
-                                     'options' => ['placeholder' => 'Select a state ...'],
-                                     'pluginOptions' => [
-                                         'allowClear' => true
-                                     ],
-                                 ]);*/
-                 echo $form->field($model, 'job_list_id')->dropDownList($joblistItem, ['prompt' => '-----------']);
+                 echo $form->field($model,'job_list_id')->widget(Select2::className(),[
+                     'data' => $joblistItem,
+                     'options' => [
+                         'placeholder' => 'Select a state ...',
+                     ],
+                     'pluginOptions' => [
+                         'allowClear' => true,
+                     ],
+                 ])->label(false);
                  ?>
              </div>
          </div>
@@ -87,7 +85,6 @@ $form = ActiveForm::begin([]);
 
          <?php
          echo \backend\modules\purchase\widgets\documentapprove\DocumentApprove::widget([
-             'type' => \backend\modules\purchase\widgets\documentapprove\DocumentApprove::TYPE_VIEW,
              'model' => $model,
              'attribute' => 'listapprover',
              'users' => $listApprover,

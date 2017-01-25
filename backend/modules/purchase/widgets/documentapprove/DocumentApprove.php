@@ -13,8 +13,8 @@ use yii\helpers\Url;
  */
 class DocumentApprove extends \yii\base\Widget
 {
-    const TYPE_VIEW = 1;
-    const  TYPE_APPROVE = 2;
+    const TYPE_ADD = 1;
+    const TYPE_APPROVE = 2;
 
     public $url;
 
@@ -59,7 +59,7 @@ class DocumentApprove extends \yii\base\Widget
         }
 
         if (empty($this->type)) {
-            $this->type = self::TYPE_VIEW;
+            $this->type = self::TYPE_ADD;
         }
 
         $this->_statusItem = [
@@ -87,7 +87,7 @@ class DocumentApprove extends \yii\base\Widget
 
                 // input
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][id]", ['value' => $id]);
-                $item .= Html::activeInput('hiddens', $this->model, "{$this->attribute}[$key][seq]", ['value' => $key + 1]);
+                $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][seq]", ['value' => $key + 1]);
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][user_id]", ['value' => $user_id]);
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][name]", ['value' => $user['name']]);
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][position]", ['value' => $user['position']]);
@@ -209,7 +209,7 @@ class DocumentApprove extends \yii\base\Widget
     {
         $view = $this->getView();
         DocumentApproveAsset::register($view);
-        if ($this->type == self::TYPE_VIEW) {
+        if ($this->type == self::TYPE_ADD) {
             return $this->formAdd();
         }
         if ($this->type == self::TYPE_APPROVE) {

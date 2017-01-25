@@ -4,7 +4,8 @@
 
 use yii\grid\GridView;
 use yii\bootstrap\Html;
-
+use yii\helpers\Url;
+echo  Url::to(['purchase/pr/view','id'=>111]);
 ?>
 
 <?= GridView::widget([
