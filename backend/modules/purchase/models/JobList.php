@@ -2,7 +2,7 @@
 
 namespace backend\modules\purchase\models;
 
-use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "sys_job_list".
@@ -51,5 +51,11 @@ class JobList extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
             'status' => 'Status',
         ];
+    }
+
+    public function getJobListItem()
+    {
+        $models = JobList::find()->where(['status' => 1])->orderBy(['name' => SORT_ASC])->all();
+        return ArrayHelper::map($models, 'id', 'name');
     }
 }

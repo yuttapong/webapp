@@ -124,7 +124,7 @@ class DocumentApprove extends \yii\base\Widget
                 $approve_status = isset($user['approve_status']) ? $user['approve_status'] : null;
                 $approve_date = isset($user['approve_date']) ? $user['approve_date'] : null;
                 $item = '';
-                $remark = '';
+                $remark =  isset($user['comment']) ? $user['comment'] : null;
 
                 $signText = '<span class="text-status-pending">Waiting</span>';
                 $signDate = '';
@@ -167,6 +167,11 @@ class DocumentApprove extends \yii\base\Widget
                 $item .= Html::tag('div', '(' . $user['position'] . ')', ['class' => 'position']);
                 $item .= Html::tag('div', $signDate, ['class' => 'date']);
                 $item .= Html::tag('div', 'อนุมัติ ' . ($key + 1), ['class' => 'seq badge']);
+                if($remark != ''){
+                    $item .= Html::tag('div', 'หมายเหตุ: ' .  $remark ,['class' => 'text-info']);
+                }
+
+
 
 
                 if ($this->type == self::TYPE_APPROVE && ($user['user_id'] == $this->currentLogin)) {

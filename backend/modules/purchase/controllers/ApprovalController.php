@@ -5,30 +5,26 @@ namespace backend\modules\purchase\controllers;
 use backend\modules\purchase\models\ApproverComfirm;
 use backend\modules\purchase\models\JobList;
 use backend\modules\purchase\models\ListApproval;
+use backend\modules\purchase\models\ListApprovalSearch;
 use backend\modules\purchase\models\Personnel;
 use common\models\ListMessage;
 use common\siricenter\thaiformatter\ThaiDate;
-use kartik\helpers\Html;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
-class PrController extends \yii\web\Controller
+class ApprovalController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        $query = ListApproval::find();
 
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
-        ]);
+        $searchModel = new ListApprovalSearch(['active' => 1]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -42,6 +38,8 @@ class PrController extends \yii\web\Controller
     public function actionCreate()
     {
         $model = new ListApproval();
+
+
         $personnel = Personnel::findOne(['user_id' => Yii::$app->user->id]);
         $model->created_by = Yii::$app->user->id;
         $model->requestBy = $personnel->fullnameTH;
@@ -51,6 +49,9 @@ class PrController extends \yii\web\Controller
             ->orderBy(['name' => SORT_ASC])
             ->all()
             , 'id', 'name');
+
+
+        // Insert
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             $nowTimestamp = time();
 
@@ -110,8 +111,7 @@ class PrController extends \yii\web\Controller
 
 
         }
-
-        return $this->render('new', [
+        return $this->render('create', [
             'model' => $model,
             'listApprover' => $this->sampleListApprover(),
             'joblistItem' => $joblistItem,
@@ -174,9 +174,7 @@ class PrController extends \yii\web\Controller
 
     public function actionView($id)
     {
-
         $model = $this->loadModel($id);
-
         return $this->render('view', [
             'type' => ApproverComfirm::DOCUMENT_GENERAL_PR,
             'model' => $model,
@@ -211,6 +209,7 @@ class PrController extends \yii\web\Controller
                                 'approve_user_id' => $approve['user_id'],
                                 'active' => ApproverComfirm::ACTIVE_YES]
                         )->one();
+
                     $model->approve_status = $approve['status'];
                     $model->comment = $approve['remark'];
                     $model->approve_date = time();
@@ -221,49 +220,53 @@ class PrController extends \yii\web\Controller
                         'showTime' => false
                     ]);
 
-
                     if ($model->save()) {
-
-
                         $document = ListApproval::findOne($model->pk_key);
                         $listApprovers = $document->getActiveApproverItems();
 
 
                         // เปลี่ยนสถานะเอกสารเป็นอนุมัติถ้ามีการอนุมัติครบทุกคน
-                        $countComplete = $document->countApproverByStatus(ApproverComfirm::STATUS_APPROVED);
-                        $countProcess = count($listApprovers);
-                        if ($countComplete == $countProcess) {
+                        if ($document->isCompleteApprove()) {
                             $document->approve_status = ListApproval::STATUS_APPROVED;
                             $document->approve_user_id = null;
                             $document->approve_seq = null;
                             $document->approve_name = null;
+                            $document->save();
                         } else {
-                            // เปลี่ยนสถานะเอกสารเป็นไม่อนุมัติถ้ามีคนใดคนหนึ่งไม่อนุมติ
+
+
+                            // เปลี่ยนสถานะเอกสารเป็นไม่อนุมัติถ้ามีคนใดคนหนึ่งไม่อนุมติ และจบการทำงานทันที
                             if ($model->approve_status == ApproverComfirm::STATUS_REJECTED) {
                                 $document->approve_status = ListApproval::STATUS_REJECTED;
+                                $document->save();
                             }
-                            // เปลี่ยนสถานะเมื่อกดปุ่มไม่อนุมัติ หรือ อนุมัติ
-                            elseif ($model->approve_status == ApproverComfirm::STATUS_PENDING) {
+
+                            // เปลี่ยนสถานะเมื่อกดปุ่ม
+                            if ($model->approve_status == ApproverComfirm::STATUS_APPROVED) {
                                 $document->approve_user_id = $listApprovers[$key + 1]['user_id'];
                                 $document->approve_seq = $listApprovers[$key + 1]['seq'];
                                 $document->approve_status = ListApproval::STATUS_PROCESSING;
                                 $personnel = $document->getPersonnel($document->approve_user_id);
                                 $document->approve_name = $personnel->fullnameTH;
+                                $document->save();
                             }
                         }
 
-                        $document->save();
+
                         $this->addNotifyApprove($document);
 
                         $data = [
                             'success' => 1,
                             'row' => [
-                                'document' => $model->pk_key,
+                                'documentId' => $model->pk_key,
+                                'documentStatus' =>  $document->approve_status,
                                 'approve_status' => $model->approve_status,
                                 'approve_date' => $approve_date,
                                 'approve_name' => $document->approve_name,
                                 'comment' => $model->comment,
-                            ]
+
+                            ],
+                            'error' => $document->errors,
                         ];
                     }
                 }
@@ -272,10 +275,22 @@ class PrController extends \yii\web\Controller
         echo json_encode($data);
     }
 
-    public function getFirstApprover()
+    public function actionCancel($id)
     {
-        $arrays = $this->sampleListApprover();
-        return array_shift($arrays);
+        $model = $this->loadModel($id);
+        $model->approve_status = ListApproval::STATUS_CANCELED;
+        if (Yii::$app->request->isAjax) {
+            if ($model->save()) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'successfully canceled. ',
+                ]);
+            }
+        } else {
+            if ($model->save()) {
+                return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+            }
+        }
     }
 
     private function clearNotifyApprove($model)

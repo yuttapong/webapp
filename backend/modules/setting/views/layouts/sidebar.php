@@ -19,7 +19,7 @@ $items = [
         'items' => [
             ['label' => 'ผู้มีสิทธิ์อนุมัติ', 'icon' => 'fa fa-user', 'url' => ['/setting/approve/user']],
             ['label' => 'ตั้งการการรูปแบบอนุมัติ', 'icon' => 'fa fa-user', 'url' => ['/setting/approve/index']],
-            ['label' => 'รูปแบบ', 'icon' => 'fa fa-user', 'url' => ['/setting/approve/format']],
+            ['label' => 'Document', 'icon' => 'fa fa-list', 'url' => ['/setting/document/index']],
         ]
     ],
     // ผู้ใช้งาน

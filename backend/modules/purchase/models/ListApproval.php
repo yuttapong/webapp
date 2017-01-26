@@ -2,8 +2,9 @@
 
 namespace backend\modules\purchase\models;
 
-use Yii;
+use common\models\SysDocument;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "psm_list_approval".
@@ -55,10 +56,10 @@ class ListApproval extends \yii\db\ActiveRecord
     {
         return [
             [['job_list_id', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active', 'approve_user_id', 'approve_seq'], 'integer'],
-            [['description', 'requestBy','approve_name'], 'string'],
+            [['description', 'requestBy', 'approve_name'], 'string'],
             [['subject'], 'string', 'max' => 255],
             [['approve_status'], 'string', 'max' => 20],
-            [['subject', 'description', 'job_list_id','approve_status'], 'required'],
+            [['subject', 'description', 'job_list_id', 'approve_status'], 'required'],
 
         ];
     }
@@ -73,10 +74,10 @@ class ListApproval extends \yii\db\ActiveRecord
             'subject' => 'เรื่อง',
             'job_list_id' => 'หมวดงาน',
             'description' => 'รายละเอียด',
-            'created_at' => 'Created At',
+            'created_at' => 'วันที่ขอ',
             'created_by' => 'ผู้ขอ',
-            'updated_at' => 'Updated At',
-            'updated_by' => 'Updated By',
+            'updated_at' => 'แก้ไขล่าสุด',
+            'updated_by' => 'แก้ไขโดย',
             'active' => 'Active',
             'approve_user_id' => 'ผู้ขออนุมัติ',
             'approve_user_name' => 'ผู้ขออนุมัติ',
@@ -84,6 +85,12 @@ class ListApproval extends \yii\db\ActiveRecord
             'user_next_id' => 'ผู้อนุมัติต่อไป',
             'approve_status' => 'สถานะอนุมัติ',
         ];
+    }
+
+    public function getStatusName()
+    {
+        $status = ListApproval::getStatusItem();
+        return $status[$this->approve_status];
     }
 
     public static function getStatusItem()
@@ -99,13 +106,6 @@ class ListApproval extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getStatusName()
-    {
-        $status = ListApproval::getStatusItem();
-        return $status[$this->approve_status];
-    }
-
-
     public function getUserCreated()
     {
         return $this->hasOne(Personnel::className(), ['user_id' => 'created_by']);
@@ -115,45 +115,6 @@ class ListApproval extends \yii\db\ActiveRecord
     public function getJobGroup()
     {
         return $this->hasOne(JobList::className(), ['id' => 'job_list_id']);
-    }
-
-    public function countApproverByStatus($status)
-    {
-        $model = ApproverComfirm::find()->where([
-            'active' => ApproverComfirm::ACTIVE_YES,
-            'pk_key' => $this->id,
-            'approve_status' => $status,
-            'approve_status' => $status,
-        ])->count();
-        return $model;
-    }
-
-    /**
-     * หารายชื่อผู้ที่มีสิทธิ์อนุมัติเอกสารทึ้งหมด
-     * @return array
-     */
-    public function getActiveApproverItems()
-    {
-        $models = ApproverComfirm::find()
-            ->where([
-                'active' => ApproverComfirm::ACTIVE_YES,
-                'pk_key' => $this->id
-            ])
-            ->all();
-        $data = [];
-        foreach ($models as $model) {
-            $data[] = [
-                'id' => $model->id,
-                'user_id' => $model->approve_user_id,
-                'name' => $model->approveFullname,
-                'position' => 'Position',
-                'seq' => $model->seq,
-                'approve_date' => $model->approve_date,
-                'approve_status' => $model->approve_status,
-                'active' => $model->active,
-            ];
-        }
-        return $data;
     }
 
     /**
@@ -189,37 +150,6 @@ class ListApproval extends \yii\db\ActiveRecord
         return $data;
     }
 
-    public function getListApprover()
-    {
-        return [
-            [
-                'user_id' => 1,
-                'name' => 'Admin',
-                'text' => 'ผู้ขอ',
-                'position' => 'หัวหน้าบริการหลังการขาย'
-            ],
-            [
-                'user_id' => 4,
-                'name' => 'ณัฎฐนภนต์ โอฬารธัชนันท์',
-                'text' => 'อนุมัติ 1',
-                'position' => 'ผู้จัดการฝ่ายบริการหลังการขาย'
-            ],
-            [
-                'user_id' => 143,
-                'name' => 'วชิราภรณ์ ฉากครบุรี',
-                'text' => 'อนุมัติ 2',
-                'position' => 'เจ้าหน้าที่บุคคลล'
-            ],
-            [
-                'user_id' => 5,
-                'name' => '	ฐิติระวี โอฬารธัชนันท์',
-                'text' => 'อนุมัติ 3',
-                'position' => 'ผู้จัดการฝ่ายทรัพยากรบุคคล'
-            ]
-
-        ];
-    }
-
     public function getFirstApprover()
     {
         if (!$this->isNewRecord) {
@@ -245,40 +175,87 @@ class ListApproval extends \yii\db\ActiveRecord
         }
     }
 
+    public function getListApprover($options)
+    {
+        $listApprovers = SysDocument::getDataApprove(4, $options);
+        $data = [];
+         foreach ($listApprovers as $key => $item) {
+             $data[] =      [
+                 'user_id' => $item['user_id'],
+                 'name' =>  $item['user_name'],
+                 'position' => $item['position_name'],
+                 'position_level' => $item['position_level'],
+             ];
+         }
+         return $data;
+
+/*
+
+            [
+                'user_id' => 4,
+                'name' => 'ณัฎฐนภนต์ โอฬารธัชนันท์',
+                'text' => 'อนุมัติ 1',
+                'position' => 'ผู้จัดการฝ่ายบริการหลังการขาย'
+            ],
+            [
+                'user_id' => 143,
+                'name' => 'วชิราภรณ์ ฉากครบุรี',
+                'text' => 'อนุมัติ 2',
+                'position' => 'เจ้าหน้าที่บุคคลล'
+            ],
+            [
+                'user_id' => 5,
+                'name' => '	ฐิติระวี โอฬารธัชนันท์',
+                'text' => 'อนุมัติ 3',
+                'position' => 'ผู้จัดการฝ่ายทรัพยากรบุคคล'
+            ]
+
+        ];*/
+    }
+
     public function getCurrentApprover()
     {
-        // if ($this->approve_status != self::STATUS_APPROVED) {
         $model = ApproverComfirm::find()
             ->where([
                 'active' => ApproverComfirm::ACTIVE_YES,
                 'pk_key' => $this->id,
-                'seq' => ($this->approve_seq+1),
+                'seq' => ($this->approve_seq + 1),
             ])
             ->limit(1)
             ->asArray()
             ->one();
         return $model;
-        // }
     }
 
-    public function getNextApprover()
+
+    /**
+     * หารายชื่อผู้ที่มีสิทธิ์อนุมัติเอกสารทึ้งหมด
+     * @return array
+     */
+    public function getActiveApproverItems()
     {
-       // if ($this->approve_status != self::STATUS_APPROVED) {
-/*            $model = ApproverComfirm::find()
-                ->where([
-                    'active' => ApproverComfirm::ACTIVE_YES,
-                    'pk_key' => $this->id,
-                    'seq' => ($this->approve_seq+2),
-                ])
-                ->limit(1)
-                ->asArray()
-                ->one();
-            return $model;*/
-       // }
-        $allApprovers = $this->getActiveApproverItems();
-        return $allApprovers;
+        $models = ApproverComfirm::find()
+            ->where([
+                'active' => ApproverComfirm::ACTIVE_YES,
+                'pk_key' => $this->id
+            ])
+            ->all();
+        $data = [];
+        foreach ($models as $model) {
+            $data[] = [
+                'id' => $model->id,
+                'user_id' => $model->approve_user_id,
+                'name' => $model->approveFullname,
+                'position' => 'Position',
+                'seq' => $model->seq,
+                'approve_date' => $model->approve_date,
+                'approve_status' => $model->approve_status,
+                'comment' => $model->comment,
+                'active' => $model->active,
+            ];
+        }
+        return $data;
     }
-
 
     public function getCreatedName()
     {
@@ -295,5 +272,82 @@ class ListApproval extends \yii\db\ActiveRecord
         }
     }
 
+    public function isCompleteApprove()
+    {
+        $countAllapprover = count($this->getActiveApproverItems());
+        $countUserApproved = $this->countApproverByStatus(ApproverComfirm::STATUS_APPROVED);
+        if ($countAllapprover == $countUserApproved) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function countApproverByStatus($status)
+    {
+        $model = ApproverComfirm::find()->where([
+            'active' => ApproverComfirm::ACTIVE_YES,
+            'pk_key' => $this->id,
+            'approve_status' => $status,
+            'approve_status' => $status,
+        ])->count();
+        return $model;
+    }
+
+    public function getStatusNameColor()
+    {
+        $html = '';
+        if ($this->approve_status == ListApproval::STATUS_PENDING) {
+            $html = Html::tag('div', $this->statusName, ['class' => 'label label-warning']);
+            if($this->approve_name) {
+                $html .= Html::tag('div', '(' . $this->approve_name . ')',['style'=>'margin-top:5px;font-size:12px']);
+            }
+        }
+        if ($this->approve_status == ListApproval::STATUS_PROCESSING) {
+            $html = Html::tag('div', $this->statusName, ['class' => 'label label-warning']);
+            if($this->approve_name) {
+                $html .= Html::tag('div', '(' . $this->approve_name . ')',['style'=>'margin-top:5px;font-size:12px']);
+            }
+        }
+
+        if ($this->approve_status == ListApproval::STATUS_APPROVED) {
+            $html = Html::tag('div', $this->statusName, ['class' => 'label label-success']);
+        }
+        if ($this->approve_status == ListApproval::STATUS_REJECTED) {
+            $html = Html::tag('div', $this->statusName, ['class' => 'label label-danger']);
+        }
+
+        switch ($this->approve_status) {
+            case ListApproval::STATUS_DRAFT:
+                $html = Html::tag('div', $this->statusName, ['class' => 'label label-default']);
+                if($this->approve_name) {
+                    $html .= Html::tag('div', '(' . $this->approve_name . ')',['style'=>'margin-top:5px;font-size:12px']);
+                }
+                break;
+
+            case ListApproval::STATUS_PENDING :
+                $html = Html::tag('div', $this->statusName, ['class' => 'label label-warning']);
+                if($this->approve_name) {
+                    $html .= Html::tag('div', '(' . $this->approve_name . ')',['style'=>'margin-top:5px;font-size:12px']);
+                }
+                break;
+            case ListApproval::STATUS_PROCESSING:
+                $html = Html::tag('div', $this->statusName, ['class' => 'label label-default']);
+                if($this->approve_name) {
+                    $html .= Html::tag('div', '(' . $this->approve_name . ')',['style'=>'margin-top:5px;font-size:12px']);
+                }
+                break;
+            case ListApproval::STATUS_CANCELED:
+                $html = Html::tag('div', $this->statusName, ['class' => 'label label-danger']);
+                break;
+            case ListApproval::STATUS_REJECTED:
+                $html = Html::tag('div', $this->statusName, ['class' => 'label label-danger']);
+                break;
+            case ListApproval::STATUS_APPROVED:
+                $html = Html::tag('div', $this->statusName, ['class' => 'label label-success']);
+                break;
+        }
+        return Html::tag('div', $html, ['align' => 'center']);
+    }
 
 }

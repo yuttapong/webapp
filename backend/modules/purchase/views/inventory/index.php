@@ -100,7 +100,7 @@ $currentAction = Yii::$app->controller->action->id;
                 'value' => function ($model) {
                     if($model->file_id){
                         return Html::a(Html::img($model->imageThumbnailUrl, ['width' => 120]), $model->imageUrl, [
-                            'class' => $model->file_id?'lightbox':'',
+                            'class' => file_exists($model->imageThumbnailUrl)?'lightbox':'',
                             'title' => $model->name,
                             'alt' => $model->name
                         ]);
