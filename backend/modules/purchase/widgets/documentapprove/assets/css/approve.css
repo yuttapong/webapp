@@ -7,8 +7,7 @@
 .list-approve .item {
     margin: 5px 3px;
     background-color: #fff;
-
-    border: solid  1px #ccc;
+    border: solid  1px #e1e3e9;
     list-style: none;
     display: inline-block;
     text-align: center;
@@ -65,6 +64,6 @@
 }
 .list-approve .bg-pending {
     background-color: #ffffff;
-    border: solid 1px #575757;
+
 
 }

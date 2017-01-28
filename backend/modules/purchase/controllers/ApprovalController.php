@@ -2,6 +2,7 @@
 
 namespace backend\modules\purchase\controllers;
 
+use backend\components\UrlNcode;
 use backend\modules\purchase\models\ApproverComfirm;
 use backend\modules\purchase\models\JobList;
 use backend\modules\purchase\models\ListApproval;
@@ -44,11 +45,6 @@ class ApprovalController extends \yii\web\Controller
         $model->created_by = Yii::$app->user->id;
         $model->requestBy = $personnel->fullnameTH;
 
-        $joblistItem = ArrayHelper::map(JobList::find()
-            ->where(['status' => 1])
-            ->orderBy(['name' => SORT_ASC])
-            ->all()
-            , 'id', 'name');
 
 
         // Insert
@@ -113,9 +109,47 @@ class ApprovalController extends \yii\web\Controller
         }
         return $this->render('create', [
             'model' => $model,
-            'listApprover' => $this->sampleListApprover(),
-            'joblistItem' => $joblistItem,
+            'listApprover' => $model->getListApprover(['user_id' => Yii::$app->user->id]),
+            'jobGroupItem' =>  $this->getJobGroupItem(),
         ]);
+    }
+
+
+    public function actionUpdate()
+    {
+        $key = UrlNcode::decode(Yii::$app->request->get('n'));
+        $id = $key['id'];
+        if ($id > 0) {
+            $model = $this->loadModel($id);
+            $model->requestBy = $model->getCreatedName();
+
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+
+                if($model->save()) {
+                    $url = UrlNcode::to(['update','id' => $model->id]);
+                    return $this->redirect($url);
+                }
+
+
+            }
+            return $this->render('form-update', [
+                'type' => ApproverComfirm::DOCUMENT_GENERAL_PR,
+                'model' => $model,
+                'listApprover' => $model->getActiveApproverItems(),
+                'listApproved' => $model->getUserHasApproved(),
+                'jobGroupItem' =>  $this->getJobGroupItem(),
+            ]);
+        }
+    }
+
+
+    public function getJobGroupItem() {
+        $joblistItem = ArrayHelper::map(JobList::find()
+            ->where(['status' => 1])
+            ->orderBy(['name' => SORT_ASC])
+            ->all()
+            , 'id', 'name');
+        return $joblistItem;
     }
 
     private function addNotifyApprove($model)
@@ -172,15 +206,26 @@ class ApprovalController extends \yii\web\Controller
         ];
     }
 
-    public function actionView($id)
+
+
+
+
+    public function actionView()
     {
-        $model = $this->loadModel($id);
-        return $this->render('view', [
-            'type' => ApproverComfirm::DOCUMENT_GENERAL_PR,
-            'model' => $model,
-            'listApprover' => $model->getActiveApproverItems(),
-            'listAproved' => $model->getUserHasApproved(),
-        ]);
+        $key = UrlNcode::decode(Yii::$app->request->get('n'));
+        $id = $key['id'];
+        if ($id > 0) {
+            $model = $this->loadModel($id);
+            return $this->render('view', [
+                'type' => ApproverComfirm::DOCUMENT_GENERAL_PR,
+                'model' => $model,
+                'listApprover' => $model->getActiveApproverItems(),
+                'listApproved' => $model->getUserHasApproved(),
+            ]);
+        } else {
+
+        }
+
     }
 
     private function loadModel($id)
@@ -224,7 +269,6 @@ class ApprovalController extends \yii\web\Controller
                         $document = ListApproval::findOne($model->pk_key);
                         $listApprovers = $document->getActiveApproverItems();
 
-
                         // เปลี่ยนสถานะเอกสารเป็นอนุมัติถ้ามีการอนุมัติครบทุกคน
                         if ($document->isCompleteApprove()) {
                             $document->approve_status = ListApproval::STATUS_APPROVED;
@@ -233,7 +277,6 @@ class ApprovalController extends \yii\web\Controller
                             $document->approve_name = null;
                             $document->save();
                         } else {
-
 
                             // เปลี่ยนสถานะเอกสารเป็นไม่อนุมัติถ้ามีคนใดคนหนึ่งไม่อนุมติ และจบการทำงานทันที
                             if ($model->approve_status == ApproverComfirm::STATUS_REJECTED) {
@@ -252,14 +295,12 @@ class ApprovalController extends \yii\web\Controller
                             }
                         }
 
-
                         $this->addNotifyApprove($document);
-
                         $data = [
                             'success' => 1,
                             'row' => [
                                 'documentId' => $model->pk_key,
-                                'documentStatus' =>  $document->approve_status,
+                                'documentStatus' => $document->approve_status,
                                 'approve_status' => $model->approve_status,
                                 'approve_date' => $approve_date,
                                 'approve_name' => $document->approve_name,
@@ -275,22 +316,51 @@ class ApprovalController extends \yii\web\Controller
         echo json_encode($data);
     }
 
-    public function actionCancel($id)
+    public function actionCancel()
     {
-        $model = $this->loadModel($id);
-        $model->approve_status = ListApproval::STATUS_CANCELED;
-        if (Yii::$app->request->isAjax) {
-            if ($model->save()) {
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'successfully canceled. ',
-                ]);
-            }
-        } else {
-            if ($model->save()) {
-                return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+        $key = UrlNcode::decode(Yii::$app->request->get('n'));
+        if (isset($key['id'])) {
+            $id = $key['id'];
+
+            $model = $this->loadModel($id);
+            $model->scenario = ListApproval::SCENARIO_CANCEL;
+
+            if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+                // $model->approve_status = ListApproval::STATUS_CANCELED;
+                $model->implodeCancelDetail();
+
+
+                if (Yii::$app->request->isAjax) {
+                    if ($model->save()) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'successfully canceled. ',
+                        ]);
+                    }
+                } else {
+
+                    if ($model->save()) {
+                        //return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+                        return $this->redirect(UrlNcode::to(['view', 'id' => $model->id]));
+                    }
+                }
+            } else {
+                $cancelDetail = $model->explodeCancelDetail();
+                $model->cancelNote = $cancelDetail['note'];
+
+                if ( $model->canCancel()) {
+                    return $this->render('form-cancel', [
+                        'model' => $model,
+                        'listApprover' => $model->getActiveApproverItems(),
+                        'listApproved' => $model->getUserHasApproved(),
+                    ]);
+                } else {
+                  echo  Html::tag('strong' , 'คุณสามารถยกเลิกเอกสารได้ ก็ต่อเมื่อ เอกสารต้องอยุ่ในสถานะ : [ร่าง, รออนุมัติ, กำลังดำเนินการ ]  ') ;
+                }
+
             }
         }
+
     }
 
     private function clearNotifyApprove($model)

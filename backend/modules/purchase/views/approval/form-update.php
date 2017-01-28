@@ -7,7 +7,7 @@ use kartik\select2\Select2;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
-$this->title = 'PR ทั่วไป';
+$this->title = \yii\helpers\BaseStringHelper::truncate($model->subject,120);
 
 
 ?>
@@ -26,7 +26,65 @@ $form = ActiveForm::begin([]);
 
 
     <div id="pr" class="row">
-        <div class="col-md-9">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Action</h3>
+                </div>
+                <div class="panel-body">
+
+                    <?php
+                    echo \yii\bootstrap\Nav::widget([
+                        'encodeLabels' => false,
+                        'options' => ['class' =>'nav-pills'],
+                        'items' => [
+                            [
+                                'label' => '<i class="fa fa-edit"></i> Edit',
+                                'url' => \backend\components\UrlNcode::to(['update', 'id' => $model->id]),
+                                // 'visible' => Yii::$app->user->can('purchase/approval/update')
+                            ],
+                            [
+                                'label' => '<i class="fa fa-ban"></i> Cancel',
+                                'url' => \backend\components\UrlNcode::to(['cancel', 'id' => $model->id]),
+                                'visible' => $model->canCancel(),
+                            ],
+                        ]
+                    ])
+                    ?>
+                </div>
+            </div>
+
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">สถานะ</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <!-- ////////////// start status name  //// -->
+                       <p><?=$model->statusNameColor?></p>
+                        <!-- ////////////// end status name  //// -->
+
+
+
+                        <!-- ////////////// start cancel note //// -->
+                        <?php
+                        $cancelDetail = $model->explodeCancelDetail();
+                        if (!empty($cancelDetail)) {
+                            $this->render('_note-cancel',['note'=>$cancelDetail]);
+                        }
+                        ?>
+                        <!-- ////////////// end cancel note //// -->
+
+
+                    </div>
+                </div>
+
+
+
+        </div>
+        <div class="col-md-6">
 
 
             <?= $form->errorSummary($model) ?>
