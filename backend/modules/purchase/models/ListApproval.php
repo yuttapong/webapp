@@ -61,7 +61,7 @@ class ListApproval extends \yii\db\ActiveRecord
             [['job_list_id', 'created_at', 'created_by', 'updated_at', 'updated_by', 'active', 'approve_user_id', 'approve_seq'], 'integer'],
             [['description', 'requestBy', 'approve_name', 'cancelDetails'], 'string'],
             [['subject'], 'string', 'max' => 255],
-            //[['cancelConfirm'],'boolean'],
+            [['cancelConfirm'],'boolean'],
             [['cancelNote', 'cancelConfirm'], 'safe'],
             [['approve_status'], 'string', 'max' => 20],
             [['subject', 'description', 'job_list_id', 'approve_status'], 'required'],
@@ -192,7 +192,7 @@ class ListApproval extends \yii\db\ActiveRecord
                 'user_id' => $item['user_id'],
                 'name' => $item['user_name'],
                 'position' => $item['position_name'],
-                // 'position_level' => $item['position_level'],
+                'position_level' => $item['position_level'],
             ];
         }
         return $data;

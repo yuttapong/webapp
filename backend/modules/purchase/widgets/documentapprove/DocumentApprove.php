@@ -44,6 +44,9 @@ class DocumentApprove extends \yii\base\Widget
         'rejected' => '#ffaab1; ',
     ];
 
+    // url for redirect
+    public $redirtect;
+
 
     private $_dataStatus = [];
     private $_statusItem = [];
@@ -72,6 +75,10 @@ class DocumentApprove extends \yii\base\Widget
             $this->dataStatus['rejected'] => 'ไม่อนุมัติ',
             $this->dataStatus['approved'] => 'อนุมัติ',
         ];
+
+        if(! empty($this->redirtect)) {
+            $this->redirtect = Url::to($this->redirtect);
+        }
 
 
     }
@@ -102,7 +109,7 @@ class DocumentApprove extends \yii\base\Widget
 
 
                 $signSeq = 'อนุมัติ ' . ($key + 1);
-                $signText = '<span class="text-status-pending">Waiting</span>';
+                $signText = '<span class="text-status-pending">รอนุมัติ</span>';
                 $signDate = '';
                 $bgColor = '';
                 $classBg = 'bg-pending';
@@ -142,7 +149,7 @@ class DocumentApprove extends \yii\base\Widget
                 $item .= Html::activeInput('hidden', $this->model, "{$this->attribute}[$key][approve_status]", ['value' => $approve_status]);
 
                 // text
-                $item .= Html::beginTag('div', ['class' => 'item']);
+                $item .= Html::beginTag('div', ['class' => 'item '. $classBg]);
 
                 $item .= Html::tag('div', $signText);
                 $item .= Html::tag('div', null, ['class' => 'line-dashed']);
@@ -173,14 +180,14 @@ class DocumentApprove extends \yii\base\Widget
                 $item = '';
                 $remark = isset($user['comment']) ? $user['comment'] : null;
 
-                $signText = '<span class="text-status-pending">Waiting</span>';
+                $signText = '<span class="text-status-pending">รอนุมัติ</span>';
                 $signDate = '';
                 $bgColor = '';
                 $classBg = 'bg-pending';
 
                 // status :: approved
-                if (in_array($user['id'], $this->approved) && $approve_status == $this->dataStatus['approved']) {
-                    $signText = Html::tag('div', $this->icon['approved'] . $this->_statusItem['approved'], ['class' => 'text-approved']);
+                if (in_array($id, $this->approved) && $approve_status == $this->dataStatus['approved']) {
+                    $signText = Html::tag('div', $this->icon['approved']  . ' '.  $this->_statusItem['approved'], ['class' => 'text-approved']);
                     $signDate = ThaiDate::widget([
                         'timestamp' => $approve_date,
                         'showTime' => false,
@@ -191,8 +198,8 @@ class DocumentApprove extends \yii\base\Widget
                 }
 
                 // status :: rejected
-                if (in_array($user['id'], $this->approved) && $approve_status == $this->dataStatus['rejected']) {
-                    $signText = Html::tag('div', $this->icon['rejected'] . $this->_statusItem['rejected'], ['class' => 'text-rejected']);
+                if (in_array($id, $this->approved) && $approve_status == $this->dataStatus['rejected']) {
+                    $signText = Html::tag('div', $this->icon['rejected'] . ' '. $this->_statusItem['rejected'], ['class' => 'text-rejected']);
                     $signDate = ThaiDate::widget([
                         'timestamp' => $approve_date,
                         'showTime' => false,
@@ -229,6 +236,7 @@ class DocumentApprove extends \yii\base\Widget
                         $item .= Html::hiddenInput("approver[{$key}][seq]", $seq);
                         $item .= Html::hiddenInput("approver[{$key}][position]", $user['position']);
                         $item .= Html::hiddenInput("approver[{$key}][name]", $user['name']);
+                        $item .= Html::hiddenInput("approver[{$key}][redirect]", $this->redirtect);
                         $item .= Html::radioList("approver[{$key}][status]", $approve_status, $this->_statusItem);
                         $item .= Html::tag('div',
                             Html::textInput("approver[{$key}][remark]", $remark, [

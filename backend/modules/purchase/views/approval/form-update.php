@@ -144,9 +144,10 @@ $form = ActiveForm::begin([]);
             <?php
             echo \backend\modules\purchase\widgets\documentapprove\DocumentApprove::widget([
                 'model' => $model,
+               // 'type' => \backend\modules\purchase\widgets\documentapprove\DocumentApprove::TYPE_APPROVE,
                 'attribute' => 'listapprover',
                 'users' => $listApprover,
-                'url' => ['approve'],
+                'approved' => $model->getUserHasApproved(),
                 'options' => [
                     'class' => ''
                 ]

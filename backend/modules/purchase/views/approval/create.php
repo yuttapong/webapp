@@ -11,7 +11,6 @@ $this->title = 'PR ทั่วไป';
 
 
 ?>
-
     <style>
         #pr {
             background-color: #fff;

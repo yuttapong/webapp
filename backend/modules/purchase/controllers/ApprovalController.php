@@ -107,9 +107,15 @@ class ApprovalController extends \yii\web\Controller
 
 
         }
+
+        $listApprovers = $model->getListApprover(['user_id' => Yii::$app->user->id]);
+
+
+
+
         return $this->render('create', [
             'model' => $model,
-            'listApprover' => $model->getListApprover(['user_id' => Yii::$app->user->id]),
+            'listApprover' => $listApprovers,
             'jobGroupItem' =>  $this->getJobGroupItem(),
         ]);
     }
@@ -323,10 +329,10 @@ class ApprovalController extends \yii\web\Controller
             $id = $key['id'];
 
             $model = $this->loadModel($id);
-            $model->scenario = ListApproval::SCENARIO_CANCEL;
+            //$model->scenario = ListApproval::SCENARIO_CANCEL;
 
             if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
-                // $model->approve_status = ListApproval::STATUS_CANCELED;
+              //  $model->approve_status = ListApproval::STATUS_CANCELED;
                 $model->implodeCancelDetail();
 
 
