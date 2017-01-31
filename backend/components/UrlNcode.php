@@ -1,24 +1,24 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Noom
- * Date: 19/12/2559
+ *  encode query string to base64
+ *
+ * Created by Yuttapong Napikun.
+ * User: yuttaponk@gmail.com
+ * Date: 19/12/2017
  * Time: 14:51
  */
 
 namespace backend\components;
-
-use Yii;
 use yii\base\Component;
 use yii\helpers\Url;
 
-class QueryString extends Component
+class UrlNcode extends Component
 {
     /**
      * @param array $params
      * @return string
      */
-    public  static function encode($route, $params = ['notify/accept', 'project_id' => 1, 'user_id' => 2])
+    public  static function to($route = ['notify/accept', 'project_id' => 1, 'user_id' => 2])
     {
         $link = Url::to($route);
         list($url,$params) =  explode('?',$link);

@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\ScBemployee;
 use common\models\User;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
@@ -44,7 +45,7 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['get'],
                 ],
             ],
         ];
@@ -77,6 +78,9 @@ class SiteController extends Controller
 
     public function actionLogin()
     {
+
+        Yii::$app->user->logout();
+
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -85,6 +89,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             // $user = User::findOne(Yii::$app->user->id);
             // $user->logged_in_ip = Yii::app()->request->getUserHostAddress;
+            $this->registerSessionSc();
             return $this->goBack();
         } else {
             return $this->render('login', [
@@ -93,10 +98,49 @@ class SiteController extends Controller
         }
     }
 
+
+    /**
+     * ทำให้ระบบเก่าใช้งาน Session ได้หลังจาก login ระบบนี้
+     */
+    private  function registerSessionSc() {
+        $user = User::findOne(Yii::$app->user->id);
+        $name = $user->personnel->fullnameTH;
+        $bemployee = ScBemployee::find()->where(['EMPID' => $user->username])->one();
+
+        //username
+        $_SESSION['USERNAME'] = $user->username;
+        $_SESSION["activeloginadmin"] = $user->username;
+        $_SESSION["m_dmpid"] = $bemployee->DEPTID;//รหัสแผนก ใช้นะระบบ inventory ต่าง ๆ
+        $_SESSION["sc_emp_status"] = $bemployee->EMP_STATUS;//สถานะ
+        $_SESSION['sc_name'] = $name;//ชื่อสกุล
+
+        //ตัวแปรเก็บข้อมูลโปรโฟล์ user ตอนนี้ใช้ที่ระบบ cheque center นะ
+        $_SESSION['sc_user_profile'] = array(
+            'emp_id' => $bemployee->EMPID,
+            'firstname' => $bemployee->EMPFNAME,
+            'lastname' => $bemployee->EMPLNAME,
+            'name' => $name,
+            'nickname' => $bemployee->NickName
+        );
+
+    }
+
+    /**
+     *  Clear Session System Center
+     */
+    private function clearSessionSc() {
+        unset( $_SESSION['USERNAME'] );
+        unset( $_SESSION['activeloginadmin'] );
+        unset( $_SESSION['m_dmpid'] );
+        unset( $_SESSION['sc_emp_status'] );
+        unset( $_SESSION['sc_user_profile'] );
+    }
+
+
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
+        $this->clearSessionSc();
         return $this->goHome();
     }
 
